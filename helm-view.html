@@ -102,7 +102,6 @@ input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); }
   .gauges { gap: 10px; }
   .helm { padding: 8px 12px; gap: 6px; }
   .note.dim { display: none; }
-  .cams .eyebrow { display: none; }
   .read { max-width: 58vw; padding: 9px 11px; }
   .pos { font-size: 1.4rem; }
   .note.teach { display: none; }
@@ -154,10 +153,23 @@ body.compact.roomy .windbox { width: 120px; } body.compact.roomy .windbox canvas
 body.compact.roomy .tape { width: min(420px, 40vw); } body.compact.roomy .tape canvas { height: 44px; }
 body.compact.roomy .read { max-width: 30vw; padding: 10px 14px; } body.compact.roomy .pos { font-size: 1.5rem; } body.compact.roomy .note.teach { display: block; font-size: .78rem; }
 body.compact.roomy .gauge b { font-size: 1.3rem; } body.compact.roomy .gauges { padding: 8px 18px; gap: 18px; }
+.sheetWrap { display: grid; gap: 1px; justify-items: center; cursor: pointer; min-width: 0; }
+.sheetWrap .lbl { font: 600 .56rem var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.qnote { font-size: .72rem; color: var(--muted); max-width: 36ch; line-height: 1.3; }
+.screenRow { display: none; }
+body.touch .screenRow { display: flex; }
+.more .row > .eyebrow { min-width: 72px; }
+body.compact .more .qnote { flex-basis: 100%; }
+/* trim bar: lives in the drawer on desktop, floats above the More button on phones so you can trim while steering */
+body.compact #trimBar { position: absolute; z-index: 3; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(154px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px 8px; backdrop-filter: blur(6px); }
+body.compact #trimBar .eyebrow { display: none; }
+body.compact #trimBar .btn { min-height: 40px; padding: 7px 10px; font-size: .78rem; white-space: nowrap; }
+body.compact #trimBar input[type=range] { width: 120px; height: 28px; }
 body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 body.compact #portBtn small, body.compact #stbdBtn small { display: block; }
-body.compact .row > label:not(.toggle), body.compact .cams .eyebrow { display: none; }
+body.compact .row > label:not(.toggle):not(.sheetWrap) { display: none; }
 body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
+@media (max-width: 800px) { body.compact #portBtn, body.compact #stbdBtn { width: 160px; font-size: .82rem; } }
 
     /* touch devices: no text selection or long-press callout anywhere in the sim, only in typed fields */
     body.touch, body.touch * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
@@ -190,7 +202,7 @@ body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
       <div class="target" id="target"></div>
       <div class="progress" aria-hidden="true"><i id="hold"></i></div>
       <p class="note" id="challengeFeedback">Steer the boat and hold the course for a moment.</p>
-      <div class="row"><span class="score"><span>Score <b id="cScore">0</b></span><span>Streak <b id="cStreak">0</b></span></span><button class="btn" id="skip">Skip</button><button class="btn" id="hintBtn">Hint</button></div>
+      <div class="row"><span class="score"><span>Score <b id="cScore">0</b></span><span>Streak <b id="cStreak">0</b></span></span><button class="btn" id="skip">Skip</button><button class="btn" id="hintBtn">Hint</button><button class="btn" id="quitC" title="End the challenge">End</button></div>
     </div>
     <div class="helm">
       <div class="row">
@@ -209,21 +221,29 @@ body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
       </div>
       <div class="more" id="rightPanel">
         <div class="closeRow"><span>Options</span><button class="btn" id="closeMenu" aria-label="Close options">✕ Close</button></div>
-      <div class="row">
-        <label for="sheet">Mainsheet</label>
-        <input type="range" id="sheet" min="0" max="90" step="1" value="60" disabled>
-        <label class="toggle" for="autotrim" style="min-width:0;text-transform:none;letter-spacing:0;font-size:.8rem;color:var(--ink)"><input type="checkbox" id="autotrim" checked> Auto trim</label>
-        <label class="toggle" for="challengeOn"><input type="checkbox" id="challengeOn"> Steer challenge</label>
-      </div>
-      <div class="row cams">
-        <span class="eyebrow">Camera</span>
-        <button class="btn" data-cam="helm" aria-pressed="true">Helm</button>
-        <button class="btn" data-cam="chase" aria-pressed="false">Chase</button>
-        <button class="btn" data-cam="overhead" aria-pressed="false">Overhead</button>
-        <button class="btn" data-cam="free" aria-pressed="false">Free</button>
-        <button class="btn fsBtn" id="fsBtn">⛶ Full screen</button>
+        <span id="trimHome" hidden></span>
+        <div class="row trim" id="trimBar">
+          <span class="eyebrow">Trim</span>
+          <button class="btn" id="autotrim" aria-pressed="true" title="Auto trim eases and sheets the main for you. Turn it off to trim by hand.">Auto trim on</button>
+          <label class="sheetWrap" for="sheet" title="Mainsheet: left is sheeted in, right is eased out"><input type="range" id="sheet" min="0" max="90" step="1" value="60" disabled aria-label="Mainsheet"><span class="lbl">in ◀ mainsheet ▶ out</span></label>
+        </div>
+        <div class="row">
+          <span class="eyebrow">Challenge</span>
+          <button class="btn" id="challengeBtn" aria-pressed="false">Start steer challenge</button>
+          <span class="qnote">Steer to a called point of sail and hold it.</span>
+        </div>
+        <div class="row cams">
+          <span class="eyebrow">Camera</span>
+          <button class="btn" data-cam="helm" aria-pressed="true">Helm</button>
+          <button class="btn" data-cam="chase" aria-pressed="false">Chase</button>
+          <button class="btn" data-cam="overhead" aria-pressed="false">Overhead</button>
+          <button class="btn" data-cam="free" aria-pressed="false">Free</button>
+        </div>
+        <div class="row screenRow">
+          <span class="eyebrow">Screen</span>
+          <button class="btn fsBtn" id="fsBtn">⛶ Full screen</button>
+        </div>
         <span class="hint">Drag to look around, scroll or pinch to zoom. ← → steer (Shift for 1°), ↑ ↓ trim when auto trim is off.</span>
-      </div>
       </div>
     </div>
   </div>
@@ -563,11 +583,14 @@ body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
   // ---------- controls ----------
   $('heading').addEventListener('input', e => steerTo(+e.target.value));
   $('sheet').addEventListener('input', e => { state.sheet = +e.target.value; syncUI(); });
-  $('autotrim').addEventListener('change', e => {
-    state.auto = e.target.checked; $('sheet').disabled = state.auto;
-    if (state.auto) { state.sheet = Math.round(idealTrim(offWind(state.h))); $('sheet').value = state.sheet; }
+  function setAuto(on) {
+    state.auto = on; const b = $('autotrim'); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Auto trim on' : 'Auto trim off';
+    $('sheet').disabled = on; if (on) { state.sheet = Math.round(idealTrim(offWind(state.h))); $('sheet').value = state.sheet; }
     syncUI();
-  });
+  }
+  $('autotrim').addEventListener('click', () => setAuto(!state.auto));
+  // touching the sheet while auto trim is on hands you the sheet
+  document.querySelector('.sheetWrap').addEventListener('pointerdown', () => { if (state.auto) setAuto(false); });
   const held = { port: false, stbd: false };
   function holdBtn(id, key) {
     const b = $(id);
@@ -598,6 +621,8 @@ body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
     const portrait = touch && !landscape && innerWidth < 900, wasPortrait = document.body.classList.contains('portrait');
     document.body.classList.toggle('portrait', portrait);
     if (portrait && !wasPortrait) { const r = document.querySelector('.rotate'); r.classList.add('show'); clearTimeout(r._t); r._t = setTimeout(() => r.classList.remove('show'), 5000); }
+    const tb = $('trimBar');
+    if (compact && tb.parentNode !== $('app')) $('app').appendChild(tb); else if (!compact && tb.parentNode === $('app')) $('trimHome').after(tb);
     if (!compact) $('rightPanel').classList.remove('open');
   }
   applyLayout(); addEventListener('resize', applyLayout); addEventListener('orientationchange', () => setTimeout(applyLayout, 80));
@@ -616,7 +641,13 @@ body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
 
   // ---------- challenge ----------
   const challenge = { target: null, holdStart: 0, score: 0, streak: 0, started: 0, hinted: false };
-  $('challengeOn').addEventListener('change', e => { state.challenge = e.target.checked; $('challengeBox').hidden = !state.challenge; if (state.challenge) newTarget(); });
+  function setChallenge(on) {
+    state.challenge = on; $('challengeBox').hidden = !on;
+    const b = $('challengeBtn'); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Stop steer challenge' : 'Start steer challenge';
+    if (on) newTarget();
+  }
+  $('challengeBtn').addEventListener('click', () => { setChallenge(!state.challenge); if (state.challenge && document.body.classList.contains('compact')) { $('rightPanel').classList.remove('open'); $('menuBtn').setAttribute('aria-expanded', 'false'); } });
+  $('quitC').addEventListener('click', () => setChallenge(false));
   function newTarget() {
     const opts = POINTS.filter(p => p.id !== 'irons'); let t;
     do { t = { p: opts[Math.floor(Math.random() * opts.length)], tack: Math.random() < 0.5 ? 'port' : 'starboard' }; }

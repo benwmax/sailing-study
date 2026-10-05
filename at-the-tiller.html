@@ -49,8 +49,6 @@ body.post #app::after { display: none; } /* the render pass draws its own vignet
 .hud { position: absolute; z-index: 2; }
 .top { top: 0; left: 0; right: 0; padding: 10px 16px 0; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: start; pointer-events: none; }
 .top > * { pointer-events: auto; min-width: 0; }
-h1 { font-family: var(--f-display); font-weight: 700; font-size: 1.4rem; line-height: 1; margin: 0; text-transform: uppercase; letter-spacing: .02em; background: var(--panel); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); backdrop-filter: blur(6px); }
-h1 small { display: block; font-family: var(--f-body); font-size: .7rem; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--muted); margin-top: 3px; }
 .windbox { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px 6px; display: grid; justify-items: center; gap: 2px; width: 150px; backdrop-filter: blur(6px); }
 .windbox canvas { width: 120px; height: 120px; display: block; }
 .windbox .lbl { font: 600 .62rem var(--f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
@@ -110,7 +108,6 @@ input[type=range] { accent-color: var(--accent); width: 130px; }
 @media (max-width: 760px) {
   .top { grid-template-columns: 1fr auto; }
   .tape { grid-column: 1 / -1; order: 3; }
-  h1 { font-size: 1.05rem; }
   .read { max-width: 56vw; padding: 8px 10px; }
   .pos { font-size: 1.3rem; }
   .note.teach, .note.dim, .hint { display: none; }
@@ -132,8 +129,8 @@ body.touch .steerpad small { display: block; font: 500 .62rem var(--f-body); let
 body.touch .steerpad.on small { color: #fff; }
 body.portrait .steerpad, body.portrait .menuBtn { display: none; }
 body.touch.portrait .rotate.show { display: block; position: absolute; z-index: 5; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel-solid); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; font-size: .9rem; text-align: center; max-width: 70vw; pointer-events: none; }
-body.compact .top, body.compact .bottom, body.compact .helm, body.compact .top > div:first-child, body.compact .row.steer, body.compact .more { display: contents; }
-body.compact h1, body.compact .hint, body.compact .tiller, body.compact .note.teach, body.compact .note.dim, body.compact .windbox .lbl, body.compact #heading, body.compact .read .eyebrow, body.compact .challenge .eyebrow, body.compact .challenge .note { display: none; }
+body.compact .top, body.compact .bottom, body.compact .helm, body.compact .row.steer, body.compact .more { display: contents; }
+body.compact .hint, body.compact .tiller, body.compact .note.teach, body.compact .note.dim, body.compact .windbox .lbl, body.compact #heading, body.compact .read .eyebrow, body.compact .challenge .eyebrow, body.compact .challenge .note { display: none; }
 body.compact .windbox { position: absolute; top: 8px; left: calc(8px + env(safe-area-inset-left, 0px)); width: 92px; padding: 4px; }
 body.compact .windbox canvas { width: 76px; height: 76px; }
 body.compact .windbox .val { font-size: .6rem; }
@@ -155,12 +152,27 @@ body.compact .more .btn, body.compact .right .btn { min-height: 40px; padding: 7
 body.compact .more .row, body.compact .right .row { gap: 6px; }
 body.compact input[type=range] { width: 110px; }
 body.compact .more:not(.open), body.compact .right:not(.open) { display: none; }
-body.compact .challenge { position: absolute; top: 54px; left: 50%; transform: translateX(-50%); width: min(300px, 38vw); padding: 6px 10px; gap: 4px; }
+body.compact .challenge { position: absolute; top: 136px; left: calc(8px + env(safe-area-inset-left, 0px)); width: 214px; padding: 6px 10px; gap: 4px; } /* under the wind dial, clear of the bow */
+body.compact .challenge .row { gap: 6px; } body.compact .challenge .score { gap: 8px; font-size: .7rem; } body.compact .challenge .btn { min-height: 32px; padding: 4px 8px; font-size: .72rem; }
+body.compact.roomy .challenge { top: 170px; width: 240px; } body.compact.roomy .target { font-size: 1.2rem; }
 body.compact .target { font-size: 1rem; }
 body.compact.roomy .windbox { width: 120px; } body.compact.roomy .windbox canvas { width: 100px; height: 100px; } body.compact.roomy .windbox .val { font-size: .72rem; }
 body.compact.roomy .tape { width: min(420px, 40vw); } body.compact.roomy .tape canvas { height: 44px; }
 body.compact.roomy .read { max-width: 30vw; padding: 10px 14px; } body.compact.roomy .pos { font-size: 1.5rem; } body.compact.roomy .note.teach { display: block; font-size: .78rem; }
 body.compact.roomy .gauge b { font-size: 1.3rem; } body.compact.roomy .gauges { padding: 8px 18px; gap: 18px; }
+.sheetWrap { display: grid; gap: 1px; justify-items: center; cursor: pointer; }
+.sheetWrap .lbl { font: 600 .56rem var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.qnote { font-size: .7rem; color: var(--muted); max-width: 36ch; line-height: 1.3; }
+.screenRow { display: none; }
+body.touch .screenRow { display: flex; }
+.right .row > .eyebrow { min-width: 58px; }
+body.compact .right .row > .eyebrow { min-width: 72px; }
+body.compact .right .qnote { flex-basis: 100%; }
+/* trim bar: lives in the drawer on desktop, floats above the More button on phones so you can trim while steering */
+body.compact #trimBar { position: absolute; z-index: 3; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(154px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 5px 8px; backdrop-filter: blur(6px); }
+body.compact #trimBar .eyebrow { display: none; }
+body.compact #trimBar .btn { min-height: 40px; padding: 7px 10px; font-size: .78rem; white-space: nowrap; }
+body.compact #trimBar input[type=range] { width: 120px; height: 28px; }
 body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 
     /* touch devices: no text selection or long-press callout anywhere in the sim, only in typed fields */
@@ -172,12 +184,11 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
   <canvas id="view" aria-label="First-person view from the cockpit of a sailboat. Drag to look around."></canvas>
 
   <div class="hud top">
-    <div style="display:grid;gap:8px;justify-items:start"><h1>At the Tiller<small>sit at the helm, push the tiller, feel the points of sail</small></h1>
     <div class="windbox" aria-live="off">
       <div class="lbl">Wind</div>
       <canvas id="windDial" width="240" height="240" aria-label="Wind direction relative to the boat"></canvas>
       <div class="val" id="windVal"></div>
-    </div></div>
+    </div>
     <div class="tape"><canvas id="tape" aria-label="Compass tape with the wind marked at the top of the no-go zone"></canvas></div>
     <div class="read" aria-live="polite">
       <div class="eyebrow">Point of sail</div>
@@ -195,7 +206,7 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
       <div class="target" id="target"></div>
       <div class="progress" aria-hidden="true"><i id="hold"></i></div>
       <p class="note" id="challengeFeedback">Steer and hold the course for a moment.</p>
-      <div class="row"><span class="score"><span>Score <b id="cScore">0</b></span><span>Streak <b id="cStreak">0</b></span></span><button class="btn" id="skip">Skip</button><button class="btn" id="hintBtn">Hint</button></div>
+      <div class="row"><span class="score"><span>Score <b id="cScore">0</b></span><span>Streak <b id="cStreak">0</b></span></span><button class="btn" id="skip">Skip</button><button class="btn" id="hintBtn">Hint</button><button class="btn" id="quitC" title="End the challenge">End</button></div>
     </div>
     <div class="helm">
       <div class="gauges">
@@ -214,10 +225,17 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
       </div>
       <div class="right" id="rightPanel">
         <div class="closeRow"><span>Options</span><button class="btn" id="closeMenu" aria-label="Close options">✕ Close</button></div>
-        <div class="row">
+        <span id="trimHome" hidden></span>
+        <div class="row trim" id="trimBar">
+          <span class="eyebrow">Trim</span>
           <span id="bjHome" hidden></span><button class="btn jib" id="backJib" hidden>Back the jib</button>
-          <label class="toggle" for="autotrim"><input type="checkbox" id="autotrim" checked> Auto trim</label>
-          <input type="range" id="sheet" min="0" max="90" step="1" value="60" disabled aria-label="Mainsheet">
+          <button class="btn" id="autotrim" aria-pressed="true" title="Auto trim eases and sheets the main for you. Turn it off to trim by hand.">Auto trim on</button>
+          <label class="sheetWrap" for="sheet" title="Mainsheet: left is sheeted in, right is eased out"><input type="range" id="sheet" min="0" max="90" step="1" value="60" disabled aria-label="Mainsheet"><span class="lbl">in ◀ mainsheet ▶ out</span></label>
+        </div>
+        <div class="row">
+          <span class="eyebrow">Challenge</span>
+          <button class="btn" id="challengeBtn" aria-pressed="false">Start challenge</button>
+          <span class="qnote">Steer to a called point of sail and hold it.</span>
         </div>
         <div class="row">
           <span class="eyebrow">Look</span>
@@ -225,9 +243,6 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
           <button class="btn" data-look="sail" aria-pressed="false">Sails</button>
           <button class="btn" data-look="tell" aria-pressed="false">Telltales</button>
           <button class="btn" data-look="tiller" aria-pressed="false">Tiller</button>
-          <label class="toggle" for="challengeOn"><input type="checkbox" id="challengeOn"> Challenge</label>
-          <button class="btn" id="quality" aria-pressed="true" title="Graphics quality: High adds water reflections, bloom and sharper shadows">High</button>
-          <button class="btn fsBtn" id="fsBtn">⛶ Full screen</button>
         </div>
         <div class="row">
           <span class="eyebrow">Sky</span>
@@ -235,6 +250,15 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
           <button class="btn" data-sky="afternoon" aria-pressed="true">Afternoon</button>
           <button class="btn" data-sky="golden">Golden hour</button>
           <button class="btn" data-sky="overcast">Overcast</button>
+        </div>
+        <div class="row">
+          <span class="eyebrow">Graphics</span>
+          <button class="btn" id="quality" aria-pressed="true" title="Graphics quality: High adds water reflections, bloom and sharper shadows">Quality: High</button>
+          <span class="qnote" id="qNote"></span>
+        </div>
+        <div class="row screenRow">
+          <span class="eyebrow">Screen</span>
+          <button class="btn fsBtn" id="fsBtn">⛶ Full screen</button>
         </div>
       </div>
       <div class="hint">← → push the tiller (hold). Drag the view to look around. ↑ ↓ trim when auto trim is off. In this sim the wind blows from the north, so the compass tape and the cockpit compass read 000 for straight upwind; the shaded band is the no-go zone.</div>
@@ -387,7 +411,7 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
     sun.shadow.mapSize.set(quality.high ? 2048 : 1024, quality.high ? 2048 : 1024);
     if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
     document.body.classList.toggle('post', quality.high && isGL2);
-    const b = $('quality'); if (b) { b.textContent = QNAMES[quality.level]; b.title = 'Graphics quality. ' + QTITLES[quality.level] + '. Tap to cycle.'; b.setAttribute('aria-pressed', String(quality.high)); }
+    const b = $('quality'); if (b) { b.textContent = 'Quality: ' + QNAMES[quality.level]; b.title = 'Graphics quality. ' + QTITLES[quality.level] + '. Tap to cycle.'; b.setAttribute('aria-pressed', String(quality.high)); const n = $('qNote'); if (n) n.textContent = QTITLES[quality.level] + (canUltra ? '. Tap to cycle Low, High, Ultra.' : '. Tap to switch Low and High.'); }
     needResize = true;
   };
   let needResize = true;
@@ -1312,7 +1336,13 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
   });
   window.addEventListener('keyup', e => { keys[e.key] = false; });
   $('sheet').addEventListener('input', e => { state.sheet = +e.target.value; lastKey = ''; syncUI(); });
-  $('autotrim').addEventListener('change', e => { state.auto = e.target.checked; $('sheet').disabled = state.auto; if (state.auto) { state.sheet = Math.round(idealTrim(offWind(state.h))); $('sheet').value = state.sheet; } lastKey = ''; syncUI(); });
+  function setAuto(on) {
+    state.auto = on; const b = $('autotrim'); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Auto trim on' : 'Auto trim off';
+    $('sheet').disabled = on; if (on) { state.sheet = Math.round(idealTrim(offWind(state.h))); $('sheet').value = state.sheet; } lastKey = ''; syncUI();
+  }
+  $('autotrim').addEventListener('click', () => setAuto(!state.auto));
+  // touching the sheet while auto trim is on hands you the sheet
+  document.querySelector('.sheetWrap').addEventListener('pointerdown', () => { if (state.auto) setAuto(false); });
   let backing = false;
   const bj = $('backJib');
   ['pointerdown'].forEach(ev => bj.addEventListener(ev, e => { backing = true; bj.classList.add('on'); e.preventDefault(); }));
@@ -1328,7 +1358,8 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
     const portrait = touch && !landscape && innerWidth < 900, wasPortrait = document.body.classList.contains('portrait');
     document.body.classList.toggle('portrait', portrait);
     if (portrait && !wasPortrait) { const r = document.querySelector('.rotate'); r.classList.add('show'); clearTimeout(r._t); r._t = setTimeout(() => r.classList.remove('show'), 5000); }
-    const bj = $('backJib');
+    const tb = $('trimBar'), bj = $('backJib');
+    if (compact && tb.parentNode !== $('app')) $('app').appendChild(tb); else if (!compact && tb.parentNode === $('app')) $('trimHome').after(tb);
     if (compact && bj.parentNode !== $('app')) $('app').appendChild(bj); else if (!compact && bj.parentNode === $('app')) $('bjHome').after(bj);
     if (!compact) $('rightPanel').classList.remove('open');
   }
@@ -1355,7 +1386,13 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
 
   // ---------- challenge ----------
   const challenge = { target: null, holdStart: 0, score: 0, streak: 0, started: 0, hinted: false };
-  $('challengeOn').addEventListener('change', e => { state.challenge = e.target.checked; $('challengeBox').hidden = !state.challenge; if (state.challenge) newTarget(); });
+  function setChallenge(on) {
+    state.challenge = on; $('challengeBox').hidden = !on;
+    const b = $('challengeBtn'); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Stop challenge' : 'Start challenge';
+    if (on) newTarget();
+  }
+  $('challengeBtn').addEventListener('click', () => { setChallenge(!state.challenge); if (state.challenge && document.body.classList.contains('compact')) { $('rightPanel').classList.remove('open'); $('menuBtn').setAttribute('aria-expanded', 'false'); } });
+  $('quitC').addEventListener('click', () => setChallenge(false));
   function newTarget() {
     const opts = POINTS.filter(p => p.id !== 'irons'); let t;
     do { t = { p: opts[Math.floor(Math.random() * opts.length)], tack: Math.random() < 0.5 ? 'port' : 'starboard' }; } while (challenge.target && t.p.id === challenge.target.p.id && t.tack === challenge.target.tack);
