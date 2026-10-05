@@ -45,11 +45,14 @@ main{padding-block:24px 64px}
 /* Guide */
 .guide{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px}
 .toc{position:sticky;top:64px;align-self:start;display:flex;flex-direction:column;gap:2px;font-size:14px}
-.toc a{color:var(--muted);text-decoration:none;padding:4px 0}
-.toc a:hover{color:var(--accent)}
+.toc a{color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:color .15s,border-color .15s,background .15s}
+.toc a:hover{color:var(--accent);border-left-color:var(--accent)}
+.toc a.on{color:var(--accent);border-left-color:var(--accent);font-weight:700}
+.toc a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .guide section{padding-block:8px 28px;border-bottom:1px solid var(--line)}
 .guide section:last-child{border-bottom:0}
-.guide h2{font-size:30px;margin-bottom:10px;scroll-margin-top:70px}
+.guide h2{font-size:30px;margin-bottom:10px}
+.guide section{scroll-margin-top:calc(var(--tabh,50px) + 14px)}
 .guide h3{font-size:20px;margin:18px 0 6px;letter-spacing:.02em}
 .guide p,.guide li{max-width:68ch}
 .guide ul{padding-left:20px;margin:6px 0}
@@ -146,7 +149,14 @@ select{font:15px var(--f-body);padding:8px 10px;border-radius:6px;border:1px sol
 
 @media (max-width:760px){
   .guide{grid-template-columns:minmax(0,1fr)}
-  .toc{position:static;flex-direction:row;flex-wrap:wrap;gap:6px 14px}
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--tabh,50px));z-index:4;background:var(--bg);flex-direction:row;flex-wrap:nowrap;gap:8px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:10px 16px;border-bottom:1px solid var(--line);-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  .toc::-webkit-scrollbar{display:none}
+  .toc a{flex:none;white-space:nowrap;border:1px solid var(--line);border-radius:99px;background:var(--paper);color:var(--ink);padding:8px 14px;font-size:14px;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+  .toc a:hover{border-color:var(--accent);color:var(--accent)}
+  .toc a.on{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+  .toc a:active{transform:scale(.96)}
+  .toc a:last-child{margin-right:40px}
+  .guide section{scroll-margin-top:calc(var(--tabh,50px) + 70px)}
   dl.terms{grid-template-columns:minmax(0,1fr)}
   dl.terms dd{margin-bottom:8px}
 }
@@ -845,6 +855,30 @@ document.querySelectorAll(".quizable").forEach(f=>{
   f.addEventListener("click",e=>{const l=e.target.closest(".lab");if(l&&f.classList.contains("quizmode"))l.classList.toggle("show")});
   f.addEventListener("keydown",e=>{const l=e.target.closest(".lab");if(l&&(e.key==="Enter"||e.key===" ")&&f.classList.contains("quizmode")){e.preventDefault();l.classList.toggle("show")}});
 });
+
+
+/* ---------- section index: highlight current section ---------- */
+(function(){
+  const toc=document.querySelector(".toc"),links=[...toc.querySelectorAll("a")];
+  const setTab=()=>{const h=document.querySelector("nav.tabs").offsetHeight;document.documentElement.style.setProperty("--tabh",h+"px")};
+  setTab();window.addEventListener("resize",setTab);
+  function mark(id){
+    links.forEach(a=>{const on=a.getAttribute("href")==="#"+id;a.classList.toggle("on",on);if(on)a.setAttribute("aria-current","true");else a.removeAttribute("aria-current")});
+    const a=links.find(l=>l.classList.contains("on"));
+    if(a&&toc.scrollWidth>toc.clientWidth){const left=a.offsetLeft-toc.clientWidth/2+a.offsetWidth/2;toc.scrollTo({left,behavior:"smooth"})}
+  }
+  const secs=links.map(a=>document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  let cur="";
+  function spy(){
+    const y=(parseInt(getComputedStyle(document.documentElement).getPropertyValue("--tabh"))||50)+(toc.scrollWidth>toc.clientWidth?80:30);
+    let id=secs[0]&&secs[0].id;
+    for(const s of secs){if(s.getBoundingClientRect().top-y<=0)id=s.id}
+    if(id!==cur){cur=id;mark(id)}
+  }
+  window.addEventListener("scroll",spy,{passive:true});
+  links.forEach(a=>a.addEventListener("click",()=>{cur=a.getAttribute("href").slice(1);mark(cur)}));
+  spy();
+})();
 
 /* ---------- storage helpers ---------- */
 function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
