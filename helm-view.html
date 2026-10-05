@@ -1,0 +1,808 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Helm View Sailing Sim</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a one-screen cockpit. The 3D viewport fills the page; instruments sit on a bottom helm bar and a readout card in the top-right. */
+:root {
+  --bg: #0d1b2a;
+  --panel: #10243ae6;
+  --panel-solid: #122a42;
+  --ink: #eaf2f7;
+  --muted: #9fb6c8;
+  --line: #2b4b66;
+  --accent: #6cc3ec;
+  --signal: #f2c230;
+  --port: #ef6a5f;
+  --stbd: #3fc488;
+  --good: #3fc488;
+  --warn: #e3a645;
+  --bad: #ef6a5f;
+  --hi: #f2b70533;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #dfe9ee; --panel: #f7fafbe6; --panel-solid: #f7fafb; --ink: #10243a; --muted: #536577; --line: #c9d5db;
+    --accent: #0b5d86; --signal: #c99700; --port: #c8352e; --stbd: #1b8a57; --good: #1b8a57; --warn: #b7791f; --bad: #c8352e; --hi: #f2b70544;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #dfe9ee; --panel: #f7fafbe6; --panel-solid: #f7fafb; --ink: #10243a; --muted: #536577; --line: #c9d5db;
+  --accent: #0b5d86; --signal: #c99700; --port: #c8352e; --stbd: #1b8a57; --good: #1b8a57; --warn: #b7791f; --bad: #ef6a5f; --hi: #f2b70544;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.45; overflow: hidden; }
+#app { position: relative; height: 100%; width: 100%; overflow: hidden; }
+#view { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+#view.dragging { cursor: grabbing; }
+.hud { position: absolute; z-index: 2; }
+.top { top: 0; left: 0; right: 0; padding: 12px 16px 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; pointer-events: none; }
+.top > * { pointer-events: auto; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; line-height: 1; margin: 0; text-transform: uppercase; letter-spacing: .02em; background: var(--panel); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); backdrop-filter: blur(6px); }
+h1 small { display: block; font-family: var(--f-body); font-size: .72rem; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--muted); margin-top: 3px; }
+.windbox { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px 6px; display: grid; justify-items: center; gap: 2px; width: 150px; backdrop-filter: blur(6px); }
+.windbox canvas { width: 120px; height: 120px; display: block; }
+.windbox .lbl { font: 600 .62rem var(--f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.windbox .val { font: 600 .8rem var(--f-body); text-align: center; line-height: 1.2; }
+.windbox .val b { font-family: var(--f-mono); }
+@media (max-width: 760px) { .windbox { width: 112px; padding: 6px; } .windbox canvas { width: 88px; height: 88px; } .windbox .val { font-size: .7rem; } }
+.read { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 6px; min-width: 0; max-width: min(360px, 60vw); backdrop-filter: blur(6px); }
+.eyebrow { font: 600 .66rem var(--f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.pos { font-family: var(--f-display); font-weight: 700; font-size: 1.9rem; line-height: 1; text-transform: uppercase; }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { font: 600 .72rem var(--f-body); padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); display: inline-flex; gap: 6px; align-items: center; }
+.chip .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.chip.port { color: var(--port); border-color: currentColor; }
+.chip.stbd { color: var(--stbd); border-color: currentColor; }
+.chip.good { color: var(--good); border-color: currentColor; }
+.chip.warn { color: var(--warn); border-color: currentColor; }
+.chip.bad { color: var(--bad); border-color: currentColor; }
+.chip.neutral { color: var(--muted); }
+.note { font-size: .82rem; color: var(--ink); margin: 0; max-width: 60ch; }
+.note.dim { color: var(--muted); }
+.event { border-left: 3px solid var(--signal); padding: 6px 10px; background: var(--hi); border-radius: 0 8px 8px 0; font-size: .82rem; }
+.bottom { left: 0; right: 0; bottom: 0; padding: 0 16px calc(12px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 8px; pointer-events: none; }
+.bottom > * { pointer-events: auto; }
+.helm { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; display: grid; gap: 8px; backdrop-filter: blur(6px); }
+.row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.row label { font: 600 .66rem var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); min-width: 72px; }
+input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.btn { font: 600 .8rem var(--f-body); border: 1px solid var(--line); background: var(--panel-solid); color: var(--ink); border-radius: 8px; padding: 7px 11px; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+.btn:hover { border-color: var(--accent); }
+.btn[aria-pressed="true"], .btn.on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.btn.hold { min-width: 92px; }
+.btn:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.gauges { display: flex; gap: 14px; flex-wrap: wrap; }
+.gauge { display: grid; line-height: 1.1; }
+.gauge b { font-family: var(--f-display); font-size: 1.35rem; font-weight: 700; }
+.gauge span { font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; cursor: pointer; }
+.cams { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.more { display: grid; gap: 8px; }
+.hint { font-size: .74rem; color: var(--muted); }
+.challenge { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; display: grid; gap: 6px; backdrop-filter: blur(6px); }
+.target { font-family: var(--f-display); font-size: 1.35rem; font-weight: 700; line-height: 1.1; text-transform: uppercase; }
+.target .port { color: var(--port); } .target .stbd { color: var(--stbd); }
+.progress { height: 5px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.progress i { display: block; height: 100%; width: 0; background: var(--good); }
+.score { display: flex; gap: 14px; font-size: .78rem; color: var(--muted); }
+.score b { color: var(--ink); font-family: var(--f-mono); }
+@media (max-width: 640px) {
+  h1 { font-size: 1.15rem; }
+  .gauge b { font-size: 1.1rem; }
+  .gauges { gap: 10px; }
+  .helm { padding: 8px 12px; gap: 6px; }
+  .note.dim { display: none; }
+  .cams .eyebrow { display: none; }
+  .read { max-width: 58vw; padding: 9px 11px; }
+  .pos { font-size: 1.4rem; }
+  .note.teach { display: none; }
+  .hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .progress i { transition: none; } }
+
+/* ---- touch and compact (landscape phone) layout. The 3D view keeps the screen; controls move to the thumb corners. ---- */
+.menuBtn, .fsBtn, .rotate, .hold small { display: none; }
+body.touch .btn { padding: 10px 14px; font-size: .86rem; min-height: 44px; }
+body.touch input[type=range] { height: 32px; }
+body.touch .fsBtn { display: inline-flex; align-items: center; }
+body.compact #portBtn, body.compact #stbdBtn { display: grid; place-content: center; position: absolute; z-index: 3; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); width: 170px; height: 72px; border-radius: 18px; border: 1px solid var(--line); background: var(--panel); backdrop-filter: blur(6px); font: 700 .95rem var(--f-display); letter-spacing: .05em; text-transform: uppercase; color: var(--ink); text-align: center; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: pointer; }
+body.compact #portBtn { left: calc(14px + env(safe-area-inset-left, 0px)); color: var(--port); }
+body.compact #stbdBtn { right: calc(14px + env(safe-area-inset-right, 0px)); color: var(--stbd); }
+body.compact #portBtn.on, body.compact #stbdBtn.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+body.compact #portBtn small, body.compact #stbdBtn small { display: block; font: 500 .62rem var(--f-body); letter-spacing: 0; text-transform: none; color: var(--muted); margin-top: 2px; }
+body.compact #portBtn.on small, body.compact #stbdBtn.on small { color: #fff; }
+body.portrait .menuBtn { display: none; }
+body.touch.portrait .rotate.show { display: block; position: absolute; z-index: 5; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel-solid); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; font-size: .9rem; text-align: center; max-width: 70vw; pointer-events: none; }
+body.compact .top, body.compact .bottom, body.compact .helm, body.compact .top > div:first-child, body.compact .row.steer, body.compact .more { display: contents; }
+body.compact h1, body.compact .hint, body.compact .tiller, body.compact .note.teach, body.compact .note.dim, body.compact .windbox .lbl, body.compact #heading, body.compact .read .eyebrow, body.compact .challenge .eyebrow, body.compact .challenge .note { display: none; }
+body.compact .windbox { position: absolute; top: 8px; left: calc(8px + env(safe-area-inset-left, 0px)); width: 92px; padding: 4px; }
+body.compact .windbox canvas { width: 76px; height: 76px; }
+body.compact .windbox .val { font-size: .6rem; }
+body.compact .tape { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: min(300px, 38vw); padding: 2px 6px 0; }
+body.compact .tape canvas { height: 36px; }
+body.compact .read { position: absolute; top: 8px; right: calc(8px + env(safe-area-inset-right, 0px)); max-width: 36vw; padding: 6px 10px; gap: 3px; cursor: pointer; }
+body.compact .read.open .note.teach { display: block; font-size: .72rem; }
+body.compact .pos { font-size: 1.15rem; }
+body.compact .chip { font-size: .62rem; padding: 2px 7px; }
+body.compact .event { font-size: .7rem; padding: 4px 8px; }
+body.compact .gauges { position: absolute; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 6px 14px; gap: 14px; flex-wrap: nowrap; backdrop-filter: blur(6px); white-space: nowrap; }
+body.compact .gauge b { font-size: 1.1rem; }
+body.compact .gauge span { font-size: .56rem; }
+body.compact .menuBtn { display: inline-flex; position: absolute; z-index: 3; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(102px + env(safe-area-inset-bottom, 0px)); }
+body.compact .more, body.compact .right { position: absolute; z-index: 4; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(154px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 8px; justify-items: start; background: var(--panel-solid); border: 1px solid var(--line); border-radius: 12px; padding: 10px; max-width: min(440px, 72vw); max-height: calc(100% - 170px - env(safe-area-inset-bottom, 0px)); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; gap: 6px; }
+body.compact .more .btn, body.compact .right .btn { min-height: 40px; padding: 7px 11px; font-size: .8rem; }
+body.compact .more .row, body.compact .right .row { gap: 6px; }
+body.compact input[type=range] { width: 110px; }
+body.compact .more:not(.open), body.compact .right:not(.open) { display: none; }
+body.compact .challenge { position: absolute; top: 54px; left: 50%; transform: translateX(-50%); width: min(300px, 38vw); padding: 6px 10px; gap: 4px; }
+body.compact .target { font-size: 1rem; }
+body.compact.roomy .windbox { width: 120px; } body.compact.roomy .windbox canvas { width: 100px; height: 100px; } body.compact.roomy .windbox .val { font-size: .72rem; }
+body.compact.roomy .tape { width: min(420px, 40vw); } body.compact.roomy .tape canvas { height: 44px; }
+body.compact.roomy .read { max-width: 30vw; padding: 10px 14px; } body.compact.roomy .pos { font-size: 1.5rem; } body.compact.roomy .note.teach { display: block; font-size: .78rem; }
+body.compact.roomy .gauge b { font-size: 1.3rem; } body.compact.roomy .gauges { padding: 8px 18px; gap: 18px; }
+body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+body.compact #portBtn small, body.compact #stbdBtn small { display: block; }
+body.compact .row > label:not(.toggle), body.compact .cams .eyebrow { display: none; }
+body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
+</style>
+
+<div id="app">
+  <canvas id="view" aria-label="3D view of a sailboat. Drag to orbit the camera."></canvas>
+
+  <div class="hud top">
+    <div style="display:grid;gap:8px;justify-items:start"><h1>Helm View<small>3D points of sail · wind is fixed, you turn the boat</small></h1>
+    <div class="windbox" aria-live="off">
+      <div class="lbl">Wind</div>
+      <canvas id="windDial" width="240" height="240" aria-label="Wind direction relative to the boat"></canvas>
+      <div class="val" id="windVal"></div>
+    </div></div>
+    <div class="read" aria-live="polite">
+      <div class="eyebrow">Point of sail</div>
+      <div class="pos" id="posName">Broad reach</div>
+      <div class="chips" id="chips"></div>
+      <p class="note teach" id="teach"></p>
+      <p class="note dim" id="trimNote"></p>
+      <div id="eventBox" class="event" hidden></div>
+    </div>
+  </div>
+
+  <div class="hud bottom">
+    <div class="challenge" id="challengeBox" hidden>
+      <div class="eyebrow">Steer to</div>
+      <div class="target" id="target"></div>
+      <div class="progress" aria-hidden="true"><i id="hold"></i></div>
+      <p class="note" id="challengeFeedback">Steer the boat and hold the course for a moment.</p>
+      <div class="row"><span class="score"><span>Score <b id="cScore">0</b></span><span>Streak <b id="cStreak">0</b></span></span><button class="btn" id="skip">Skip</button><button class="btn" id="hintBtn">Hint</button></div>
+    </div>
+    <div class="helm">
+      <div class="row">
+        <div class="gauges">
+          <div class="gauge"><b class="mono" id="gAngle">135°</b><span>off the wind</span></div>
+          <div class="gauge"><b class="mono" id="gHeading">135°</b><span>heading</span></div>
+          <div class="gauge"><b class="mono" id="gSpeed">5.8 kn</b><span>boat speed</span></div>
+          <div class="gauge"><b class="mono" id="gHeel">7°</b><span>heel</span></div>
+          <div class="gauge"><b class="mono" id="gBoom">60°</b><span>boom out</span></div>
+        </div>
+      </div>
+      <div class="row steer">
+        <button class="btn hold" id="portBtn">◀ Head to port<small>bow turns left</small></button>
+        <input type="range" id="heading" min="-180" max="180" step="1" value="135" aria-label="Heading">
+        <button class="btn hold" id="stbdBtn">Starboard ▶<small>bow turns right</small></button>
+      </div>
+      <div class="more" id="rightPanel">
+      <div class="row">
+        <label for="sheet">Mainsheet</label>
+        <input type="range" id="sheet" min="0" max="90" step="1" value="60" disabled>
+        <label class="toggle" for="autotrim" style="min-width:0;text-transform:none;letter-spacing:0;font-size:.8rem;color:var(--ink)"><input type="checkbox" id="autotrim" checked> Auto trim</label>
+        <label class="toggle" for="challengeOn"><input type="checkbox" id="challengeOn"> Steer challenge</label>
+      </div>
+      <div class="row cams">
+        <span class="eyebrow">Camera</span>
+        <button class="btn" data-cam="helm" aria-pressed="true">Helm</button>
+        <button class="btn" data-cam="chase" aria-pressed="false">Chase</button>
+        <button class="btn" data-cam="overhead" aria-pressed="false">Overhead</button>
+        <button class="btn" data-cam="free" aria-pressed="false">Free</button>
+        <button class="btn fsBtn" id="fsBtn">⛶ Full screen</button>
+        <span class="hint">Drag to look around, scroll or pinch to zoom. ← → steer (Shift for 1°), ↑ ↓ trim when auto trim is off.</span>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn menuBtn" id="menuBtn" aria-expanded="false" aria-controls="rightPanel">⋯ More</button>
+  <div class="rotate">Turn your phone sideways for the full view.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  if (!window.THREE) {
+    document.getElementById('posName').textContent = 'Could not load the 3D engine';
+    document.getElementById('teach').textContent = 'Reload the page to try again.';
+    return;
+  }
+  const POINTS = [
+    { id: 'irons', name: 'In irons', long: 'In irons / no-go zone', min: 0, max: 45,
+      trim: 'Sails luff no matter how you trim.',
+      teach: 'Within about 45° of the wind the sails cannot make power. They flap, the boat stops, and you lose steerage. To get out, back the jib or push the boom out so the bow blows off the wind, then trim in as the sails fill.' },
+    { id: 'ch', name: 'Close hauled', long: 'Close hauled', min: 45, max: 60,
+      trim: 'Sheets trimmed in tight, boom near the centerline.',
+      teach: 'As close to the wind as you can sail, about 45° off. Also called beating. Reach an upwind spot by tacking back and forth. Expect the most heel here.' },
+    { id: 'cr', name: 'Close reach', long: 'Close reach', min: 60, max: 80,
+      trim: 'Sheets eased a little from close hauled.',
+      teach: 'Between close hauled and a beam reach. The wind is forward of the beam. Fast and comfortable with less heel.' },
+    { id: 'br', name: 'Beam reach', long: 'Beam reach', min: 80, max: 100,
+      trim: 'Sails eased about halfway out.',
+      teach: 'Wind straight across the side of the boat at 90°. Often the fastest and easiest point of sail.' },
+    { id: 'bro', name: 'Broad reach', long: 'Broad reach', min: 100, max: 160,
+      trim: 'Sheets eased well out.',
+      teach: 'The wind comes over the quarter, behind the beam. Fast and fun. In gusts the boat wants to round up toward the wind.' },
+    { id: 'run', name: 'Running', long: 'Running', min: 160, max: 180.01,
+      trim: 'Main eased all the way out, nearly perpendicular to the boat.',
+      teach: 'Wind directly behind. The jib collapses in the main\'s wind shadow unless you wing it out on the other side. Watch for an accidental jibe, and do not sail by the lee.' }
+  ];
+  const TRIM_TABLE = [[0, 0], [45, 6], [60, 15], [70, 24], [90, 45], [120, 60], [150, 75], [180, 86]];
+  const SPEED_TABLE = [[0, 0], [30, 0], [45, 4.3], [60, 5.1], [90, 6.1], [120, 5.9], [150, 5.1], [180, 4.4]];
+  const HEEL_TABLE = [[0, 0], [45, 22], [60, 18], [90, 12], [120, 7], [160, 3], [180, 2]];
+
+  const $ = id => document.getElementById(id);
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const norm = d => { d = ((d + 180) % 360 + 360) % 360 - 180; return d === -180 ? 180 : d; };
+  const offWind = h => Math.abs(norm(h));
+  const windSideOf = h => (norm(h) >= 0 ? 1 : -1); // +1 wind over port side; boom belongs to starboard
+  const pointFor = a => POINTS.find(p => a >= p.min && a < p.max) || POINTS[5];
+  const lerpTable = (T, a) => {
+    for (let i = 1; i < T.length; i++) {
+      const [a0, b0] = T[i - 1], [a1, b1] = T[i];
+      if (a <= a1) return b0 + (b1 - b0) * (a - a0) / (a1 - a0);
+    }
+    return T[T.length - 1][1];
+  };
+  const idealTrim = a => lerpTable(TRIM_TABLE, a);
+  const rad = d => d * Math.PI / 180;
+
+  const state = { h: 135, boomSide: 1, sheet: 60, auto: true, turn: 0, cam: 'helm', challenge: false };
+
+  function info() {
+    const a = offWind(state.h), p = pointFor(a), ws = windSideOf(state.h);
+    const irons = p.id === 'irons';
+    const byLee = !irons && ws !== state.boomSide;
+    const tack = state.boomSide === 1 ? 'port' : 'starboard';
+    const ideal = idealTrim(a);
+    let trim = 'good';
+    if (irons || state.sheet - ideal > 10) trim = 'luff';
+    else if (ideal - state.sheet > 10) trim = 'over';
+    const eff = irons ? 0 : Math.min(state.sheet, Math.max(a - 2, 0));
+    const tf = irons ? 0 : trim === 'good' ? 1 : trim === 'luff' ? 0.55 : 0.75;
+    const speed = lerpTable(SPEED_TABLE, a) * tf;
+    let heel = lerpTable(HEEL_TABLE, a);
+    if (trim === 'over') heel += 6; if (trim === 'luff') heel *= 0.4; if (irons) heel = 0;
+    return { a, p, ws, irons, byLee, tack, ideal, eff, trim, speed, heel };
+  }
+
+  // ---------- steering ----------
+  function setHeading(nh) {
+    const prev = state.h; nh = norm(nh);
+    const delta = norm(nh - prev); if (delta === 0) return;
+    state.turn = Math.max(-1, Math.min(1, state.turn + delta / 25));
+    state.h = nh;
+    const a = offWind(nh), ws = windSideOf(nh);
+    if (Math.abs(prev) < 90 && Math.abs(nh) < 90 && Math.sign(prev) !== Math.sign(nh) && prev !== 0 && nh !== 0) {
+      state.boomSide = ws; flash('tack');
+    } else if (a < 45) {
+      // in irons: boom stays until the sail fills
+    } else if (ws !== state.boomSide) {
+      if (a >= 90 && (180 - a) < 20) {
+        // by the lee: boom stays put, danger shown in the readout
+      } else {
+        const wasDownwind = a >= 90;
+        state.boomSide = ws; flash(wasDownwind ? 'jibe' : 'tack');
+      }
+    }
+    if (state.auto) { state.sheet = Math.round(idealTrim(a)); $('sheet').value = state.sheet; }
+    syncUI();
+  }
+  function steerTo(target) {
+    let d = norm(target - state.h);
+    const n = Math.ceil(Math.abs(d) / 8) || 1;
+    for (let i = 0; i < n; i++) setHeading(state.h + d / n);
+  }
+  function flash(kind) {
+    const msgs = {
+      tack: '<b>You tacked.</b> The bow passed through the wind and the boom crossed over. "Ready about." "Ready." "Helm\'s a-lee" (or "Hard a-lee").',
+      jibe: '<b>You jibed.</b> The stern passed through the wind and the boom swung across. Control the mainsheet as it crosses. "Prepare to jibe." "Ready." "Jibe ho."'
+    };
+    const box = $('eventBox'); box.innerHTML = msgs[kind]; box.hidden = false;
+    clearTimeout(flash.t); flash.t = setTimeout(() => { box.hidden = true; }, 6000);
+  }
+
+  // ---------- HUD ----------
+  const chip = (cls, text) => `<span class="chip ${cls}"><span class="dot"></span>${text}</span>`;
+  const tackChip = I => I.irons ? chip('neutral', 'No tack, sails luffing') : chip(I.tack === 'port' ? 'port' : 'stbd', I.tack === 'port' ? 'Port tack' : 'Starboard tack');
+  const trimChip = I => I.irons ? chip('bad', 'Luffing') : I.trim === 'good' ? chip('good', 'Well trimmed') : I.trim === 'luff' ? chip('warn', 'Luffing: trim in') : chip('warn', 'Overtrimmed: ease out');
+  let lastRoseKey = '';
+  function syncUI() {
+    const I = info();
+    $('heading').value = Math.round(state.h);
+    $('posName').textContent = I.p.long;
+    $('chips').innerHTML = tackChip(I) + trimChip(I) + (I.byLee ? chip('bad', 'By the lee: jibe danger') : '');
+    $('teach').textContent = (I.byLee ? 'You are sailing by the lee: the wind is on the same side as the boom, so a small shift can slam it across. Head up a little or jibe on purpose. ' : '') + I.p.teach;
+    $('trimNote').textContent = I.p.trim + (I.irons ? '' : ' Rule of thumb: ease until the sail luffs, then trim in just until it stops.');
+    $('gAngle').textContent = Math.round(I.a) + '°';
+    $('gHeading').textContent = String(Math.round((state.h + 360) % 360)).padStart(3, '0') + '°';
+    $('gSpeed').textContent = I.speed.toFixed(1) + ' kn';
+    $('gHeel').textContent = Math.round(I.heel) + '°';
+    $('gBoom').textContent = Math.round(I.eff) + '°';
+    const key = I.p.id + (I.irons ? '' : I.ws);
+    if (key !== lastRoseKey) { lastRoseKey = key; drawRose(I); }
+  }
+
+  // ---------- three.js scene ----------
+  const canvas = $('view');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x9fd3ea);
+  scene.fog = new THREE.Fog(0x9fd3ea, 60, 160);
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 400);
+
+  scene.add(new THREE.HemisphereLight(0xdff3ff, 0x1b4a63, 0.9));
+  const sun = new THREE.DirectionalLight(0xfff4e0, 1.0); sun.position.set(-30, 50, -20); scene.add(sun);
+
+  // sky dome: a big gradient sphere
+  const skyGeo = new THREE.SphereGeometry(300, 24, 12);
+  const skyMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false,
+    uniforms: { top: { value: new THREE.Color(0x3f8fc4) }, bottom: { value: new THREE.Color(0xbfe4f3) } },
+    vertexShader: 'varying vec3 vW; void main(){ vW = (modelMatrix * vec4(position,1.0)).xyz; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+    fragmentShader: 'uniform vec3 top; uniform vec3 bottom; varying vec3 vW; void main(){ float t = clamp(vW.y / 120.0, 0.0, 1.0); gl_FragColor = vec4(mix(bottom, top, pow(t, 0.6)), 1.0); }'
+  });
+  scene.add(new THREE.Mesh(skyGeo, skyMat));
+
+  // water with gentle moving waves
+  const waterGeo = new THREE.PlaneGeometry(320, 320, 90, 90);
+  waterGeo.rotateX(-Math.PI / 2);
+  const waterBase = waterGeo.attributes.position.array.slice();
+  const water = new THREE.Mesh(waterGeo, new THREE.MeshPhongMaterial({ color: 0x1f6f95, specular: 0x2a5570, shininess: 18, flatShading: false }));
+  scene.add(water);
+
+  // points-of-sail rose on the water (fixed to the wind)
+  const roseCanvas = document.createElement('canvas'); roseCanvas.width = roseCanvas.height = 2048;
+  const roseTex = new THREE.CanvasTexture(roseCanvas); roseTex.encoding = THREE.sRGBEncoding; roseTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  const rose = new THREE.Mesh(new THREE.PlaneGeometry(44, 44), new THREE.MeshBasicMaterial({ map: roseTex, transparent: true, depthWrite: false }));
+  rose.rotation.x = -Math.PI / 2; rose.position.y = 0.5; scene.add(rose); // sits above the highest wave crest so the water never cuts through it
+  let roseBearing = 0; const roseDir = new THREE.Vector3(); // labels are redrawn upright for whichever way the camera looks
+  function drawRose(I) {
+    const c = roseCanvas.getContext('2d'); const S = 1024, cx = S / 2, cy = S / 2, r1 = 500, r0 = 300;
+    c.setTransform(2, 0, 0, 2, 0, 0); c.clearRect(0, 0, S, S);
+    const ang = d => rad(d - 90);
+    const sector = (f, t, fill) => { c.beginPath(); c.arc(cx, cy, r1, ang(f), ang(t)); c.arc(cx, cy, r0, ang(t), ang(f), true); c.closePath(); c.fillStyle = fill; c.fill(); };
+    sector(-45, 45, 'rgba(225,60,50,0.72)');
+    if (!I.irons) { const s = I.ws, a0 = s * I.p.min, a1 = s * Math.min(I.p.max, 180); sector(Math.min(a0, a1), Math.max(a0, a1), 'rgba(250,200,60,0.7)'); }
+    else sector(-45, 45, 'rgba(250,200,60,0.7)');
+    c.strokeStyle = 'rgba(255,255,255,0.85)'; c.lineWidth = 5;
+    c.beginPath(); c.arc(cx, cy, r0, 0, Math.PI * 2); c.stroke(); c.beginPath(); c.arc(cx, cy, r1, 0, Math.PI * 2); c.stroke();
+    [45, 60, 80, 100, 160].forEach(b => [1, -1].forEach(s => { const t = ang(s * b); c.beginPath(); c.moveTo(cx + Math.cos(t) * r0, cy + Math.sin(t) * r0); c.lineTo(cx + Math.cos(t) * r1, cy + Math.sin(t) * r1); c.stroke(); }));
+    c.font = '700 52px "Barlow Condensed", "Arial Narrow", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round';
+    const labels = [[0, ['NO-GO', 'ZONE']], [52.5, ['CLOSE', 'HAULED']], [70, ['CLOSE', 'REACH']], [90, ['BEAM', 'REACH']], [130, ['BROAD', 'REACH']], [180, ['RUN']]];
+    labels.forEach(([d, lines]) => [1, -1].forEach(s => {
+      if ((d === 0 || d === 180) && s === -1) return;
+      const t = ang(s * d), rr = (r0 + r1) / 2, x = cx + Math.cos(t) * rr, y = cy + Math.sin(t) * rr;
+      const pid = d === 0 ? 'irons' : pointFor(d).id;
+      const active = pid === I.p.id && (pid === 'irons' || pid === 'run' || s === I.ws);
+      c.save(); c.translate(x, y); c.rotate(roseBearing);
+      c.fillStyle = active ? '#ffffff' : 'rgba(255,255,255,0.92)'; c.strokeStyle = active ? 'rgba(5,20,40,0.95)' : 'rgba(5,20,40,0.75)'; c.lineWidth = 9;
+      lines.forEach((ln, i) => { const yy = (i - (lines.length - 1) / 2) * 54; c.strokeText(ln, 0, yy); c.fillText(ln, 0, yy); });
+      c.restore();
+    }));
+    roseTex.needsUpdate = true;
+  }
+
+  // wind streaks (wind blows from -Z toward +Z)
+  const NS = 260;
+  const streakPos = new Float32Array(NS * 6);
+  const streakSpeed = new Float32Array(NS);
+  for (let i = 0; i < NS; i++) resetStreak(i, true);
+  function resetStreak(i, anywhere) {
+    const x = (Math.random() - 0.5) * 120, z = anywhere ? (Math.random() - 0.5) * 120 : -60 - Math.random() * 10;
+    const y = 0.25 + Math.random() * 2.2, len = 1.2 + Math.random() * 1.8;
+    streakPos.set([x, y, z, x, y, z + len], i * 6); streakSpeed[i] = 9 + Math.random() * 5;
+  }
+  const streakGeo = new THREE.BufferGeometry(); streakGeo.setAttribute('position', new THREE.BufferAttribute(streakPos, 3));
+  scene.add(new THREE.LineSegments(streakGeo, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 })));
+
+  // big wind arrow, upwind of the boat
+  const windGrp = new THREE.Group();
+  const arrowMat = new THREE.MeshPhongMaterial({ color: 0xf2c230 });
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 12), arrowMat); shaft.rotation.x = Math.PI / 2; shaft.position.z = -3.5;
+  const head = new THREE.Mesh(new THREE.ConeGeometry(0.9, 2.2, 16), arrowMat); head.rotation.x = Math.PI / 2; head.position.z = 1.1;
+  windGrp.add(shaft, head);
+  windGrp.add(textSprite('WIND', '#f2c230', 7, 0, 2.2, -4));
+  windGrp.position.set(0, 6.5, -17);
+  scene.add(windGrp);
+  function textSprite(text, color, scale, x, y, z) {
+    const c = document.createElement('canvas'); c.width = 512; c.height = 160; const g = c.getContext('2d');
+    g.font = '700 120px "Barlow Condensed", "Arial Narrow", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.lineWidth = 14; g.strokeStyle = 'rgba(10,25,40,0.8)'; g.strokeText(text, 256, 80); g.fillStyle = color; g.fillText(text, 256, 80);
+    const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false }));
+    sp.scale.set(scale, scale * 160 / 512, 1); sp.position.set(x, y, z); return sp;
+  }
+
+  // ----- the boat -----
+  const boat = new THREE.Group();      // yaw (heading)
+  const hullGrp = new THREE.Group();   // heel
+  boat.add(hullGrp); scene.add(boat);
+
+  const hullShape = new THREE.Shape();
+  hullShape.moveTo(0, 3.2);
+  hullShape.bezierCurveTo(0.9, 2.2, 1.15, 0.4, 1.0, -2.6);
+  hullShape.lineTo(-1.0, -2.6);
+  hullShape.bezierCurveTo(-1.15, 0.4, -0.9, 2.2, 0, 3.2);
+  const hullGeo = new THREE.ExtrudeGeometry(hullShape, { depth: 0.9, bevelEnabled: true, bevelThickness: 0.12, bevelSize: 0.1, bevelSegments: 2, curveSegments: 24 });
+  const hull = new THREE.Mesh(hullGeo, [new THREE.MeshPhongMaterial({ color: 0xe8e2cf }), new THREE.MeshPhongMaterial({ color: 0x1d3a56, shininess: 50 })]);
+  hull.rotation.x = -Math.PI / 2; hull.position.y = -0.62; hullGrp.add(hull);
+  // waterline stripe
+  const stripe = new THREE.Mesh(new THREE.ExtrudeGeometry(hullShape, { depth: 0.08, bevelEnabled: false, curveSegments: 24 }), new THREE.MeshPhongMaterial({ color: 0xc8352e }));
+  stripe.rotation.x = -Math.PI / 2; stripe.position.y = -0.1; stripe.scale.set(1.03, 1.03, 1); hullGrp.add(stripe);
+  // cabin and cockpit
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.42, 1.9), new THREE.MeshPhongMaterial({ color: 0xf2eee2 })); cabin.position.set(0, 0.5, -0.4); hullGrp.add(cabin);
+  const cockpit = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.22, 1.6), new THREE.MeshPhongMaterial({ color: 0x8a9aa6 })); cockpit.position.set(0, 0.2, 1.6); hullGrp.add(cockpit);
+  // keel and rudder
+  const keel = new THREE.Mesh(new THREE.BoxGeometry(0.16, 1.6, 2.2), new THREE.MeshPhongMaterial({ color: 0x1d3a56 })); keel.position.set(0, -1.3, 0.1); hullGrp.add(keel);
+  const rudderGrp = new THREE.Group(); rudderGrp.position.set(0, -0.3, 2.55); hullGrp.add(rudderGrp);
+  const rudder = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.1, 0.5), new THREE.MeshPhongMaterial({ color: 0x1d3a56 })); rudder.position.set(0, -0.5, 0.2); rudderGrp.add(rudder);
+  const tiller = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.4, 8), new THREE.MeshPhongMaterial({ color: 0x7a4b24 })); tiller.rotation.x = Math.PI / 2; tiller.position.set(0, 0.65, -0.7); rudderGrp.add(tiller);
+  // nav lights
+  const lightMat = c => new THREE.MeshBasicMaterial({ color: c });
+  const portLight = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), lightMat(0xff3b30)); portLight.position.set(-0.5, 0.42, -2.0); hullGrp.add(portLight);
+  const stbdLight = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), lightMat(0x34d16c)); stbdLight.position.set(0.5, 0.42, -2.0); hullGrp.add(stbdLight);
+  // mast, boom, forestay
+  const MAST_H = 7.4, GOOSE = { x: 0, y: 1.25, z: 0 }, BOOM_L = 3.3;
+  const sparMat = new THREE.MeshPhongMaterial({ color: 0xd9d9d6, shininess: 80 });
+  const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.1, MAST_H, 10), sparMat); mast.position.set(0, 0.3 + MAST_H / 2, 0); hullGrp.add(mast);
+  const boomGrp = new THREE.Group(); boomGrp.position.set(GOOSE.x, GOOSE.y, GOOSE.z); hullGrp.add(boomGrp);
+  const boom = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, BOOM_L, 10), new THREE.MeshPhongMaterial({ color: 0xf2c230 })); boom.rotation.x = Math.PI / 2; boom.position.z = BOOM_L / 2; boomGrp.add(boom);
+  const BOW = new THREE.Vector3(0, 0.42, -3.1), MAST_TOP = new THREE.Vector3(0, 0.3 + MAST_H, 0);
+  const stayGeo = new THREE.BufferGeometry().setFromPoints([BOW, MAST_TOP]);
+  hullGrp.add(new THREE.Line(stayGeo, new THREE.LineBasicMaterial({ color: 0x334455 })));
+  hullGrp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0.42, 2.75), MAST_TOP]), new THREE.LineBasicMaterial({ color: 0x334455 })));
+
+  // sails as deformable triangles
+  function makeSail(n, color) {
+    const verts = [], idx = [];
+    for (let i = 0; i <= n; i++) for (let j = 0; j <= n - i; j++) verts.push([i / n, j / n]);
+    const id = (i, j) => { let k = 0; for (let a = 0; a < i; a++) k += n - a + 1; return k + j; };
+    for (let i = 0; i < n; i++) for (let j = 0; j < n - i; j++) {
+      idx.push(id(i, j), id(i + 1, j), id(i, j + 1));
+      if (j < n - i - 1) idx.push(id(i + 1, j), id(i + 1, j + 1), id(i, j + 1));
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verts.length * 3), 3));
+    geo.setIndex(idx);
+    const mesh = new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color, side: THREE.DoubleSide, shininess: 10 }));
+    mesh.userData.uv = verts;
+    return mesh;
+  }
+  const mainSail = makeSail(14, 0xfafafa), jib = makeSail(12, 0xf4f1e6);
+  hullGrp.add(mainSail, jib);
+  const edgeMat = new THREE.LineBasicMaterial({ color: 0x8a9aa6 });
+  function updateSail(mesh, A, B, C, side, depth, flutter, t) {
+    const pos = mesh.geometry.attributes.position.array, uv = mesh.userData.uv;
+    const nrm = new THREE.Vector3().subVectors(B, A).cross(new THREE.Vector3().subVectors(C, A)).normalize();
+    if (nrm.x * side < 0) nrm.negate();
+    for (let k = 0; k < uv.length; k++) {
+      const u = uv[k][0], v = uv[k][1], w = 1 - u - v;
+      let bulge = depth * 27 * u * v * w * 2.2 + depth * 2.4 * Math.sqrt(Math.max(0, u * (1 - u))) * (1 - v) * Math.max(0, w) ;
+      if (flutter) bulge += Math.sin(t * 14 + v * 9 + u * 4) * flutter * (1 - u) * Math.min(1, v * 3 + 0.3);
+      pos[k * 3] = A.x + u * (B.x - A.x) + v * (C.x - A.x) + nrm.x * bulge;
+      pos[k * 3 + 1] = A.y + u * (B.y - A.y) + v * (C.y - A.y) + nrm.y * bulge;
+      pos[k * 3 + 2] = A.z + u * (B.z - A.z) + v * (C.z - A.z) + nrm.z * bulge;
+    }
+    mesh.geometry.attributes.position.needsUpdate = true;
+    mesh.geometry.computeVertexNormals();
+  }
+
+  // ---------- camera ----------
+  const cam = { az: 0, el: 0.32, dist: 14, target: new THREE.Vector3(0, 2.4, 0), userAz: 0 };
+  const CAMS = {
+    helm: { el: 0.3, dist: 14, follow: true },
+    chase: { el: 0.45, dist: 20, follow: true },
+    overhead: { el: 1.3, dist: 36, follow: false },
+    free: { el: 0.3, dist: 16, follow: false }
+  };
+  function setCam(name) {
+    state.cam = name; const c = CAMS[name];
+    cam.el = c.el; cam.dist = c.dist; cam.userAz = 0;
+    if (!c.follow) cam.az = name === 'overhead' ? 0 : Math.PI * 0.3;
+    document.querySelectorAll('[data-cam]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cam === name)));
+  }
+  document.querySelectorAll('[data-cam]').forEach(b => b.addEventListener('click', () => setCam(b.dataset.cam)));
+  let drag = null; const pointers = new Map(); let pinchDist = 0;
+  canvas.addEventListener('pointerdown', e => {
+    canvas.setPointerCapture(e.pointerId); pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 1) { drag = { x: e.clientX, y: e.clientY }; canvas.classList.add('dragging'); }
+    if (pointers.size === 2) { const [a, b] = [...pointers.values()]; pinchDist = Math.hypot(a.x - b.x, a.y - b.y); drag = null; }
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinchDist) cam.dist = Math.max(6, Math.min(60, cam.dist * pinchDist / d)); pinchDist = d; return;
+    }
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag = { x: e.clientX, y: e.clientY };
+    if (CAMS[state.cam].follow) cam.userAz -= dx * 0.006; else cam.az -= dx * 0.006;
+    cam.el = Math.max(0.05, Math.min(1.5, cam.el + dy * 0.005));
+  });
+  const endPtr = e => { pointers.delete(e.pointerId); if (pointers.size === 0) { drag = null; canvas.classList.remove('dragging'); } pinchDist = 0; };
+  canvas.addEventListener('pointerup', endPtr); canvas.addEventListener('pointercancel', endPtr);
+  canvas.addEventListener('wheel', e => { e.preventDefault(); cam.dist = Math.max(6, Math.min(60, cam.dist * (1 + Math.sign(e.deltaY) * 0.08))); }, { passive: false });
+
+  // ---------- controls ----------
+  $('heading').addEventListener('input', e => steerTo(+e.target.value));
+  $('sheet').addEventListener('input', e => { state.sheet = +e.target.value; syncUI(); });
+  $('autotrim').addEventListener('change', e => {
+    state.auto = e.target.checked; $('sheet').disabled = state.auto;
+    if (state.auto) { state.sheet = Math.round(idealTrim(offWind(state.h))); $('sheet').value = state.sheet; }
+    syncUI();
+  });
+  const held = { port: false, stbd: false };
+  function holdBtn(id, key) {
+    const b = $(id);
+    const on = e => { held[key] = true; b.classList.add('on'); e.preventDefault(); b.setPointerCapture && b.setPointerCapture(e.pointerId); };
+    const off = () => { held[key] = false; b.classList.remove('on'); };
+    b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off);
+  }
+  holdBtn('portBtn', 'port'); holdBtn('stbdBtn', 'stbd');
+  const keys = {};
+  window.addEventListener('keydown', e => {
+    if (e.target.matches('input[type=range]')) return;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      if (e.shiftKey) { steerTo(state.h + (e.key === 'ArrowLeft' ? -1 : 1)); } else keys[e.key] = true;
+      e.preventDefault();
+    } else if (!state.auto && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      state.sheet = Math.max(0, Math.min(90, state.sheet + (e.key === 'ArrowUp' ? -3 : 3))); $('sheet').value = state.sheet; syncUI(); e.preventDefault();
+    }
+  });
+  window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+
+  // ---------- touch and compact layout ----------
+  const touchMQ = matchMedia('(pointer: coarse)');
+  function applyLayout() {
+    const touch = touchMQ.matches, landscape = innerWidth > innerHeight;
+    const compact = innerHeight <= 620 || (touch && landscape);
+    document.body.classList.toggle('touch', touch); document.body.classList.toggle('compact', compact); document.body.classList.toggle('roomy', compact && innerHeight > 600);
+    const portrait = touch && !landscape && innerWidth < 900, wasPortrait = document.body.classList.contains('portrait');
+    document.body.classList.toggle('portrait', portrait);
+    if (portrait && !wasPortrait) { const r = document.querySelector('.rotate'); r.classList.add('show'); clearTimeout(r._t); r._t = setTimeout(() => r.classList.remove('show'), 5000); }
+    if (!compact) $('rightPanel').classList.remove('open');
+  }
+  applyLayout(); addEventListener('resize', applyLayout); addEventListener('orientationchange', () => setTimeout(applyLayout, 80));
+  $('menuBtn').addEventListener('click', () => { const open = $('rightPanel').classList.toggle('open'); $('menuBtn').setAttribute('aria-expanded', String(open)); });
+  canvas.addEventListener('pointerdown', () => { $('rightPanel').classList.remove('open'); $('menuBtn').setAttribute('aria-expanded', 'false'); });
+  document.querySelector('.read').addEventListener('click', () => { if (document.body.classList.contains('compact')) document.querySelector('.read').classList.toggle('open'); });
+  const fs = $('fsBtn');
+  if (!$('app').requestFullscreen) fs.hidden = true;
+  fs.addEventListener('click', () => {
+    if (document.fullscreenElement) { document.exitFullscreen(); return; }
+    $('app').requestFullscreen().then(() => { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); }).catch(() => {});
+  });
+  document.addEventListener('fullscreenchange', () => { fs.textContent = document.fullscreenElement ? '⛶ Exit full screen' : '⛶ Full screen'; });
+  ['portBtn', 'stbdBtn'].forEach(id => { const b = $(id); b.addEventListener('contextmenu', e => e.preventDefault()); });
+
+  // ---------- challenge ----------
+  const challenge = { target: null, holdStart: 0, score: 0, streak: 0, started: 0, hinted: false };
+  $('challengeOn').addEventListener('change', e => { state.challenge = e.target.checked; $('challengeBox').hidden = !state.challenge; if (state.challenge) newTarget(); });
+  function newTarget() {
+    const opts = POINTS.filter(p => p.id !== 'irons'); let t;
+    do { t = { p: opts[Math.floor(Math.random() * opts.length)], tack: Math.random() < 0.5 ? 'port' : 'starboard' }; }
+    while (challenge.target && t.p.id === challenge.target.p.id && t.tack === challenge.target.tack);
+    const I = info(); if (I.p.id === t.p.id && I.tack === t.tack) t.tack = t.tack === 'port' ? 'starboard' : 'port';
+    challenge.target = t; challenge.holdStart = 0; challenge.started = performance.now(); challenge.hinted = false;
+    $('target').innerHTML = `${t.p.long} on <span class="${t.tack === 'port' ? 'port' : 'stbd'}">${t.tack} tack</span>`;
+    $('challengeFeedback').textContent = 'Steer the boat and hold the course for a moment.';
+  }
+  function hintText() {
+    const t = challenge.target, I = info(), mid = (t.p.min + Math.min(t.p.max, 180)) / 2, parts = [];
+    if (!I.irons && I.tack !== t.tack) parts.push(`You need the wind over your ${t.tack} side, so the boom ends up on the ${t.tack === 'port' ? 'starboard' : 'port'} side. ${t.p.min >= 100 ? 'Jibe' : 'Tack'} to switch.`);
+    else if (I.irons) parts.push(`Bear away so the wind comes over your ${t.tack} side.`);
+    if (I.a < t.p.min) parts.push('Bear away (turn away from the wind).'); else if (I.a >= t.p.max) parts.push('Head up (turn toward the wind).');
+    parts.push(`Aim for about ${Math.round(mid)}° off the wind.`);
+    return parts.join(' ');
+  }
+  $('skip').addEventListener('click', () => { challenge.streak = 0; $('cStreak').textContent = 0; newTarget(); });
+  $('hintBtn').addEventListener('click', () => { $('challengeFeedback').textContent = hintText(); challenge.hinted = true; });
+  function tickChallenge(now) {
+    if (!state.challenge || !challenge.target) return;
+    const I = info(), t = challenge.target;
+    const ok = I.p.id === t.p.id && I.tack === t.tack && !I.byLee && (I.trim === 'good' || state.auto);
+    if (ok) {
+      if (!challenge.holdStart) challenge.holdStart = now;
+      const prog = Math.min(1, (now - challenge.holdStart) / 1000); $('hold').style.width = (prog * 100) + '%';
+      if (prog >= 1) {
+        challenge.score++; challenge.streak++; $('cScore').textContent = challenge.score; $('cStreak').textContent = challenge.streak;
+        const prev = t; newTarget(); $('hold').style.width = '0%';
+        $('challengeFeedback').textContent = `Nice: that was ${prev.p.long.toLowerCase()} on ${prev.tack} tack. Next one.`;
+      }
+    } else {
+      challenge.holdStart = 0; $('hold').style.width = '0%';
+      if (I.p.id === t.p.id && I.tack === t.tack && !state.auto && I.trim !== 'good') $('challengeFeedback').textContent = I.trim === 'luff' ? 'Right course. The sails are luffing, so trim in.' : 'Right course. The sails are overtrimmed, so ease out.';
+      else if (I.p.id === t.p.id && I.tack === t.tack && I.byLee) $('challengeFeedback').textContent = 'You are by the lee. Head up a touch so the wind is on the side opposite the boom.';
+      else if (!challenge.hinted && now - challenge.started > 12000) { $('challengeFeedback').textContent = hintText(); challenge.hinted = true; }
+    }
+  }
+
+  // ---------- loop ----------
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+  }
+
+  // HUD wind dial: boat fixed bow-up, the arrow shows where the wind is coming from relative to you
+  const dial = $('windDial'), dctx = dial.getContext('2d');
+  let dialKey = '';
+  function drawDial(I) {
+    const key = Math.round(state.h) + (I.irons ? 'i' : '');
+    if (key === dialKey) return; dialKey = key;
+    const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    const S = 240, c = S / 2, R = 104; dctx.setTransform(1, 0, 0, 1, 0, 0); dctx.clearRect(0, 0, S, S);
+    const rel = rad(-state.h); // wind comes from this bearing relative to the bow (0 = dead ahead)
+    const ang = a => a - Math.PI / 2;
+    // no-go zone and tack colours around the rim
+    dctx.lineWidth = 14;
+    dctx.strokeStyle = 'rgba(225,60,50,0.35)'; dctx.beginPath(); dctx.arc(c, c, R, ang(rel - rad(45)), ang(rel + rad(45))); dctx.stroke();
+    dctx.strokeStyle = css('--line'); dctx.lineWidth = 1; dctx.beginPath(); dctx.arc(c, c, R, 0, Math.PI * 2); dctx.stroke();
+    dctx.beginPath(); dctx.arc(c, c, R - 14, 0, Math.PI * 2); dctx.stroke();
+    for (let d = 0; d < 360; d += 30) { const t = ang(rad(d)); dctx.beginPath(); dctx.moveTo(c + Math.cos(t) * (R - 14), c + Math.sin(t) * (R - 14)); dctx.lineTo(c + Math.cos(t) * (R - 20), c + Math.sin(t) * (R - 20)); dctx.strokeStyle = css('--muted'); dctx.stroke(); }
+    dctx.font = '700 15px "Barlow Condensed", "Arial Narrow", sans-serif'; dctx.fillStyle = css('--muted'); dctx.textAlign = 'center'; dctx.textBaseline = 'middle';
+    dctx.fillText('BOW', c, c - R + 32);
+    dctx.fillStyle = css('--port'); dctx.fillText('P', c - R + 30, c); dctx.fillStyle = css('--stbd'); dctx.fillText('S', c + R - 30, c);
+    // boat silhouette, bow up
+    dctx.save(); dctx.translate(c, c); dctx.fillStyle = css('--panel-solid'); dctx.strokeStyle = css('--ink'); dctx.lineWidth = 2.5;
+    dctx.beginPath(); dctx.moveTo(0, -46); dctx.bezierCurveTo(16, -30, 18, 10, 15, 40); dctx.lineTo(-15, 40); dctx.bezierCurveTo(-18, 10, -16, -30, 0, -46); dctx.closePath(); dctx.fill(); dctx.stroke();
+    // boom on the leeward side
+    const bs = smooth.boom; dctx.strokeStyle = css('--signal'); dctx.lineWidth = 4; dctx.lineCap = 'round';
+    dctx.beginPath(); dctx.moveTo(0, -12); dctx.lineTo(Math.sin(rad(bs)) * 42, -12 + Math.cos(rad(bs)) * 42); dctx.stroke();
+    dctx.fillStyle = css('--ink'); dctx.beginPath(); dctx.arc(0, -12, 4, 0, Math.PI * 2); dctx.fill();
+    dctx.restore();
+    // wind arrow from the rim toward the boat
+    const ax = c + Math.cos(ang(rel)) * (R + 4), ay = c + Math.sin(ang(rel)) * (R + 4);
+    const bx = c + Math.cos(ang(rel)) * 62, by = c + Math.sin(ang(rel)) * 62;
+    dctx.strokeStyle = css('--accent'); dctx.fillStyle = css('--accent'); dctx.lineWidth = 6; dctx.lineCap = 'round';
+    dctx.beginPath(); dctx.moveTo(ax, ay); dctx.lineTo(bx, by); dctx.stroke();
+    const hx = c + Math.cos(ang(rel)) * 50, hy = c + Math.sin(ang(rel)) * 50, px = -Math.sin(ang(rel)), py = Math.cos(ang(rel));
+    dctx.beginPath(); dctx.moveTo(hx, hy); dctx.lineTo(bx + px * 11, by + py * 11); dctx.lineTo(bx - px * 11, by - py * 11); dctx.closePath(); dctx.fill();
+    const a = Math.round(I.a), sideName = a === 0 ? 'dead ahead' : a === 180 ? 'dead astern' : (I.ws === 1 ? 'over the port side' : 'over the starboard side');
+    $('windVal').innerHTML = `<b>${a}°</b> ${a === 0 || a === 180 ? sideName : 'off the bow, ' + sideName}`;
+  }
+  // shroud telltales: ribbons tied to the shrouds at eye level, streaming downwind
+  const ST = 2, stPos = new Float32Array(ST * 5 * 6), stGeo = new THREE.BufferGeometry();
+  stGeo.setAttribute('position', new THREE.BufferAttribute(stPos, 3));
+  hullGrp.add(new THREE.LineSegments(stGeo, new THREE.LineBasicMaterial({ color: 0xff3b30 })));
+  function updateShroudTelltales(t) {
+    // wind blows toward (sin h, 0, cos h) in the boat's frame
+    const wx = Math.sin(rad(state.h)), wz = Math.cos(rad(state.h)); let k = 0;
+    [-1, 1].forEach((s, i) => {
+      // point on the shroud at about head height
+      let px = s * 1.05 * 0.78, py = 2.3, pz = 0.1 * 0.78;
+      for (let seg = 0; seg < 5; seg++) {
+        const f = Math.sin(t * 12 + seg * 1.4 + i) * 0.03;
+        const qx = px + wx * 0.11 + f * wz, qy = py + Math.sin(t * 9 + seg) * 0.012 - seg * 0.006, qz = pz + wz * 0.11 - f * wx;
+        stPos.set([px, py, pz, qx, qy, qz], k); k += 6; px = qx; py = qy; pz = qz;
+      }
+    });
+    stGeo.attributes.position.needsUpdate = true;
+  }
+
+  const smooth = { heel: 0, boom: 60, boomVel: 0, speed: 0, heelSigned: 0 }; // boom and heel are signed: + means starboard
+  let last = 0;
+  const A = new THREE.Vector3(), B = new THREE.Vector3(), C = new THREE.Vector3();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000 || 0.016); last = now;
+    const t = now / 1000;
+    resize();
+    // continuous steering from held keys/buttons
+    const turnRate = 45; let d = 0;
+    if (keys.ArrowLeft || held.port) d -= turnRate * dt; if (keys.ArrowRight || held.stbd) d += turnRate * dt;
+    if (d) steerTo(state.h + d);
+    state.turn *= Math.pow(0.02, dt);
+    tickChallenge(now);
+
+    const I = info();
+    const k = reduceMotion ? 1 : Math.min(1, dt * 4);
+    smooth.heel += (I.heel - smooth.heel) * k;
+    smooth.speed += (I.speed - smooth.speed) * k;
+    // boom physics: wind pressure swings it toward the leeward side, the sheet stops it
+    const T = state.boomSide * (I.irons ? 4 + 5 * Math.sin(t * 2.1) : I.eff);
+    const K = I.irons ? 2.5 : 5, D = I.irons ? 1.2 : 3.6; // stiffness and damping, per second
+    smooth.boomVel += (K * (T - smooth.boom) - D * smooth.boomVel) * dt;
+    smooth.boom += smooth.boomVel * dt;
+    const limit = Math.max(6, state.sheet) + 3;
+    if (Math.abs(smooth.boom) > limit) { smooth.boom = Math.sign(smooth.boom) * limit; smooth.boomVel *= -0.2; } // sheet comes taut
+    const crossing = (Math.sign(T) !== Math.sign(smooth.boom) && Math.abs(T) > 3) || Math.abs(smooth.boomVel) > 35;
+    smooth.heelSigned += (-state.boomSide * I.heel - smooth.heelSigned) * Math.min(1, dt * 2.5);
+
+    boat.rotation.y = -rad(state.h);
+    hullGrp.rotation.z = rad(smooth.heelSigned);
+    hullGrp.position.y = reduceMotion ? 0 : Math.sin(t * 1.3) * 0.06;
+    hullGrp.rotation.x = reduceMotion ? 0 : Math.sin(t * 0.9) * 0.012;
+    rudderGrp.rotation.y = state.turn * 0.5;
+
+    const side = smooth.boom >= 0 ? 1 : -1, bA = rad(smooth.boom), boomAbs = Math.abs(smooth.boom), swing = Math.min(1, boomAbs / 12);
+    boomGrp.rotation.y = bA;
+    // main: A gooseneck, B clew (end of boom), C head (mast top)
+    A.set(GOOSE.x, GOOSE.y, GOOSE.z);
+    B.set(Math.sin(bA) * BOOM_L, GOOSE.y, Math.cos(bA) * BOOM_L);
+    C.set(0, 0.3 + MAST_H - 0.25, 0);
+    const luff = I.trim === 'luff';
+    const flut = (luff || crossing) && !reduceMotion ? (I.irons ? 0.35 : 0.2) : 0;
+    const depth = (I.irons ? 0.12 : I.trim === 'over' ? 0.55 : 0.42) * swing;
+    updateSail(mainSail, A, B, C, side, depth, flut, t);
+    // jib: tack at bow, clew aft on the boom's side, head up the forestay
+    const jA = rad(I.irons ? boomAbs * 0.8 : Math.min(boomAbs * 1.1 + 8 * swing, 85)) * side;
+    const JL = 2.6;
+    A.copy(BOW).add(new THREE.Vector3(0, 0.1, 0.1));
+    B.set(Math.sin(jA) * JL, 0.55, BOW.z + 0.1 + Math.cos(jA) * JL);
+    C.copy(BOW).lerp(MAST_TOP, 0.9);
+    updateSail(jib, A, B, C, side, (I.irons ? 0.08 : 0.3) * swing, flut, t + 1.7);
+
+    // water and wind
+    const wp = waterGeo.attributes.position.array;
+    if (!reduceMotion) {
+      for (let i = 0; i < wp.length; i += 3) {
+        const x = waterBase[i], z = waterBase[i + 2];
+        wp[i + 1] = Math.sin(x * 0.35 + t * 1.1) * 0.12 + Math.cos(z * 0.5 - t * 1.6) * 0.16 + Math.sin((x + z) * 0.2 + t * 0.7) * 0.08;
+      }
+      waterGeo.attributes.position.needsUpdate = true; waterGeo.computeVertexNormals();
+    }
+    for (let i = 0; i < NS; i++) {
+      const o = i * 6, v = streakSpeed[i] * dt;
+      streakPos[o + 2] += v; streakPos[o + 5] += v;
+      if (streakPos[o + 2] > 60) resetStreak(i, false);
+    }
+    streakGeo.attributes.position.needsUpdate = true;
+
+    // camera
+    const c = CAMS[state.cam];
+    const az = c.follow ? -rad(state.h) + cam.userAz : cam.az;
+    camera.position.set(cam.target.x + Math.sin(az) * Math.cos(cam.el) * cam.dist, cam.target.y + Math.sin(cam.el) * cam.dist, cam.target.z + Math.cos(az) * Math.cos(cam.el) * cam.dist);
+    camera.position.y = Math.max(camera.position.y, 0.8);
+    camera.lookAt(cam.target);
+    camera.getWorldDirection(roseDir); const bq = Math.round(Math.atan2(roseDir.x, -roseDir.z) / rad(4)) * rad(4);
+    if (bq !== roseBearing) { roseBearing = bq; drawRose(info()); }
+
+    drawDial(I); updateShroudTelltales(t);
+    // make the HUD speed/heel follow the smoothed values
+    $('gSpeed').textContent = smooth.speed.toFixed(1) + ' kn';
+    $('gHeel').textContent = Math.round(smooth.heel) + '°';
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+
+  state.sheet = Math.round(idealTrim(offWind(state.h))); $('sheet').value = state.sheet;
+  setCam('helm');
+  syncUI();
+  requestAnimationFrame(frame);
+  if (document.fonts) document.fonts.ready.then(() => { lastRoseKey = ''; syncUI(); });
+})();
+</script>
+
+</body></html>

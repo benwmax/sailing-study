@@ -1,0 +1,810 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Points of Sail Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: chart-table split. Big top-down sailing "plot" on the left, instrument panel on the right; stacks on phones. */
+:root {
+  --bg: #e9eff1;
+  --panel: #f7fafb;
+  --ink: #10243a;
+  --muted: #536577;
+  --line: #c9d5db;
+  --water: #cfe1e8;
+  --water-2: #b9d2dc;
+  --ring: #10243a1f;
+  --nogo: #c8352e26;
+  --hi: #f2b70533;
+  --accent: #0b5d86;
+  --signal: #e0a800;
+  --port: #c8352e;
+  --stbd: #1b8a57;
+  --hull: #fbfcfc;
+  --hull-edge: #10243a;
+  --sail: #bfe0f2;
+  --sail-edge: #0b5d86;
+  --spar: #111a24;
+  --spar-halo: #ffffff;
+  --good: #1b8a57;
+  --warn: #b7791f;
+  --bad: #c8352e;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1622; --panel: #112131; --ink: #e4edf2; --muted: #93a7b7; --line: #24384b;
+    --water: #0f2c40; --water-2: #133750; --ring: #e4edf21f; --nogo: #e2574d33; --hi: #f2b70533;
+    --accent: #6cc3ec; --signal: #f2c230; --port: #ef6a5f; --stbd: #3fc488; --hull: #2b4256; --hull-edge: #9fb6c8;
+    --sail: #f2f7fa; --sail-edge: #6cc3ec; --spar: #f2c230; --spar-halo: #0b1622; --good: #3fc488; --warn: #e3a645; --bad: #ef6a5f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1622; --panel: #112131; --ink: #e4edf2; --muted: #93a7b7; --line: #24384b;
+  --water: #0f2c40; --water-2: #133750; --ring: #e4edf21f; --nogo: #e2574d33; --hi: #f2b70533;
+  --accent: #6cc3ec; --signal: #f2c230; --port: #ef6a5f; --stbd: #3fc488; --hull: #2b4256; --hull-edge: #9fb6c8;
+  --sail: #f2f7fa; --sail-edge: #6cc3ec; --spar: #f2c230; --spar-halo: #0b1622; --good: #3fc488; --warn: #e3a645; --bad: #ef6a5f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; padding: 20px 16px 40px; }
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 18px; }
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: 2.3rem; line-height: 1; margin: 0; letter-spacing: .01em; text-transform: uppercase; text-wrap: balance; }
+h1 small { display: block; font-family: var(--f-body); font-size: .85rem; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--muted); margin-top: 6px; }
+.tabs { display: flex; gap: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 4px; }
+.tabs button { font: 600 .9rem var(--f-body); border: 0; background: transparent; color: var(--muted); padding: 8px 14px; border-radius: 7px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.tabs button:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.main { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .main { grid-template-columns: 1fr; } }
+.stage { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: grid; gap: 10px; min-width: 0; }
+canvas { width: 100%; aspect-ratio: 1 / 1; max-width: 100%; display: block; border-radius: 10px; touch-action: none; cursor: grab; }
+canvas.locked { cursor: default; }
+.helm { display: grid; gap: 6px; }
+.helm-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.helm label { font: 600 .72rem var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); min-width: 84px; }
+input[type=range] { flex: 1; min-width: 140px; accent-color: var(--accent); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.btn { font: 600 .85rem var(--f-body); border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.hint-keys { font-size: .8rem; color: var(--muted); }
+.panel { display: grid; gap: 14px; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; gap: 10px; min-width: 0; }
+.eyebrow { font: 600 .72rem var(--f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.pos-name { font-family: var(--f-display); font-weight: 700; font-size: 2.1rem; line-height: 1; text-transform: uppercase; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 600 .78rem var(--f-body); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); display: inline-flex; gap: 6px; align-items: center; }
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.chip.port { color: var(--port); border-color: currentColor; }
+.chip.stbd { color: var(--stbd); border-color: currentColor; }
+.chip.good { color: var(--good); border-color: currentColor; }
+.chip.warn { color: var(--warn); border-color: currentColor; }
+.chip.bad { color: var(--bad); border-color: currentColor; }
+.chip.neutral { color: var(--muted); }
+dl.read { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-size: .9rem; }
+dl.read dt { color: var(--muted); }
+dl.read dd { margin: 0; }
+p { margin: 0; max-width: 65ch; }
+.note { font-size: .92rem; }
+.event { border-left: 3px solid var(--signal); padding: 8px 12px; background: var(--hi); border-radius: 0 8px 8px 0; font-size: .9rem; }
+.trimbar { position: relative; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--bad), var(--warn) 30%, var(--good) 42%, var(--good) 58%, var(--warn) 70%, var(--bad)); opacity: .85; }
+.trimbar i { position: absolute; top: -4px; width: 4px; height: 18px; background: var(--ink); border-radius: 2px; transform: translateX(-2px); transition: left .15s; }
+.trimlabels { display: flex; justify-content: space-between; font-size: .72rem; color: var(--muted); }
+.answers { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; }
+.answers .btn { text-align: left; }
+.answers .btn.right { border-color: var(--good); color: var(--good); }
+.answers .btn.wrong { border-color: var(--bad); color: var(--bad); }
+.score { display: flex; gap: 16px; font-size: .85rem; color: var(--muted); }
+.score b { color: var(--ink); font-family: var(--f-mono); }
+.target { font-family: var(--f-display); font-size: 1.7rem; font-weight: 700; line-height: 1.1; text-transform: uppercase; }
+.target .port { color: var(--port); } .target .stbd { color: var(--stbd); }
+.progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.progress i { display: block; height: 100%; width: 0; background: var(--good); }
+table.ref { width: 100%; border-collapse: collapse; font-size: .86rem; }
+table.ref th, table.ref td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.ref th { font: 600 .72rem var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+table.ref tr.cur td { background: var(--hi); }
+.tblwrap { overflow-x: auto; }
+.terms { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 20px; font-size: .88rem; }
+.terms b { font-family: var(--f-display); font-size: 1.05rem; letter-spacing: .02em; text-transform: uppercase; display: block; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-size: .85rem; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .trimbar i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Points of Sail Trainer<small>ASA 101 practice · wind blows from the top of the chart</small></h1>
+    <div class="tabs" role="tablist" aria-label="Mode">
+      <button role="tab" id="tab-explore" aria-selected="true" data-mode="explore">Explore</button>
+      <button role="tab" id="tab-challenge" aria-selected="false" data-mode="challenge">Steer challenge</button>
+      <button role="tab" id="tab-quiz" aria-selected="false" data-mode="quiz">Name it quiz</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="stage" aria-label="Sailboat simulator">
+      <canvas id="cv" aria-label="Top-down view of a sailboat. Drag around the boat to steer."></canvas>
+      <div class="helm" id="helm">
+        <div class="helm-row">
+          <label for="heading">Heading</label>
+          <input type="range" id="heading" min="-180" max="180" step="1" value="135">
+          <span class="mono" id="headingOut">135°</span>
+        </div>
+        <div class="helm-row">
+          <label for="sheet">Mainsheet</label>
+          <input type="range" id="sheet" min="0" max="90" step="1" value="45" disabled>
+          <label class="toggle" for="autotrim" style="min-width:0;text-transform:none;letter-spacing:0;font-size:.85rem;color:var(--ink)"><input type="checkbox" id="autotrim" checked> Auto trim</label>
+        </div>
+        <div class="hint-keys">Drag around the boat, use the sliders, or press ← → to steer (Shift for 1°). ↑ ↓ trim in and ease out when auto trim is off.</div>
+      </div>
+    </section>
+
+    <div class="panel">
+      <!-- Explore -->
+      <div id="pane-explore" class="panel">
+        <div class="card" aria-live="polite">
+          <div class="eyebrow">Point of sail</div>
+          <div class="pos-name" id="posName">Broad reach</div>
+          <div class="chips" id="chips"></div>
+          <dl class="read">
+            <dt>Angle off the wind</dt><dd class="mono" id="offWind">135°</dd>
+            <dt>Wind comes over</dt><dd id="windSide">port side</dd>
+            <dt>Boom is on</dt><dd id="boomSide">starboard side (leeward)</dd>
+            <dt>Compass heading</dt><dd class="mono" id="compass">135°</dd>
+          </dl>
+          <div id="eventBox" class="event" hidden></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Sail trim</div>
+          <p class="note" id="trimNote"></p>
+          <div>
+            <div class="trimbar" aria-hidden="true"><i id="trimMark" style="left:50%"></i></div>
+            <div class="trimlabels"><span>Overtrimmed (stalled)</span><span>Just right</span><span>Luffing</span></div>
+          </div>
+          <p class="note" id="trimState"></p>
+        </div>
+        <div class="card">
+          <div class="eyebrow">What to know</div>
+          <p class="note" id="teach"></p>
+          <p class="note" id="rowNote" style="color:var(--muted)"></p>
+        </div>
+      </div>
+
+      <!-- Challenge -->
+      <div id="pane-challenge" class="panel" hidden>
+        <div class="card">
+          <div class="eyebrow">Steer to</div>
+          <div class="target" id="target"></div>
+          <div class="progress" aria-hidden="true"><i id="hold"></i></div>
+          <p class="note" id="challengeFeedback">Steer the boat and hold the course for a moment.</p>
+          <div class="score"><span>Score <b id="cScore">0</b></span><span>Streak <b id="cStreak">0</b></span><span>Best <b id="cBest">0</b></span></div>
+          <div class="helm-row"><button class="btn" id="skip">Skip</button><button class="btn" id="hintBtn">Hint</button>
+          <label class="toggle" for="hardMode"><input type="checkbox" id="hardMode"> Trim it yourself too</label></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Right now</div>
+          <div class="pos-name" id="cNow" style="font-size:1.5rem"></div>
+          <div class="chips" id="cChips"></div>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div id="pane-quiz" class="panel" hidden>
+        <div class="card">
+          <div class="eyebrow" id="qStep">Question 1 of 2</div>
+          <p class="note" id="qPrompt" style="font-weight:600">What point of sail is this boat on?</p>
+          <div class="answers" id="qAnswers"></div>
+          <p class="note" id="qFeedback" aria-live="polite"></p>
+          <div class="helm-row"><button class="btn primary" id="qNext" hidden>Next boat</button></div>
+          <div class="score"><span>Correct <b id="qRight">0</b></span><span>Asked <b id="qAsked">0</b></span><span>Streak <b id="qStreak">0</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">Points of sail at a glance</div>
+    <div class="tblwrap">
+      <table class="ref" id="refTable">
+        <thead><tr><th>Point of sail</th><th>Off the wind</th><th>Sail trim</th><th>Notes</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow">Words you'll hear on the test</div>
+    <div class="terms">
+      <div><b>Windward / leeward</b>Windward is the side the wind hits first. Leeward is the downwind side, where the boom sits.</div>
+      <div><b>Heading up</b>Turning the bow toward the wind. Push the tiller toward the sail (to leeward). Trim in as you go.</div>
+      <div><b>Bearing away</b>Also called falling off. Turning the bow away from the wind. Pull the tiller toward you (to windward). Ease out as you go.</div>
+      <div><b>Starboard / port tack</b>Named for the side the wind comes over. On starboard tack the wind hits the starboard side and the boom is to port.</div>
+      <div><b>Tacking</b>Turning the bow through the wind. "Ready about." "Ready." "Helm's a-lee" (or "Hard a-lee").</div>
+      <div><b>Jibing</b>Turning the stern through the wind. The boom swings across hard, so control it. "Prepare to jibe." "Ready." "Jibe ho."</div>
+      <div><b>Luffing</b>The sail flutters along its front edge because it is eased too far or the boat is too close to the wind.</div>
+      <div><b>By the lee</b>Sailing downwind with the wind coming over the same side as the boom. An accidental jibe is close.</div>
+      <div><b>Right of way</b>Boats on opposite tacks: port tack gives way to starboard tack. Same tack: the windward boat gives way to the leeward boat.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const POINTS = [
+    { id: 'irons', name: 'In irons', long: 'In irons / no-go zone', min: 0, max: 45,
+      trim: 'Sails luff no matter how you trim.',
+      teach: 'Sails cannot make power within about 45° of the wind. They flap and the boat slows to a stop. Stuck head to wind with no steerage, you are "in irons." To get out, bear away: hold the jib out to one side (backwind it) or push the boom out so the bow is blown off the wind, then trim in once the sails fill.',
+      ideal: 0 },
+    { id: 'ch', name: 'Close hauled', long: 'Close hauled', min: 45, max: 60,
+      trim: 'Sheets trimmed in tight. Boom close to the centerline.',
+      teach: 'As close to the wind as you can sail, about 45° off. Also called beating. To reach a spot that is directly upwind, sail close hauled and zig-zag by tacking. If the front of the sails starts to luff, bear away a little.' },
+    { id: 'cr', name: 'Close reach', long: 'Close reach', min: 60, max: 80,
+      trim: 'Sheets eased a little from close hauled.',
+      teach: 'Between close hauled and a beam reach. The wind is forward of the beam. Fast and comfortable, with less heel than close hauled.' },
+    { id: 'br', name: 'Beam reach', long: 'Beam reach', min: 80, max: 100,
+      trim: 'Sails eased about halfway out.',
+      teach: 'The wind comes straight across the side of the boat, at 90°. Often the fastest and easiest point of sail, and a good one for practicing.' },
+    { id: 'bro', name: 'Broad reach', long: 'Broad reach', min: 100, max: 160,
+      trim: 'Sheets eased well out.',
+      teach: 'The wind comes from behind the beam, over the quarter. Fast and fun. In gusts the boat may want to round up toward the wind, so be ready to steer.' },
+    { id: 'run', name: 'Running', long: 'Running', min: 160, max: 180.01,
+      trim: 'Main eased all the way out, nearly perpendicular to the boat.',
+      teach: 'The wind is directly behind you. The jib often collapses in the main\'s wind shadow; you can hold it out on the other side (wing on wing). Watch for an accidental jibe, and do not sail by the lee.' }
+  ];
+  const TRIM_TABLE = [[0, 0], [45, 6], [60, 15], [70, 24], [90, 45], [120, 60], [150, 75], [180, 86]];
+
+  const $ = id => document.getElementById(id);
+  const cv = $('cv'), ctx = cv.getContext('2d');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const state = {
+    mode: 'explore',
+    h: 135,          // heading in degrees, -180..180, 0 = straight into the wind
+    boomSide: 1,     // +1 boom to starboard (port tack), -1 boom to port (starboard tack)
+    sheet: 45,
+    auto: true,
+    turn: 0,         // recent turn rate, for tiller drawing
+    event: null,
+    lastA: 135,
+    boomVis: 60,  // signed boom angle (+ starboard), driven by a little physics so tacks and jibes swing instead of snapping
+    boomVel: 0
+  };
+
+  const norm = d => { d = ((d + 180) % 360 + 360) % 360 - 180; return d === -180 ? 180 : d; };
+  const offWind = h => Math.abs(norm(h));
+  const pointFor = a => POINTS.find(p => a >= p.min && a < p.max) || POINTS[5];
+  const idealTrim = a => {
+    for (let i = 1; i < TRIM_TABLE.length; i++) {
+      const [a0, b0] = TRIM_TABLE[i - 1], [a1, b1] = TRIM_TABLE[i];
+      if (a <= a1) return b0 + (b1 - b0) * (a - a0) / (a1 - a0);
+    }
+    return 86;
+  };
+  const windSideOf = h => (norm(h) >= 0 ? 1 : -1); // +1: wind over port side (boat pointing right of wind)
+
+  function setHeading(nh, source) {
+    const prev = state.h;
+    nh = norm(nh);
+    const delta = norm(nh - prev);
+    if (delta === 0) return;
+    state.turn = Math.max(-1, Math.min(1, state.turn + delta / 25));
+    state.h = nh;
+    const a = offWind(nh), ws = windSideOf(nh);
+
+    // Tack: bow crosses the wind (heading crosses 0 with small angles)
+    if (Math.abs(prev) < 90 && Math.abs(nh) < 90 && Math.sign(prev) !== Math.sign(nh) && prev !== 0 && nh !== 0) {
+      state.boomSide = ws;
+      flash('tack');
+    } else if (a < 45) {
+      // in irons: boom stays where it was until the sail fills
+    } else if (ws !== state.boomSide) {
+      // wind and boom on the same side means by the lee, until the boom slams over
+      const byLeeAngle = 180 - a;
+      if (a >= 90 && byLeeAngle < 20 && !(state.mode === 'quiz')) {
+        // sailing by the lee, boom stays
+      } else {
+        const wasDownwind = a >= 90;
+        state.boomSide = ws;
+        if (wasDownwind) flash('jibe');
+        else flash('tack');
+      }
+    }
+    state.lastA = a;
+    syncHeadingUI();
+    if (state.auto) { state.sheet = Math.round(idealTrim(a)); $('sheet').value = state.sheet; }
+    render();
+  }
+
+  function flash(kind) {
+    const msgs = {
+      tack: '<b>You tacked.</b> The bow passed through the wind and the boom crossed to the other side. On the boat: "Ready about." "Ready." "Helm\'s a-lee" (or "Hard a-lee").',
+      jibe: '<b>You jibed.</b> The stern passed through the wind and the boom swung across. Control the mainsheet as it crosses. On the boat: "Prepare to jibe." "Ready." "Jibe ho."'
+    };
+    state.event = { kind, at: performance.now() };
+    const box = $('eventBox');
+    box.innerHTML = msgs[kind];
+    box.hidden = false;
+    clearTimeout(flash.t);
+    flash.t = setTimeout(() => { box.hidden = true; }, 6000);
+  }
+
+  function syncHeadingUI() {
+    $('heading').value = Math.round(state.h);
+    $('headingOut').textContent = (state.h > 0 ? '+' : '') + Math.round(state.h) + '°';
+  }
+
+  function info() {
+    const a = offWind(state.h);
+    const p = pointFor(a);
+    const ws = windSideOf(state.h);
+    const irons = p.id === 'irons';
+    const byLee = !irons && ws !== state.boomSide;
+    const tack = state.boomSide === 1 ? 'port' : 'starboard'; // tack named by windward side = opposite the boom
+    const ideal = idealTrim(a);
+    const eff = irons ? 0 : Math.min(state.sheet, Math.max(a - 2, 0));
+    let trim = 'good';
+    if (irons) trim = 'luff';
+    else if (state.sheet - ideal > 10) trim = 'luff';
+    else if (ideal - state.sheet > 10) trim = 'over';
+    return { a, p, ws, irons, byLee, tack, ideal, eff, trim };
+  }
+
+  // ---------- drawing ----------
+  let W = 0, DPR = 1;
+  function resize() {
+    const r = cv.getBoundingClientRect();
+    DPR = Math.min(window.devicePixelRatio || 1, 2.5);
+    W = r.width;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(W * DPR);
+    render();
+  }
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const rad = d => d * Math.PI / 180;
+
+  let tNow = 0, boomDt = 0.016, lastT = 0;
+  function render() {
+    if (!W) return;
+    const C = {
+      water: css('--water'), water2: css('--water-2'), ring: css('--ring'), nogo: css('--nogo'), hi: css('--hi'),
+      ink: css('--ink'), muted: css('--muted'), accent: css('--accent'), port: css('--port'), stbd: css('--stbd'),
+      hull: css('--hull'), hullEdge: css('--hull-edge'), spar: css('--spar'), halo: css('--spar-halo'), warn: css('--warn'), sail: css('--sail'), edge: css('--sail-edge'), signal: css('--signal')
+    };
+    const I = info();
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const cx = W / 2, cy = W / 2 + W * 0.03, R = W * 0.44;
+
+    // water
+    ctx.fillStyle = C.water; ctx.fillRect(0, 0, W, W);
+    // wind streaks
+    ctx.strokeStyle = C.water2; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    const drift = reduceMotion ? 0 : (tNow / 30) % 60;
+    for (let x = 18; x < W; x += 44) {
+      for (let y = -60 + drift + (x % 3) * 17; y < W; y += 60) {
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 18); ctx.stroke();
+      }
+    }
+
+    // sector ring
+    const r0 = R * 0.66, r1 = R;
+    const toCanvasAngle = deg => rad(deg - 90); // 0 deg = up
+    function sector(fromDeg, toDeg, fill) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r1, toCanvasAngle(fromDeg), toCanvasAngle(toDeg));
+      ctx.arc(cx, cy, r0, toCanvasAngle(toDeg), toCanvasAngle(fromDeg), true);
+      ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+    }
+    sector(-45, 45, C.nogo);
+    // current sector highlight on the boat's side
+    if (!I.irons) {
+      const s = windSideOf(state.h);
+      const p = I.p;
+      const a0 = s * p.min, a1 = s * Math.min(p.max, 180);
+      sector(Math.min(a0, a1), Math.max(a0, a1), C.hi);
+    } else sector(-45, 45, C.hi);
+    // boundaries
+    ctx.strokeStyle = C.ring; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, r0, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, r1, 0, Math.PI * 2); ctx.stroke();
+    [45, 60, 80, 100, 160].forEach(b => [1, -1].forEach(s => {
+      const t = toCanvasAngle(s * b);
+      ctx.beginPath(); ctx.moveTo(cx + Math.cos(t) * r0, cy + Math.sin(t) * r0); ctx.lineTo(cx + Math.cos(t) * r1, cy + Math.sin(t) * r1); ctx.stroke();
+    }));
+    // tick marks every 10 deg
+    ctx.strokeStyle = C.ring;
+    for (let d = 0; d < 360; d += 10) {
+      const t = toCanvasAngle(d), len = d % 90 === 0 ? 10 : 5;
+      ctx.beginPath(); ctx.moveTo(cx + Math.cos(t) * r1, cy + Math.sin(t) * r1); ctx.lineTo(cx + Math.cos(t) * (r1 - len), cy + Math.sin(t) * (r1 - len)); ctx.stroke();
+    }
+    // labels
+    const fs = Math.max(9, Math.min(12.5, W / 46));
+    ctx.font = `600 ${fs}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const labels = [
+      { d: 0, t: ['NO-GO', 'ZONE'] }, { d: 52.5, t: ['CLOSE', 'HAULED'] }, { d: 70, t: ['CLOSE', 'REACH'] },
+      { d: 90, t: ['BEAM', 'REACH'] }, { d: 130, t: ['BROAD', 'REACH'] }, { d: 180, t: ['RUN'] }
+    ];
+    labels.forEach(L => [1, -1].forEach(s => {
+      if ((L.d === 0 || L.d === 180) && s === -1) return;
+      const t = toCanvasAngle(s * L.d), rr = (r0 + r1) / 2;
+      const x = cx + Math.cos(t) * rr, y = cy + Math.sin(t) * rr;
+      const pid = L.d === 0 ? 'irons' : pointFor(L.d).id;
+      const active = pid === I.p.id && (pid === 'irons' || pid === 'run' || s === windSideOf(state.h));
+      ctx.fillStyle = active ? C.ink : C.muted;
+      L.t.forEach((line, i) => ctx.fillText(line, x, y + (i - (L.t.length - 1) / 2) * fs * 1.05));
+    }));
+
+    // wind arrow at top
+    const wy = cy - R - W * 0.025;
+    ctx.fillStyle = C.accent; ctx.strokeStyle = C.accent; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(cx, Math.max(4, wy - 26)); ctx.lineTo(cx, wy - 6); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx - 7, wy - 10); ctx.lineTo(cx + 7, wy - 10); ctx.lineTo(cx, wy); ctx.closePath(); ctx.fill();
+    ctx.font = `700 ${fs * 1.05}px "Barlow Condensed", sans-serif`; ctx.textAlign = 'left';
+    ctx.fillText('WIND', cx + 12, Math.max(10, wy - 18));
+
+    // boat
+    drawBoat(cx, cy, R * 0.5, I, C);
+  }
+
+  function drawBoat(cx, cy, L, I, C) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rad(state.h));
+    const s = L / 60; // local units: bow at y=-60, stern at y=+50
+    ctx.scale(s, s);
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+
+    // wake
+    ctx.strokeStyle = C.water2; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(-10, 56); ctx.lineTo(-20, 90); ctx.moveTo(10, 56); ctx.lineTo(20, 90); ctx.stroke();
+
+    // hull
+    ctx.beginPath();
+    ctx.moveTo(0, -62);
+    ctx.bezierCurveTo(16, -40, 22, -5, 19, 50);
+    ctx.lineTo(-19, 50);
+    ctx.bezierCurveTo(-22, -5, -16, -40, 0, -62);
+    ctx.closePath();
+    ctx.fillStyle = C.hull; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = C.hullEdge; ctx.stroke();
+
+    // cockpit
+    ctx.strokeStyle = C.muted; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.roundRect ? ctx.roundRect(-11, 18, 22, 26, 4) : ctx.rect(-11, 18, 22, 26); ctx.stroke();
+
+    // rudder + tiller
+    const tillerX = -state.turn * 9;
+    ctx.strokeStyle = C.hullEdge; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(0, 50); ctx.lineTo(-tillerX * 0.6, 62); ctx.stroke();
+    ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.moveTo(0, 50); ctx.lineTo(tillerX, 30); ctx.stroke();
+
+    // sails
+    const mast = { x: 0, y: -18 };
+    const wob = reduceMotion ? 0 : Math.sin(tNow / 70);
+    let target = I.eff; // degrees off centerline
+    if (I.irons) target = 4 + wob * 5; // boom slops near the centerline
+    target *= state.boomSide;
+    // boom physics: wind pressure swings it to leeward, the sheet stops it
+    const K = I.irons ? 2.5 : 5, D = I.irons ? 1.2 : 3.6;
+    if (reduceMotion) { state.boomVis = target; state.boomVel = 0; }
+    else { state.boomVel += (K * (target - state.boomVis) - D * state.boomVel) * boomDt; state.boomVis += state.boomVel * boomDt; }
+    const limit = Math.max(6, state.sheet) + 3;
+    if (Math.abs(state.boomVis) > limit) { state.boomVis = Math.sign(state.boomVis) * limit; state.boomVel *= -0.2; }
+    const crossing = (Math.sign(target) !== Math.sign(state.boomVis) && Math.abs(target) > 3) || Math.abs(state.boomVel) > 35;
+    const side = state.boomVis >= 0 ? 1 : -1, boomAng = Math.abs(state.boomVis), swing = Math.min(1, boomAng / 12);
+    const luff = I.trim === 'luff' || crossing;
+    const bl = 58;
+    const bR = rad(boomAng) * side;
+    const clew = { x: mast.x + Math.sin(bR) * bl, y: mast.y + Math.cos(bR) * bl };
+
+    // jib: tack at bow, clew aft, same side as boom
+    const jibAng = I.irons ? boomAng * 1.2 : Math.min(boomAng * 1.15 + 6 * swing, 80);
+    const jR = rad(jibAng) * side;
+    const tackPt = { x: 0, y: -58 }, jl = 40;
+    const jclew = { x: tackPt.x + Math.sin(jR) * jl, y: tackPt.y + Math.cos(jR) * jl };
+    drawSail(tackPt, jclew, side, luff, C, 0.6 * swing, I.irons);
+    ctx.fillStyle = C.spar; ctx.beginPath(); ctx.arc(tackPt.x, tackPt.y, 2.5, 0, Math.PI * 2); ctx.fill();
+
+    // main: from mast to clew along the boom, bellied to leeward
+    drawSail(mast, clew, side, luff, C, swing, I.irons);
+    // boom: halo first so it stands out against both the deck and the sail
+    ctx.strokeStyle = C.halo; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(mast.x, mast.y); ctx.lineTo(clew.x, clew.y); ctx.stroke();
+    ctx.strokeStyle = C.spar; ctx.lineWidth = 4.5;
+    ctx.beginPath(); ctx.moveTo(mast.x, mast.y); ctx.lineTo(clew.x, clew.y); ctx.stroke();
+    // mast
+    ctx.fillStyle = C.halo; ctx.beginPath(); ctx.arc(mast.x, mast.y, 7.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.spar; ctx.beginPath(); ctx.arc(mast.x, mast.y, 5.5, 0, Math.PI * 2); ctx.fill();
+    // nav lights: port red (left), starboard green (right)
+    ctx.fillStyle = C.port; ctx.beginPath(); ctx.arc(-9, -40, 3.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.stbd; ctx.beginPath(); ctx.arc(9, -40, 3.2, 0, Math.PI * 2); ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawSail(a, b, side, luff, C, scale, irons) {
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+    // normal pointing to leeward
+    let nx = -dy / len, ny = dx / len;
+    if (nx * side < 0) { nx = -nx; ny = -ny; }
+    const belly = (irons ? 9 : 12) * scale;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    if (luff && !reduceMotion) {
+      // flutter: wavy leading half
+      const steps = 10;
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        const bulge = Math.sin(Math.PI * t) * belly * (0.3 + 0.7 * t);
+        const flap = Math.sin(t * 12 + tNow / 45) * (irons ? 7 : 4.5) * (1 - t * 0.6) * scale;
+        ctx.lineTo(a.x + dx * t + nx * (bulge + flap), a.y + dy * t + ny * (bulge + flap));
+      }
+    } else {
+      ctx.quadraticCurveTo(mx + nx * belly * 2, my + ny * belly * 2, b.x, b.y);
+    }
+    ctx.lineTo(a.x, a.y);
+    ctx.closePath();
+    ctx.fillStyle = C.sail; ctx.fill();
+    ctx.strokeStyle = luff ? C.warn : C.edge; ctx.lineWidth = 2.6; ctx.stroke();
+  }
+
+  // ---------- panel updates ----------
+  function chip(cls, text) { return `<span class="chip ${cls}"><span class="dot"></span>${text}</span>`; }
+  function tackChip(I) { return I.irons ? chip('neutral', 'No tack, sails luffing') : chip(I.tack === 'port' ? 'port' : 'stbd', I.tack === 'port' ? 'Port tack' : 'Starboard tack'); }
+  function trimChip(I) {
+    if (I.irons) return chip('bad', 'Luffing');
+    return I.trim === 'good' ? chip('good', 'Well trimmed') : I.trim === 'luff' ? chip('warn', 'Luffing: trim in') : chip('warn', 'Overtrimmed: ease out');
+  }
+
+  function updatePanel() {
+    const I = info();
+    $('posName').textContent = I.p.long;
+    let chips = tackChip(I) + trimChip(I);
+    if (I.byLee) chips += chip('bad', 'By the lee: jibe danger');
+    $('chips').innerHTML = chips;
+    $('offWind').textContent = Math.round(I.a) + '°';
+    const wsName = I.ws === 1 ? 'port' : 'starboard';
+    $('windSide').textContent = Math.round(I.a) === 0 || Math.round(I.a) === 180 ? (Math.round(I.a) === 0 ? 'the bow (head to wind)' : 'the stern (dead downwind)') : wsName + ' side' + (I.a > 90 ? ' (from behind the beam)' : I.a < 80 ? ' (forward of the beam)' : '');
+    $('boomSide').textContent = I.irons ? 'centerline, swinging' : (state.boomSide === 1 ? 'starboard' : 'port') + ' side (leeward)';
+    $('compass').textContent = String(Math.round((state.h + 360) % 360)).padStart(3, '0') + '°';
+
+    $('trimNote').textContent = I.p.trim + (I.irons ? '' : ' Rule of thumb: ease until the sail luffs, then trim in just until it stops.');
+    const diff = I.irons ? 45 : Math.max(-45, Math.min(45, state.sheet - I.ideal));
+    $('trimMark').style.left = (50 + diff / 45 * 50) + '%';
+    $('trimState').textContent = I.irons ? 'Bear away until the sails fill.'
+      : I.trim === 'good' ? 'The sails are drawing well for this point of sail.'
+      : I.trim === 'luff' ? 'Eased too far for this angle. The front edge of the sail is fluttering. Trim in.'
+      : 'Pulled in too tight for this angle. The sail stalls and the boat heels and slows. Ease out.';
+
+    let teach = I.p.teach;
+    if (I.byLee) teach = 'You are sailing by the lee: the wind is coming over the same side the boom is on. A small wind shift or turn can slam the boom across in an accidental jibe. Head up a little, or jibe on purpose. ' + teach;
+    $('teach').textContent = teach;
+    $('rowNote').textContent = I.irons ? '' : I.tack === 'starboard'
+      ? 'On starboard tack you are the stand-on boat when you meet a sailboat on port tack.'
+      : 'On port tack you give way to any sailboat on starboard tack.';
+
+    document.querySelectorAll('#refTable tbody tr').forEach(tr => tr.classList.toggle('cur', tr.dataset.id === I.p.id));
+
+    // challenge "right now"
+    $('cNow').textContent = I.p.long;
+    $('cChips').innerHTML = tackChip(I) + trimChip(I) + (I.byLee ? chip('bad', 'By the lee') : '');
+  }
+
+  // reference table
+  $('refTable').querySelector('tbody').innerHTML = POINTS.map(p =>
+    `<tr data-id="${p.id}"><td><b>${p.long}</b></td><td class="mono">${p.min}–${Math.round(p.max)}°</td><td>${p.trim}</td><td>${p.teach.split('. ')[0]}.</td></tr>`).join('');
+
+  // ---------- input ----------
+  let dragging = false;
+  function pointerHeading(e) {
+    const r = cv.getBoundingClientRect();
+    const x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - (r.width / 2 + r.width * 0.03);
+    return Math.atan2(x, -y) * 180 / Math.PI;
+  }
+  function steerTo(target) {
+    // move in small steps so tacks and jibes are detected along the way
+    let d = norm(target - state.h);
+    const n = Math.ceil(Math.abs(d) / 8) || 1;
+    for (let i = 0; i < n; i++) setHeading(state.h + d / n, 'drag');
+  }
+  cv.addEventListener('pointerdown', e => {
+    if (state.mode === 'quiz') return;
+    dragging = true; cv.setPointerCapture(e.pointerId); cv.style.cursor = 'grabbing';
+    steerTo(pointerHeading(e));
+  });
+  cv.addEventListener('pointermove', e => { if (dragging) steerTo(pointerHeading(e)); });
+  const endDrag = () => { dragging = false; cv.style.cursor = ''; };
+  cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+
+  $('heading').addEventListener('input', e => steerTo(+e.target.value));
+  $('sheet').addEventListener('input', e => { state.sheet = +e.target.value; render(); });
+  $('autotrim').addEventListener('change', e => {
+    state.auto = e.target.checked; $('sheet').disabled = state.auto;
+    if (state.auto) { state.sheet = Math.round(idealTrim(offWind(state.h))); $('sheet').value = state.sheet; }
+    render();
+  });
+  window.addEventListener('keydown', e => {
+    if (state.mode === 'quiz') return;
+    if (e.target.matches('input[type=range]')) return;
+    const step = e.shiftKey ? 1 : 5;
+    if (e.key === 'ArrowLeft') { steerTo(state.h - step); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { steerTo(state.h + step); e.preventDefault(); }
+    else if (!state.auto && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      state.sheet = Math.max(0, Math.min(90, state.sheet + (e.key === 'ArrowUp' ? -3 : 3)));
+      $('sheet').value = state.sheet; render(); e.preventDefault();
+    }
+  });
+
+  // ---------- modes ----------
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  function setMode(m) {
+    state.mode = m;
+    document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.mode === m)));
+    $('pane-explore').hidden = m !== 'explore';
+    $('pane-challenge').hidden = m !== 'challenge';
+    $('pane-quiz').hidden = m !== 'quiz';
+    $('helm').hidden = m === 'quiz';
+    cv.classList.toggle('locked', m === 'quiz');
+    if (m === 'challenge') {
+      const hard = $('hardMode').checked;
+      $('autotrim').checked = !hard; $('autotrim').dispatchEvent(new Event('change'));
+      if (!challenge.target) newTarget();
+    }
+    if (m === 'quiz') newQuestion();
+    if (m === 'explore' && quizSaved !== null) { state.h = quizSaved.h; state.boomSide = quizSaved.boomSide; quizSaved = null; syncHeadingUI(); }
+    if (m !== 'quiz' && quizSaved !== null) { state.h = quizSaved.h; state.boomSide = quizSaved.boomSide; quizSaved = null; syncHeadingUI(); }
+    render();
+  }
+
+  // challenge
+  const challenge = { target: null, holdStart: 0, score: 0, streak: 0, best: 0, started: 0, hinted: false };
+  try { challenge.best = +localStorage.getItem('pos-best') || 0; } catch (e) {}
+  $('cBest').textContent = challenge.best;
+  function newTarget() {
+    const opts = POINTS.filter(p => p.id !== 'irons');
+    let t;
+    do {
+      const p = opts[Math.floor(Math.random() * opts.length)];
+      const tack = Math.random() < 0.5 ? 'port' : 'starboard';
+      t = { p, tack };
+    } while (challenge.target && t.p.id === challenge.target.p.id && t.tack === challenge.target.tack);
+    // avoid targets the boat already satisfies
+    const I = info();
+    if (I.p.id === t.p.id && I.tack === t.tack) t.tack = t.tack === 'port' ? 'starboard' : 'port';
+    challenge.target = t; challenge.holdStart = 0; challenge.started = performance.now(); challenge.hinted = false;
+    const cls = t.tack === 'port' ? 'port' : 'stbd';
+    $('target').innerHTML = `${t.p.long} on <span class="${cls}">${t.tack} tack</span>`;
+    $('challengeFeedback').textContent = 'Steer the boat and hold the course for a moment.';
+  }
+  function hintText() {
+    const t = challenge.target, I = info();
+    const mid = (t.p.min + Math.min(t.p.max, 180)) / 2;
+    const wantSide = t.tack === 'port' ? 1 : -1; // port tack: wind over port side, heading > 0
+    const parts = [];
+    if (!I.irons && I.tack !== t.tack) parts.push(`You need the wind coming over your ${t.tack} side, so the boom ends up on the ${t.tack === 'port' ? 'starboard' : 'port'} side. ${t.p.min >= 100 ? 'Jibe' : 'Tack'} to switch.`);
+    else if (I.irons) parts.push(`Bear away so the wind comes over your ${t.tack} side.`);
+    if (I.a < t.p.min) parts.push('Bear away (turn away from the wind).');
+    else if (I.a >= t.p.max) parts.push('Head up (turn toward the wind).');
+    parts.push(`Aim for about ${Math.round(mid)}° off the wind.`);
+    if ($('hardMode').checked) parts.push(`Then trim the boom to about ${Math.round(idealTrim(mid))}° off centerline.`);
+    return parts.join(' ');
+  }
+  $('skip').addEventListener('click', () => { challenge.streak = 0; $('cStreak').textContent = 0; newTarget(); });
+  $('hintBtn').addEventListener('click', () => { $('challengeFeedback').textContent = hintText(); challenge.hinted = true; });
+  $('hardMode').addEventListener('change', e => {
+    $('autotrim').checked = !e.target.checked; $('autotrim').dispatchEvent(new Event('change'));
+  });
+  function tickChallenge(now) {
+    if (state.mode !== 'challenge' || !challenge.target) return;
+    const I = info(), t = challenge.target;
+    const ok = I.p.id === t.p.id && I.tack === t.tack && !I.byLee && (I.trim === 'good' || state.auto);
+    if (ok) {
+      if (!challenge.holdStart) challenge.holdStart = now;
+      const prog = Math.min(1, (now - challenge.holdStart) / 900);
+      $('hold').style.width = (prog * 100) + '%';
+      if (prog >= 1) {
+        challenge.score++; challenge.streak++;
+        if (challenge.streak > challenge.best) { challenge.best = challenge.streak; try { localStorage.setItem('pos-best', challenge.best); } catch (e) {} }
+        $('cScore').textContent = challenge.score; $('cStreak').textContent = challenge.streak; $('cBest').textContent = challenge.best;
+        const prev = t;
+        newTarget();
+        $('challengeFeedback').textContent = `Nice: that was ${prev.p.long.toLowerCase()} on ${prev.tack} tack. Next one.`;
+        $('hold').style.width = '0%';
+      }
+    } else {
+      challenge.holdStart = 0; $('hold').style.width = '0%';
+      if (I.p.id === t.p.id && I.tack === t.tack && !state.auto && I.trim !== 'good')
+        $('challengeFeedback').textContent = I.trim === 'luff' ? 'Right course. The sails are luffing, so trim in.' : 'Right course. The sails are overtrimmed, so ease out.';
+      else if (I.p.id === t.p.id && I.tack === t.tack && I.byLee)
+        $('challengeFeedback').textContent = 'You are by the lee. Head up a touch so the wind is on the side opposite the boom.';
+      else if (!challenge.hinted && now - challenge.started > 12000) { $('challengeFeedback').textContent = hintText(); challenge.hinted = true; }
+    }
+  }
+
+  // quiz
+  let quizSaved = null;
+  const quiz = { right: 0, asked: 0, streak: 0, step: 0, h: 0, answer: null };
+  function newQuestion() {
+    if (quizSaved === null) quizSaved = { h: state.h, boomSide: state.boomSide };
+    const p = POINTS[Math.floor(Math.random() * POINTS.length)];
+    const lo = p.min + (p.id === 'irons' ? 8 : 3), hi = Math.min(p.max, 180) - 3;
+    let a = lo + Math.random() * Math.max(0, hi - lo);
+    if (p.id === 'run') a = Math.min(a, 176);
+    const s = Math.random() < 0.5 ? 1 : -1;
+    state.h = norm(s * a); state.boomSide = s;
+    quiz.step = 0; quiz.h = state.h;
+    if (state.auto) state.sheet = Math.round(idealTrim(a)); else state.sheet = Math.round(idealTrim(a));
+    $('sheet').value = state.sheet;
+    showQuizStep();
+    render();
+  }
+  function showQuizStep() {
+    const I = info();
+    $('qNext').hidden = true; $('qFeedback').textContent = '';
+    const box = $('qAnswers'); box.innerHTML = '';
+    let opts, correct, prompt;
+    if (quiz.step === 0) {
+      prompt = 'What point of sail is this boat on?';
+      opts = POINTS.map(p => [p.id, p.long]); correct = I.p.id;
+    } else {
+      prompt = 'Which tack is it on?';
+      opts = [['port', 'Port tack'], ['starboard', 'Starboard tack']]; correct = I.tack;
+    }
+    $('qStep').textContent = I.irons ? 'Question 1 of 1' : `Question ${quiz.step + 1} of 2`;
+    $('qPrompt').textContent = prompt;
+    opts.forEach(([id, label]) => {
+      const b = document.createElement('button'); b.className = 'btn'; b.textContent = label;
+      b.addEventListener('click', () => answer(id, correct, b));
+      box.appendChild(b);
+    });
+  }
+  function answer(id, correct, btn) {
+    const I = info();
+    const btns = [...$('qAnswers').children];
+    if (btns.some(b => b.disabled)) return;
+    btns.forEach(b => b.disabled = true);
+    quiz.asked++;
+    const ok = id === correct;
+    if (ok) { quiz.right++; quiz.streak++; btn.classList.add('right'); } else { quiz.streak = 0; btn.classList.add('wrong'); }
+    btns.forEach(b => { if (b.textContent === (quiz.step === 0 ? I.p.long : (I.tack === 'port' ? 'Port tack' : 'Starboard tack'))) b.classList.add('right'); });
+    $('qRight').textContent = quiz.right; $('qAsked').textContent = quiz.asked; $('qStreak').textContent = quiz.streak;
+    let why;
+    if (quiz.step === 0) why = `${ok ? 'Correct.' : 'Not quite.'} The boat is ${Math.round(I.a)}° off the wind, which is ${I.p.long.toLowerCase()} (${I.p.min}–${Math.round(I.p.max)}°).`;
+    else why = `${ok ? 'Correct.' : 'Not quite.'} The wind comes over the ${I.tack} side and the boom is on the ${I.tack === 'port' ? 'starboard' : 'port'} side, so it is on ${I.tack} tack.`;
+    $('qFeedback').textContent = why;
+    if (quiz.step === 0 && !I.irons) {
+      setTimeout(() => { quiz.step = 1; showQuizStep(); }, ok ? 900 : 2200);
+    } else {
+      $('qNext').hidden = false; $('qNext').focus();
+    }
+  }
+  $('qNext').addEventListener('click', newQuestion);
+
+  // ---------- loop ----------
+  const _render = render;
+  render = function () { _render(); updatePanel(); };
+  function loop(now) {
+    boomDt = Math.min(0.1, (now - lastT) / 1000 || 0.016); lastT = now; tNow = now;
+    state.turn *= 0.94;
+    tickChallenge(now);
+    _render();
+    requestAnimationFrame(loop);
+  }
+  new ResizeObserver(resize).observe(cv);
+  state.sheet = Math.round(idealTrim(offWind(state.h)));
+  $('sheet').value = state.sheet;
+  syncHeadingUI();
+  resize();
+  updatePanel();
+  requestAnimationFrame(loop);
+  document.fonts && document.fonts.ready.then(() => render());
+})();
+</script>
+
+</body></html>

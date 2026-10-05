@@ -1,0 +1,1839 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Beyond 101 Study Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: same chart-room notebook as the ASA 101 kit. Module switch under the title, sticky tab bar, guide with side index. Night panels stay dark in both themes on purpose. */
+:root{
+  --bg:#f3f6f9; --paper:#ffffff; --ink:#10212f; --muted:#566878; --line:#d4dde6;
+  --accent:#1d5a86; --accent-soft:#e3eef6;
+  --port:#c3322b; --port-soft:#fbe9e7; --stbd:#1c7f48; --stbd-soft:#e4f4ea;
+  --warn:#9a6a00; --warn-soft:#fbf1d8;
+  --land:#e9dcc3; --water:#d6e8f5; --air:#9a6a00;
+  --night:#07131f; --night-line:#1f3446; --sky:#c9d6e2; --shape:#111a22;
+  --lw:#fff6dc; --lr:#ff4a3d; --lg:#3dff8a; --ly:#ffc93a;
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b1520; --paper:#122130; --ink:#e3ebf2; --muted:#92a4b4; --line:#253a4c;
+  --accent:#74b4e2; --accent-soft:#17324a;
+  --port:#ff7067; --port-soft:#3a1d1d; --stbd:#56cf8b; --stbd-soft:#163323;
+  --warn:#e9b949; --warn-soft:#352a12; --land:#4a3f2c; --water:#12304a; --air:#e9b949;
+  --night:#040c14; --night-line:#1a2c3c; --sky:#7d8fa0; --shape:#0b1117; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0b1520; --paper:#122130; --ink:#e3ebf2; --muted:#92a4b4; --line:#253a4c;
+  --accent:#74b4e2; --accent-soft:#17324a;
+  --port:#ff7067; --port-soft:#3a1d1d; --stbd:#56cf8b; --stbd-soft:#163323;
+  --warn:#e9b949; --warn-soft:#352a12; --land:#4a3f2c; --water:#12304a; --air:#e9b949;
+  --night:#040c14; --night-line:#1a2c3c; --sky:#7d8fa0; --shape:#0b1117; color-scheme:dark;}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.1;text-wrap:balance;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px}
+header.top{padding-block:28px 14px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(34px,6vw,52px);letter-spacing:.01em;margin-top:6px}
+.lede{color:var(--muted);max-width:62ch;margin:8px 0 0}
+.mods{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;align-items:center}
+.mod{appearance:none;font:700 17px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;padding:10px 14px;border-radius:99px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.mod[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.soon{font:500 12px/1.4 var(--f-mono);color:var(--muted);letter-spacing:.04em}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+.tab{appearance:none;border:0;background:none;color:var(--muted);font:700 18px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;padding:14px 14px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-block:24px 64px}
+
+/* Guide */
+.guide{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px}
+.toc{position:sticky;top:64px;align-self:start;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.toc a{color:var(--muted);text-decoration:none;padding:4px 0}
+.toc a:hover{color:var(--accent)}
+.guide section{padding-block:8px 28px;border-bottom:1px solid var(--line)}
+.guide section:last-child{border-bottom:0}
+.guide h2{font-size:30px;margin-bottom:10px;scroll-margin-top:70px}
+.guide h3{font-size:20px;margin:18px 0 6px;letter-spacing:.02em}
+.guide p,.guide li{max-width:68ch}
+.guide ul,.guide ol{padding-left:20px;margin:6px 0}
+.guide li{margin:3px 0}
+dl.terms{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 18px;margin:8px 0}
+dl.terms dt{font-weight:700}
+dl.terms dd{margin:0}
+.tbl{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12px/1.2 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.callout{background:var(--accent-soft);border-radius:6px;padding:12px 14px;margin:12px 0;max-width:68ch}
+.callout.warn{background:var(--warn-soft)}
+.callout b{font-family:var(--f-display);font-size:18px;letter-spacing:.03em}
+.port{color:var(--port);font-weight:700}.stbd{color:var(--stbd);font-weight:700}
+.mono{font-family:var(--f-mono);font-size:.9em;white-space:nowrap}
+figure{margin:14px 0}
+figure svg{width:100%;max-width:520px;height:auto;display:block}
+figcaption{font-size:13px;color:var(--muted);max-width:68ch}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:14px 0}
+.pair figure{margin:0}
+svg text{font-family:var(--f-body);font-size:13px;fill:var(--ink)}
+svg .small{font-size:11px;fill:var(--muted)}
+svg .cap{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em}
+.chip{display:inline-block;font:500 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+
+/* Lights and shapes gallery */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:12px 0}
+.gcard{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.gcard svg{display:block;width:100%;height:auto}
+.gcard .gt{padding:8px 10px 10px;font-size:14px;line-height:1.35}
+.gcard .gt b{display:block;font-family:var(--f-display);font-size:17px;letter-spacing:.02em;margin-bottom:2px}
+.gcard .gt i{font-style:normal;color:var(--muted);font-size:13px}
+.qpic{max-width:240px;border-radius:8px;overflow:hidden;margin:0 0 14px;border:1px solid var(--line)}
+.qpic svg{display:block;width:100%;height:auto}
+
+/* Flash-to-bang */
+.calc{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;max-width:68ch}
+.calc input{width:90px;font:16px var(--f-mono);padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.calc output{font:700 22px/1 var(--f-display);letter-spacing:.02em}
+
+/* Shared controls */
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+select{font:15px var(--f-body);padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper);color:var(--ink);max-width:100%}
+.btn{font:700 16px/1 var(--f-display);letter-spacing:.05em;text-transform:uppercase;padding:11px 16px;border-radius:6px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.btn.good{background:var(--stbd);border-color:var(--stbd);color:var(--paper)}
+.btn.again{background:var(--port-soft);border-color:var(--port);color:var(--port)}
+.btn:disabled{opacity:.45;cursor:default}
+.meta{font:500 13px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Flashcards */
+.cardstage{max-width:640px}
+.fc{background:var(--paper);border:1px solid var(--line);border-radius:10px;min-height:240px;padding:28px 24px;display:flex;flex-direction:column;justify-content:center;gap:12px;cursor:pointer;user-select:none}
+.fc .term{font:700 clamp(28px,6vw,40px)/1.05 var(--f-display);letter-spacing:.01em}
+.fc .def{font-size:18px;max-width:52ch}
+.fc .hint{font:500 12px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.fcbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin:10px 0 16px;max-width:640px}
+.progress i{display:block;height:100%;background:var(--stbd);width:0;transition:width .3s}
+
+/* Quiz */
+.qwrap{max-width:720px}
+.qcard{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px}
+.qtext{font-size:20px;font-weight:700;margin:8px 0 16px;line-height:1.4}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;font:16px/1.4 var(--f-body);padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;display:flex;gap:10px}
+.opt .k{font:500 13px/1.6 var(--f-mono);color:var(--muted)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--stbd);background:var(--stbd-soft)}
+.opt.wrong{border-color:var(--port);background:var(--port-soft)}
+.opt:disabled{cursor:default}
+.explain{margin-top:14px;padding:12px 14px;border-radius:8px;background:var(--accent-soft)}
+.explain b{font-family:var(--f-display);font-size:18px;letter-spacing:.03em}
+.qfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.score{font:700 64px/1 var(--f-display)}
+.missed{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+.missed div{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--port);border-radius:6px;padding:10px 12px;font-size:15px}
+
+@media (max-width:760px){
+  .guide{grid-template-columns:minmax(0,1fr)}
+  .toc{position:static;flex-direction:row;flex-wrap:wrap;gap:6px 14px}
+  dl.terms{grid-template-columns:minmax(0,1fr)}
+  dl.terms dd{margin-bottom:8px}
+  .mods{gap:6px}
+  .mod{font-size:15px;padding:8px 11px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="eyebrow">After ASA 101 · Toward ASA 103</div>
+  <h1>Beyond 101 Study Kit</h1>
+  <p class="lede">Deeper study for the topics that matter most once you're sailing on your own, with examples from sailing southern US lakes. Pick a module, then use its guide, flashcards, and practice quiz. Navigation Rules content follows the USCG Navigation Rules (International and Inland); weather content follows US National Weather Service practice.</p>
+  <div class="mods" role="group" aria-label="Module">
+    <button class="mod" type="button" data-mod="wx" aria-pressed="true">Marine weather</button>
+    <button class="mod" type="button" data-mod="nr" aria-pressed="false">Navigation Rules</button>
+    <button class="mod" type="button" data-mod="ch" aria-pressed="false">Charts</button>
+    <button class="mod" type="button" data-mod="sf" aria-pressed="false">Safety &amp; VHF</button>
+    <button class="mod" type="button" data-mod="dk" aria-pressed="false">Docking &amp; anchoring</button>
+    <button class="mod" type="button" data-mod="st" aria-pressed="false">Sail trim</button>
+  </div>
+</div></header>
+
+<nav class="tabs" aria-label="Sections"><div class="wrap" role="tablist">
+  <button class="tab" role="tab" data-view="guide" aria-selected="true">Study guide</button>
+  <button class="tab" role="tab" data-view="cards" aria-selected="false">Flashcards</button>
+  <button class="tab" role="tab" data-view="quiz" aria-selected="false">Practice quiz</button>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ================= WEATHER GUIDE ================= -->
+<div id="g-wx" class="guide">
+  <nav class="toc" aria-label="Weather contents">
+    <a href="#wx-forecast">Reading a forecast</a>
+    <a href="#wx-lakes">Southern lake weather</a>
+    <a href="#wx-warn">Advisories &amp; warnings</a>
+    <a href="#wx-beaufort">Wind strength</a>
+    <a href="#wx-pressure">Pressure &amp; wind</a>
+    <a href="#wx-local">Sea &amp; land breezes</a>
+    <a href="#wx-fronts">Fronts</a>
+    <a href="#wx-storms">Thunderstorms &amp; squalls</a>
+    <a href="#wx-fog">Fog</a>
+    <a href="#wx-reef">When to reef</a>
+  </nav>
+  <div>
+
+  <section id="wx-forecast">
+    <h2>Reading the forecast</h2>
+    <p>Check the forecast the night before and again before you leave the dock. Look at the wind <em>and</em> how it changes through the day, since the afternoon is often very different from the morning.</p>
+    <h3>Where to get it</h3>
+    <ul>
+      <li><b>Your lake:</b> most inland lakes and reservoirs don't get an NWS marine forecast. Use the NWS point forecast (click your spot on the lake at weather.gov) and its <b>hourly weather graph</b>, which shows sustained wind, gusts, and thunderstorm chances hour by hour. Watch for a <b>Lake Wind Advisory</b>, which many southern NWS offices issue for strong winds on area lakes.</li>
+      <li><b>NOAA Weather Radio</b> on the VHF weather channels (WX1 to WX7, 162.400 to 162.550 MHz), or any weather radio. It broadcasts warnings for your county as they're issued.</li>
+      <li><b>Radar</b> on your phone before and during the sail. On summer afternoons it's the best way to see storms building nearby.</li>
+      <li><b>NWS marine forecasts</b> at weather.gov/marine cover coastal waters, the Great Lakes, and a few large southern lakes such as Lake Pontchartrain and Lake Okeechobee. You'll use these for coastal sailing in ASA 103.</li>
+      <li><b>Apps and models</b> such as Windy show wind maps from forecast models. They're useful for timing and trends; treat the NWS forecast and any warnings as the official word.</li>
+    </ul>
+    <h3>How to read the wording</h3>
+    <div class="callout"><b>Sample lake-day point forecast.</b><br><span class="mono">TODAY</span> Sunny, high near 91. South wind 8 to 13 mph, with gusts as high as 22 mph. 30 percent chance of showers and thunderstorms after 2pm.<br><span class="mono">TONIGHT</span> Mostly clear. South wind around 5 mph.</div>
+    <p>Converted to knots, that's about 7 to 11 kt gusting 19, which is fine for a morning sail but a reef-or-go-home afternoon, with a real chance of a pop-up storm after 2 pm. Plan to be back at the dock by early afternoon.</p>
+    <div class="callout"><b>Sample coastal marine forecast</b> (the format you'll see in ASA 103).<br><span class="mono">TODAY</span> SW winds 10 to 15 kt, increasing to 15 to 20 kt with gusts to 25 kt in the afternoon. Seas 2 to 3 ft. Chance of showers and tstms late.</div>
+    <dl class="terms">
+      <dt>Direction</dt><dd>Where the wind blows <em>from</em>. A SW wind comes from the southwest.</dd>
+      <dt>Speed</dt><dd>Marine forecasts use <b>knots</b>. Public (land) forecasts use mph. 1 knot ≈ 1.15 mph, so 20 mph is about 17 kt.</dd>
+      <dt>Gusts</dt><dd>Brief peaks above the sustained wind. Plan your sail area for the gusts, not the average.</dd>
+      <dt>Seas</dt><dd>Combined height of wind waves and swell, given as <b>significant wave height</b>: the average of the highest third of the waves. Expect occasional waves up to about twice that.</dd>
+      <dt>Wave period</dt><dd>Seconds between crests. A short period with a given height means steep, choppy waves; a long period means gentler swells.</dd>
+      <dt>Becoming, increasing</dt><dd>A change during the period. "Becoming NW" after a W wind is a clockwise shift, often a sign a front has passed.</dd>
+    </dl>
+  </section>
+
+  <section id="wx-lakes">
+    <h2>Weather on southern lakes</h2>
+    <p>Lake sailing in the southern US has its own rhythm. These are the patterns to plan around.</p>
+    <h3>Through the year</h3>
+    <dl class="terms">
+      <dt>Summer</dt><dd>Hot, humid, often light wind in the morning. Heating builds puffy cumulus by late morning, and <b>pop-up thunderstorms</b> are common from early afternoon into evening. They form fast, sometimes right over the lake, with little warning from the forecast. Sail early.</dd>
+      <dt>Spring</dt><dd>The windiest season and the main severe-weather season. Strong south winds ahead of cold fronts, then <b>squall lines</b> and severe storms as the fronts pass.</dd>
+      <dt>Fall</dt><dd>Often the best sailing: cold fronts bring clear, dry air and steady north winds behind them. In Texas and the southern Plains a strong one is called a <b>blue norther</b>: the wind can swing to the north and jump to 25 kt or more within minutes as the temperature drops.</dd>
+      <dt>Winter</dt><dd>Good breeze with each passing front, but cold water. Dress for falling in, and remember sea smoke and fog on cold mornings.</dd>
+      <dt>Hurricane season</dt><dd>June to November. Tropical storms and their remnants can bring strong wind and flooding rain hundreds of miles inland.</dd>
+    </dl>
+    <h3>How wind behaves on a lake</h3>
+    <ul>
+      <li><b>Shifty and puffy.</b> Wind coming off land is broken up by trees, hills, and buildings, so expect bigger, more frequent shifts and gusts than on open water. Watch for dark patches moving across the water.</li>
+      <li><b>Wind shadows</b> along a tree-lined or high shore. The breeze can drop to nothing near the windward shore and fill in well offshore.</li>
+      <li><b>Funneling.</b> Wind speeds up when it's squeezed through a gap, down a valley, or along a long cove or arm of the lake.</li>
+      <li><b>Fetch.</b> The longer the stretch of open water the wind blows across, the bigger the chop. The downwind end of a long reach of lake can be rough when the upwind end is flat.</li>
+      <li><b>Daily cycle.</b> On sunny days the wind often builds from late morning through mid-afternoon and fades toward evening, as heating stirs stronger wind down from aloft.</li>
+    </ul>
+    <h3>Other lake hazards</h3>
+    <ul>
+      <li><b>Heat.</b> Heat exhaustion and heat stroke are real risks on a summer lake. Carry plenty of water, shade, and sun protection.</li>
+      <li><b>Lightning</b> is the biggest weather danger. The Southeast, and Florida especially, has the most lightning in the country.</li>
+      <li><b>Lake levels.</b> Reservoir levels rise and fall with rain and dam releases. At low water, stumps, sandbars, and old roadbeds come close to the surface; check the current level against "full pool" before you go.</li>
+    </ul>
+  </section>
+
+  <section id="wx-warn">
+    <h2>Advisories and warnings</h2>
+    <p>Marine products cover coastal waters, bays, the Great Lakes, and a few big lakes. On most inland lakes you'll see the land-based products instead: Lake Wind Advisory, Severe Thunderstorm Warning, Tornado Warning. Wind speeds below are sustained winds or frequent gusts. The ASA 103 test expects you to know the marine set.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Product</th><th>Wind</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><b>Lake Wind Advisory</b></td><td>Varies by office</td><td>Issued by many inland NWS offices (in mph) when wind is strong enough to make small boats on area lakes hazardous. Treat it like a small craft advisory.</td></tr>
+        <tr><td><b>Small Craft Advisory</b></td><td>From a regional threshold (about 18–25 kt) up to 33 kt</td><td>The lower threshold is set by region. Can also be issued for hazardous seas or a rough bar. "Small craft" has no fixed size; it means conditions are hazardous to small boats like yours.</td></tr>
+        <tr><td><b>Gale Warning</b></td><td class="num">34–47 kt</td><td>Stay in port.</td></tr>
+        <tr><td><b>Storm Warning</b></td><td class="num">48–63 kt</td><td></td></tr>
+        <tr><td><b>Hurricane Force Wind Warning</b></td><td class="num">64+ kt</td><td>Not from a tropical cyclone (tropical systems get Tropical Storm and Hurricane Warnings).</td></tr>
+        <tr><td><b>Special Marine Warning</b></td><td class="num">34+ kt</td><td>Short-fused warning for a thunderstorm or squall, waterspouts, or large hail, usually lasting under 2 hours. Broadcast on NOAA Weather Radio. Take action now.</td></tr>
+        <tr><td><b>Dense Fog Advisory</b></td><td>Visibility</td><td>Widespread fog, typically visibility 1 nautical mile or less.</td></tr>
+      </tbody>
+    </table></div>
+    <p>A <b>watch</b> means conditions are possible (be ready); a <b>warning</b> means they are happening or expected soon (act). Some marinas still fly the old daytime warning flags: one red pennant for a small craft advisory, two for a gale.</p>
+  </section>
+
+  <section id="wx-beaufort">
+    <h2>Wind strength and the Beaufort scale</h2>
+    <p>The Beaufort scale ties wind speed to what the water looks like, so you can estimate the wind by eye. Whitecaps begin to appear at around 8 to 10 knots.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Force</th><th>Name</th><th>Knots</th><th>What you see on the water</th></tr></thead>
+      <tbody>
+        <tr><td class="num">0</td><td>Calm</td><td class="num">&lt;1</td><td>Mirror smooth</td></tr>
+        <tr><td class="num">1</td><td>Light air</td><td class="num">1–3</td><td>Ripples, no crests</td></tr>
+        <tr><td class="num">2</td><td>Light breeze</td><td class="num">4–6</td><td>Small wavelets, crests don't break</td></tr>
+        <tr><td class="num">3</td><td>Gentle breeze</td><td class="num">7–10</td><td>Large wavelets, crests begin to break, scattered whitecaps</td></tr>
+        <tr><td class="num">4</td><td>Moderate breeze</td><td class="num">11–16</td><td>Small waves, fairly frequent whitecaps</td></tr>
+        <tr><td class="num">5</td><td>Fresh breeze</td><td class="num">17–21</td><td>Moderate waves, many whitecaps, some spray</td></tr>
+        <tr><td class="num">6</td><td>Strong breeze</td><td class="num">22–27</td><td>Large waves, white foam crests everywhere</td></tr>
+        <tr><td class="num">7</td><td>Near gale</td><td class="num">28–33</td><td>Sea heaps up, foam blows in streaks</td></tr>
+        <tr><td class="num">8</td><td>Gale</td><td class="num">34–40</td><td>Long streaks of foam, spindrift off the crests</td></tr>
+      </tbody>
+    </table></div>
+    <p>The scale continues to force 12 (hurricane, 64+ kt). As a rough guide for a 20 to 26 ft keelboat with a newer crew: force 2 to 3 is ideal for practice, force 4 is lively and often the time to reef, and force 5 and up is a day to stay in until you have more experience. Your instructor's limits for your boat come first.</p>
+    <div class="callout"><b>Wind force grows fast.</b> The force of wind on a sail rises with the square of its speed. Twenty knots pushes about four times as hard as ten.</div>
+  </section>
+
+  <section id="wx-pressure">
+    <h2>Pressure, wind, and the barometer</h2>
+    <ul>
+      <li>Air flows from high pressure toward low. In the Northern Hemisphere, wind circles <b>clockwise around a high</b> and <b>counterclockwise around a low</b>, angled slightly in toward the low.</li>
+      <li><b>Isobars</b> are lines of equal pressure on a weather map. Close together means strong wind; far apart means light wind.</li>
+      <li><b>Buys Ballot's law:</b> in the Northern Hemisphere, stand with your back to the wind and the low is on your left, slightly ahead.</li>
+      <li>Standard sea-level pressure is 1013 millibars (29.92 inches of mercury).</li>
+      <li><b>Watch the trend, not the number.</b> A fall of 3 mb or more in 3 hours signals strengthening wind and worsening weather. A fast rise after a front can bring strong, gusty wind too.</li>
+      <li><b>Veering</b> is a clockwise wind shift (S to W). <b>Backing</b> is counterclockwise (W to S). In the Northern Hemisphere the wind usually veers as a front passes.</li>
+    </ul>
+  </section>
+
+  <section id="wx-local">
+    <h2>Sea breezes and land breezes</h2>
+    <p>On the coast and on very large lakes, heating sets up a daily breeze cycle. Most inland lakes are too small for a true lake breeze, but the same heating is what makes their afternoon wind gusty. You'll need this for ASA 103 on the coast.</p>
+    <div class="pair">
+      <figure>
+        <svg viewBox="0 0 300 190" role="img" aria-label="Sea breeze: warm air rises over land in the afternoon and cooler air flows in from the water">
+          <rect x="0" y="130" width="150" height="60" fill="var(--water)"/>
+          <rect x="150" y="122" width="150" height="68" fill="var(--land)"/>
+          <circle cx="262" cy="28" r="14" fill="var(--air)"/>
+          <path d="M60,120 L190,120" stroke="var(--accent)" stroke-width="3" fill="none" marker-end="url(#wa)"/>
+          <path d="M225,112 C232,80 232,60 225,40" stroke="var(--port)" stroke-width="2.5" fill="none" marker-end="url(#wr)"/>
+          <path d="M200,34 L80,34" stroke="var(--muted)" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#wm)"/>
+          <path d="M60,44 C52,70 52,92 60,108" stroke="var(--muted)" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#wm)"/>
+          <text x="75" y="160" text-anchor="middle" class="small">cooler water</text>
+          <text x="225" y="160" text-anchor="middle" class="small">land heats up</text>
+          <text x="125" y="112" text-anchor="middle" style="font-weight:700">sea breeze</text>
+          <text x="10" y="20" class="cap" style="fill:var(--muted)">AFTERNOON</text>
+        </svg>
+        <figcaption><b>Sea breeze.</b> Sun heats the land, warm air rises, and cooler air off the water flows in to replace it. Builds late morning, peaks mid to late afternoon, fades near sunset.</figcaption>
+      </figure>
+      <figure>
+        <svg viewBox="0 0 300 190" role="img" aria-label="Land breeze: at night the land cools and a lighter breeze flows from land out over the water">
+          <rect x="0" y="130" width="150" height="60" fill="var(--water)"/>
+          <rect x="150" y="122" width="150" height="68" fill="var(--land)"/>
+          <circle cx="262" cy="28" r="12" fill="var(--muted)"/><circle cx="268" cy="24" r="11" fill="var(--bg)"/>
+          <path d="M210,120 L100,120" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#wa)"/>
+          <path d="M75,112 C68,84 68,64 75,44" stroke="var(--muted)" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#wm)"/>
+          <text x="75" y="160" text-anchor="middle" class="small">water stays warmer</text>
+          <text x="225" y="160" text-anchor="middle" class="small">land cools</text>
+          <text x="155" y="112" text-anchor="middle" style="font-weight:700">land breeze</text>
+          <text x="10" y="20" class="cap" style="fill:var(--muted)">NIGHT</text>
+        </svg>
+        <figcaption><b>Land breeze.</b> At night the land cools faster than the water and a lighter breeze flows offshore, strongest around dawn.</figcaption>
+      </figure>
+    </div>
+    <ul>
+      <li>A sea breeze is strongest on hot, sunny days when the overall (gradient) wind is light. It often reaches 10 to 15 kt or more by mid-afternoon on a morning that started calm.</li>
+      <li>Signs it's coming: a line of puffy cumulus building over the shoreline, a dark band of ripples moving in from open water.</li>
+      <li>In the Northern Hemisphere a sea breeze often veers (shifts clockwise) as the afternoon goes on.</li>
+      <li>A strong offshore gradient wind can block the sea breeze entirely; a light offshore wind may delay it, then it fills in.</li>
+      <li>Large lakes get the same effect, called a <b>lake breeze</b>. Near hills and valleys, air flows uphill by day and downhill at night, which can bring sudden gusts off high ground.</li>
+      <li>Practical upshot: on a summer day, a calm morning can turn into a breezy, choppy afternoon. Plan the return trip for it.</li>
+    </ul>
+  </section>
+
+  <section id="wx-fronts">
+    <h2>Fronts</h2>
+    <p>A front is the boundary between two air masses. Most changes in sailing weather arrive with one.</p>
+    <div class="tbl"><table>
+      <thead><tr><th></th><th>Cold front</th><th>Warm front</th></tr></thead>
+      <tbody>
+        <tr><td><b>How it works</b></td><td>Cold air wedges under warm air, forcing it up steeply. Moves fast.</td><td>Warm air slides up and over cooler air on a gentle slope. Moves slowly.</td></tr>
+        <tr><td><b>Warning time</b></td><td>Short. Often only a line of towering clouds an hour or so ahead.</td><td>Long. High cirrus can appear a day or more ahead.</td></tr>
+        <tr><td><b>Clouds</b></td><td>Narrow band of cumulonimbus, often a squall line.</td><td>Cirrus, then cirrostratus (halo around sun or moon), then lower, thicker gray layers.</td></tr>
+        <tr><td><b>Weather</b></td><td>Heavy showers, thunderstorms, strong gusts, then clearing.</td><td>Long steady rain or drizzle, poor visibility, sometimes fog.</td></tr>
+        <tr><td><b>Wind</b></td><td>Sharp veer, typically SW to NW, gusty and strong behind it.</td><td>Gradual veer, typically SE to S or SW.</td></tr>
+        <tr><td><b>Pressure</b></td><td>Falls ahead, then rises sharply after.</td><td>Falls steadily, then levels off.</td></tr>
+        <tr><td><b>Temperature</b></td><td>Drops, drier air.</td><td>Rises, more humid.</td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li>An <b>occluded front</b> forms when a cold front catches a warm front; it brings a mix of both. A <b>stationary front</b> stalls and can bring days of clouds and rain.</li>
+      <li>In mid-latitudes weather generally moves west to east, which is why "red sky at night, sailor's delight; red sky in morning, sailors take warning" has some truth to it.</li>
+      <li>"Mares' tails and mackerel scales make tall ships carry low sails": streaky cirrus and rippled altocumulus often run ahead of an approaching system.</li>
+    </ul>
+  </section>
+
+  <section id="wx-storms">
+    <h2>Thunderstorms and squalls</h2>
+    <p>Thunderstorms are the most common serious weather hazard for small-boat sailors, and on southern lakes they're a near-daily summer risk. Air-mass storms grow from fair-weather cumulus in an hour or less and can send outflow gusts of 30 kt or more across water that was calm minutes before.</p>
+    <h3>Signs one is coming</h3>
+    <ul>
+      <li>Cumulus clouds building tall and dark, topping out in a flat <b>anvil</b> (cumulonimbus).</li>
+      <li>A low, dark <b>shelf or roll cloud</b> along the leading edge.</li>
+      <li>Static on AM radio, distant thunder, lightning.</li>
+      <li>A sudden drop in temperature and a wind shift. The <b>gust front</b> (outflow) often arrives before the rain, can come from a completely different direction, and can be much stronger than the breeze you had.</li>
+      <li>A Special Marine Warning on the VHF weather channel.</li>
+    </ul>
+    <h3>Flash to bang</h3>
+    <p>Sound travels about 1 statute mile in 5 seconds. Count the seconds from the lightning flash to the thunder and divide by 5. If you can hear thunder at all, you're close enough to be struck.</p>
+    <div class="calc">
+      <label for="ftb" class="meta">Seconds from flash to thunder</label>
+      <input id="ftb" type="number" min="0" max="120" value="15" inputmode="numeric">
+      <output id="ftb-out" for="ftb"></output>
+    </div>
+    <h3>What to do</h3>
+    <ol>
+      <li><b>Head in early</b> if you can make shelter before it arrives. Storms often move at 10 to 25 knots, faster than you can sail.</li>
+      <li>If you can't, <b>get sea room</b>: move away from a lee shore and other boats.</li>
+      <li><b>Everyone in life jackets.</b> Close hatches, stow loose gear.</li>
+      <li><b>Reduce sail before the wind hits</b>: reef deeply or drop the main and sail under jib alone, or motor.</li>
+      <li>Note your position and which way is safe water.</li>
+      <li>Stay low in the cockpit, away from the mast, shrouds, and other metal. Don't touch two metal fittings at once.</li>
+      <li>Wait about 30 minutes after the last thunder before relaxing.</li>
+    </ol>
+    <p><b>Squall line:</b> a line of thunderstorms, often ahead of a cold front, that can stretch for miles with no gap to sail around. <b>Waterspouts</b> are tornadoes over water; move away at right angles to their path.</p>
+  </section>
+
+  <section id="wx-fog">
+    <h2>Fog</h2>
+    <p>Fog forms when air cools to its <b>dew point</b> and the moisture condenses. When the forecast air temperature and dew point are within a few degrees, expect fog or haze.</p>
+    <dl class="terms">
+      <dt>Radiation fog</dt><dd>Forms on clear, calm nights as the land cools. Drifts onto rivers and harbors and usually burns off by late morning.</dd>
+      <dt>Advection fog</dt><dd>Warm, moist air moves over colder water (Maine, the California coast, the Great Lakes in spring). Can last for days and can persist in a fair breeze.</dd>
+      <dt>Sea smoke</dt><dd>Very cold air over much warmer water, so the water seems to steam. Common in late fall and winter.</dd>
+    </dl>
+    <p>In fog: slow to a safe speed, turn on navigation lights, sound the fog signal (one prolonged blast and two short every 2 minutes for a sailboat), post a lookout forward, hoist a radar reflector, and fix your position by GPS before the shore disappears. See the Navigation Rules module for the full set of fog signals.</p>
+  </section>
+
+  <section id="wx-reef">
+    <h2>When to reef</h2>
+    <div class="callout"><b>Reef when you first think about it.</b> It's easier to shake out a reef in a lull than to tie one in during a gust. If the forecast calls for it, reef at the dock before you leave.</div>
+    <h3>Signs it's time</h3>
+    <ul>
+      <li>The boat heels so far the rail is near the water and it keeps happening.</li>
+      <li>Strong weather helm: you have to pull the tiller hard to windward to hold course.</li>
+      <li>The boat rounds up into the wind in the gusts.</li>
+      <li>You're easing the mainsheet constantly just to stay upright.</li>
+      <li>Whitecaps are becoming frequent (force 4 and building), or a front or storm is on the way.</li>
+    </ul>
+    <h3>Tying in a slab (jiffy) reef</h3>
+    <ol>
+      <li>Head up to close-hauled or heave to so the boat is steady.</li>
+      <li>Ease the mainsheet and the vang; take up the topping lift so the boom doesn't drop.</li>
+      <li>Lower the main halyard until the reef cringle at the luff reaches the boom, and hook it on the tack horn.</li>
+      <li>Re-tension the halyard.</li>
+      <li>Haul in the reef line to pull the leech cringle down and aft to the boom.</li>
+      <li>Tie the reef points around the loose bundle of sail with reef knots, not around the boom.</li>
+      <li>Trim the main and sail on.</li>
+    </ol>
+    <p>You can also reduce sail at the front: roll in some of a furling jib or switch to a smaller headsail. Shaking out a reef is the same steps in reverse; untie the reef points first.</p>
+  </section>
+  </div>
+</div>
+
+<!-- ================= NAV RULES GUIDE ================= -->
+<div id="g-nr" class="guide" hidden>
+  <nav class="toc" aria-label="Navigation Rules contents">
+    <a href="#nr-basics">How the rules work</a>
+    <a href="#nr-conduct">Steering &amp; sailing rules</a>
+    <a href="#nr-fogconduct">Conduct in fog</a>
+    <a href="#nr-lights">Lights</a>
+    <a href="#nr-gallery">Lights by vessel</a>
+    <a href="#nr-shapes">Day shapes</a>
+    <a href="#nr-sound">Maneuvering signals</a>
+    <a href="#nr-fog">Fog signals</a>
+    <a href="#nr-distress">Distress signals</a>
+  </nav>
+  <div>
+
+  <section id="nr-basics">
+    <h2>How the rules work</h2>
+    <p>The Navigation Rules come in two sets. The <b>International Rules</b> (COLREGS, 1972) apply on the high seas and in connected waters. The <b>Inland Rules</b> apply inside the <b>COLREGS demarcation lines</b>, shown as dashed magenta lines across harbor entrances on the chart, including the Great Lakes and Western Rivers. They're nearly identical; this guide marks the differences that matter for a small boat. The USCG publishes both in one free book, "Navigation Rules and Regulations Handbook."</p>
+    <h3>Key definitions (Rule 3)</h3>
+    <dl class="terms">
+      <dt>Underway</dt><dd>Not at anchor, not made fast to the shore, and not aground. A drifting boat is underway.</dd>
+      <dt>Making way</dt><dd>Underway and moving through the water.</dd>
+      <dt>Power-driven vessel</dt><dd>Any vessel propelled by machinery, including a sailboat with its engine running.</dd>
+      <dt>Sailing vessel</dt><dd>Under sail with no engine in use.</dd>
+      <dt>Engaged in fishing</dt><dd>Using nets, lines, or trawls that restrict its ability to maneuver. A boat trolling lines is not "engaged in fishing."</dd>
+      <dt>Not under command (NUC)</dt><dd>Can't maneuver as the rules require because of some exceptional circumstance, such as a breakdown.</dd>
+      <dt>Restricted in ability to maneuver (RAM)</dt><dd>Its work limits its ability to get out of the way: dredging, laying cable, servicing a buoy, some towing, launching aircraft.</dd>
+      <dt>Constrained by draft (CBD)</dt><dd>International Rules only. A deep-draft ship that can't leave a channel. The Inland Rules have no CBD category.</dd>
+      <dt>Restricted visibility</dt><dd>Fog, mist, heavy rain, snow, or anything similar that reduces visibility.</dd>
+    </dl>
+    <h3>Rules that come first</h3>
+    <ul>
+      <li><b>Rule 2, Responsibility:</b> nothing in the rules excuses neglect of good seamanship. You may depart from a rule when that's needed to avoid immediate danger.</li>
+      <li><b>Rule 5, Lookout:</b> every vessel must keep a proper lookout by sight and hearing (and radar, if fitted) at all times. On a small sailboat that includes checking under the jib.</li>
+      <li><b>Rule 6, Safe speed:</b> always go at a speed that lets you stop or maneuver in time. Visibility, traffic, wind, sea, and current all count.</li>
+      <li><b>Rule 7, Risk of collision:</b> if the compass bearing to an approaching vessel doesn't change appreciably while the range closes, risk of collision exists. If in doubt, assume it does. Large ships can be a risk even with a slowly changing bearing.</li>
+      <li><b>Rule 8, Action to avoid collision:</b> make it early, positive, and large enough to be obvious to the other vessel. One big course change beats a series of small ones. Slowing or stopping is also an option.</li>
+    </ul>
+  </section>
+
+  <section id="nr-conduct">
+    <h2>Steering and sailing rules</h2>
+    <h3>Rule 18, who keeps out of whose way</h3>
+    <p>Except when overtaking, or in a narrow channel or traffic scheme, each vessel keeps out of the way of those above it:</p>
+    <ol>
+      <li>Not under command</li>
+      <li>Restricted in ability to maneuver</li>
+      <li>Constrained by draft (International; others "shall avoid impeding" it)</li>
+      <li>Engaged in fishing</li>
+      <li>Sailing vessel</li>
+      <li>Power-driven vessel</li>
+    </ol>
+    <p>A seaplane on the water keeps clear of all of them.</p>
+    <h3>Encounters</h3>
+    <dl class="terms">
+      <dt>Rule 12, Sailboats</dt><dd>Opposite tacks: the port-tack boat keeps clear. Same tack: the windward boat keeps clear. If you're on port tack and can't tell what tack a boat to windward is on, keep clear. The windward side is the side opposite the main boom.</dd>
+      <dt>Rule 13, Overtaking</dt><dd>Any vessel overtaking another keeps clear, whatever the types. You're overtaking if you're coming up from more than 22.5° abaft the other vessel's beam; at night you'd see only its sternlight. Once overtaking, you stay the give-way vessel until you're past and clear.</dd>
+      <dt>Rule 14, Head-on</dt><dd>Two power-driven vessels meeting head-on (you see both sidelights, or the masthead lights in line) each alter course to starboard and pass port to port.</dd>
+      <dt>Rule 15, Crossing</dt><dd>Two power-driven vessels crossing: the one that has the other on its own starboard side keeps clear and should avoid crossing ahead.</dd>
+      <dt>Rule 16, Give-way</dt><dd>Take early and substantial action to keep well clear.</dd>
+      <dt>Rule 17, Stand-on</dt><dd>Hold course and speed. You <em>may</em> act once it's clear the give-way vessel isn't doing so, and you <em>must</em> act when collision can't be avoided by the give-way vessel alone. In a crossing, a power-driven stand-on vessel should avoid turning to port for a vessel on its own port side.</dd>
+    </dl>
+    <div class="callout"><b>Power-driven mnemonics.</b> "If to starboard red appear, 'tis your duty to keep clear." "Green to green or red to red, perfect safety, go ahead."</div>
+    <h3>Channels and traffic schemes</h3>
+    <ul>
+      <li><b>Rule 9, Narrow channels:</b> keep to the starboard side of the channel when it's safe. A sailing vessel or any vessel under 20 m must not impede a vessel that can only navigate safely inside the channel. Don't cross a channel if it impedes such a vessel. Don't anchor in a narrow channel.</li>
+      <li><b>Rule 10, Traffic separation schemes:</b> these are one-way lanes for shipping off major ports. Cross a lane on a heading as close to a right angle as practical, and a sailboat or boat under 20 m must not impede ships following the lane.</li>
+      <li>"Not impede" means acting early so a ship never has to change course for you. It applies even when you'd otherwise be the stand-on vessel.</li>
+    </ul>
+  </section>
+
+  <section id="nr-fogconduct">
+    <h2>Conduct in restricted visibility (Rule 19)</h2>
+    <p>When vessels can't see each other, there is no stand-on or give-way vessel. Rule 19 applies instead:</p>
+    <ul>
+      <li>Every vessel proceeds at a safe speed for the conditions; power-driven vessels keep engines ready to maneuver at once.</li>
+      <li>On hearing a fog signal apparently <b>forward of the beam</b>, or when a close-quarters situation can't be avoided, reduce speed to the minimum needed to keep steering, and take all way off if necessary. Navigate with extreme caution until the danger is over.</li>
+      <li>If you detect a vessel by radar alone and a close-quarters situation is developing, act in ample time. Avoid turning to port for a vessel forward of the beam (unless it's being overtaken), and avoid turning toward a vessel abeam or abaft the beam.</li>
+    </ul>
+  </section>
+
+  <section id="nr-lights">
+    <h2>Lights</h2>
+    <p>Lights are shown from sunset to sunrise and in restricted visibility. From the lights alone you can tell what a vessel is, what it's doing, and which way it's heading.</p>
+    <figure>
+      <svg id="svg-arcs" viewBox="0 0 340 300" role="img" aria-label="Arcs of visibility: masthead light 225 degrees forward, sidelights 112.5 degrees each, sternlight 135 degrees aft"></svg>
+      <figcaption>Arcs of visibility (Rule 21). Sidelights and the masthead light reach 22.5° abaft the beam; the sternlight covers the rest. That's why you see only a white sternlight when you're overtaking.</figcaption>
+    </figure>
+    <div class="tbl"><table>
+      <thead><tr><th>Light</th><th>Color</th><th>Arc</th><th>Where</th></tr></thead>
+      <tbody>
+        <tr><td>Masthead (steaming) light</td><td>White</td><td class="num">225°</td><td>Ahead to 22.5° abaft the beam on each side. Power-driven vessels only.</td></tr>
+        <tr><td>Sidelights</td><td><span class="stbd">Green</span> starboard, <span class="port">red</span> port</td><td class="num">112.5° each</td><td>Ahead to 22.5° abaft the beam on that side</td></tr>
+        <tr><td>Sternlight</td><td>White</td><td class="num">135°</td><td>67.5° either side of dead astern</td></tr>
+        <tr><td>Towing light</td><td>Yellow</td><td class="num">135°</td><td>Same as the sternlight, mounted above it</td></tr>
+        <tr><td>All-round light</td><td>Any</td><td class="num">360°</td><td>Anchor light, special-status lights</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Small boats</h3>
+    <ul>
+      <li><b>Sailboat under sail:</b> sidelights and a sternlight. Under 20 m these can be combined in one <b>tricolor</b> at the masthead. Optional extra: all-round <b>red over green</b> at the masthead, but never together with the tricolor.</li>
+      <li><b>Sailboat under 7 m:</b> show sailing lights if practicable; otherwise have a white flashlight or lantern ready to show in time to prevent a collision. The same goes for a boat under oars.</li>
+      <li><b>Sailboat motoring:</b> it's a power-driven vessel. Show a masthead light forward plus sidelights and sternlight (deck-level sidelights, not the tricolor).</li>
+      <li><b>Power boat under 12 m</b> may show one all-round white light instead of a separate masthead light and sternlight, plus sidelights.</li>
+      <li><b>Minimum visibility</b> for a boat under 12 m: masthead light 2 miles, sidelights 1 mile, sternlight and all-round lights 2 miles.</li>
+      <li><b>Inland only:</b> law enforcement boats may show a flashing blue light. A barge being pushed ahead shows a special flashing yellow light at its bow.</li>
+    </ul>
+    <div class="callout"><b>Status-light mnemonics</b> (all-round lights, top to bottom)<br>
+      Red over red, the captain is dead (not under command)<br>
+      Red, white, red: restricted (RAM)<br>
+      Red over white, fishing at night<br>
+      Green over white, trawling tonight<br>
+      White over red, pilot ahead<br>
+      Red over green, sailing machine<br>
+      Three reds in a row: constrained by draft (International)</div>
+  </section>
+
+  <section id="nr-gallery">
+    <h2>Lights by vessel</h2>
+    <p>What you'd actually see on a dark night. Tap the Practice quiz tab and choose "Night identification" to drill these.</p>
+    <div class="gallery" id="lights-gallery"></div>
+    <p>Two masthead lights (range lights) mark a vessel 50 m or longer: the forward one is lower. When the two line up vertically, the ship is pointed straight at you. If the lights open up with the lower one to the left, the ship's bow is heading to your left.</p>
+  </section>
+
+  <section id="nr-shapes">
+    <h2>Day shapes</h2>
+    <p>Black shapes hoisted where they can best be seen show special status by day. Many match the night lights: a ball for each red light of NUC, the same red-white-red as ball-diamond-ball for RAM.</p>
+    <div class="gallery" id="shapes-gallery"></div>
+  </section>
+
+  <section id="nr-sound">
+    <h2>Maneuvering and warning signals (Rule 34)</h2>
+    <p>A <b>short blast</b> is about 1 second; a <b>prolonged blast</b> is 4 to 6 seconds. Maneuvering signals are made by power-driven vessels in sight of each other. Here the two sets of rules really differ.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Signal</th><th>International: action</th><th>Inland: intent, answered to agree</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">•</td><td>I am altering my course to starboard</td><td>I intend to leave you on my port side (pass port to port)</td></tr>
+        <tr><td class="mono">• •</td><td>I am altering my course to port</td><td>I intend to leave you on my starboard side</td></tr>
+        <tr><td class="mono">• • •</td><td>I am operating astern propulsion</td><td>Same</td></tr>
+        <tr><td class="mono">• • • • •</td><td colspan="2">Danger or doubt: at least five short, rapid blasts. "I don't understand your intentions" or "I doubt you're taking enough action." Any vessel may sound it.</td></tr>
+        <tr><td class="mono">—</td><td colspan="2">Approaching a bend or blind spot in a channel; answered with a prolonged blast. Inland, also sounded when leaving a dock or berth.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Overtaking</h3>
+    <ul>
+      <li><b>International</b> (narrow channel only): two prolonged + one short, "I intend to overtake you on your starboard side"; two prolonged + two short, "on your port side." The vessel being overtaken agrees with prolonged, short, prolonged, short.</li>
+      <li><b>Inland:</b> one short, "I intend to overtake you on your starboard side"; two short, "on your port side." The vessel being overtaken answers with the same signal to agree, or the danger signal if it's not safe.</li>
+      <li>Inland, vessels can agree by VHF radio instead of whistle signals.</li>
+    </ul>
+  </section>
+
+  <section id="nr-fog">
+    <h2>Fog signals (Rule 35)</h2>
+    <p>Sounded in or near restricted visibility, day or night.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Signal</th><th>Interval</th><th>Vessel</th></tr></thead>
+      <tbody id="fog-rows"></tbody>
+    </table></div>
+    <div class="callout"><b>Small boats.</b> A vessel under 12 m doesn't have to give these exact signals, but must make some other efficient sound signal at least every 2 minutes. Most sailors still use the proper signal on an air horn. Inland, a vessel under 20 m anchored in a designated special anchorage needn't sound an anchor signal.</div>
+    <p>Required equipment (Rule 33): a whistle on vessels 12 m and over; a whistle and a bell at 20 m and over; a gong as well at 100 m and over.</p>
+  </section>
+
+  <section id="nr-distress">
+    <h2>Distress signals (Annex IV)</h2>
+    <p>Any of these means a vessel is in distress and needs help:</p>
+    <ul>
+      <li>Continuous sounding of any fog-signal device</li>
+      <li>A gun or explosive signal fired about once a minute</li>
+      <li>SOS in Morse code (··· ––– ···) by light or sound</li>
+      <li>"Mayday" spoken by radio, or a DSC distress alert</li>
+      <li>Red parachute rockets, red hand flares, or orange smoke</li>
+      <li>Flames on the vessel (for example a burning tar barrel)</li>
+      <li>Slowly and repeatedly raising and lowering outstretched arms</li>
+      <li>Code flags N over C, or a square flag with a ball above or below it</li>
+      <li>An orange flag with a black square and ball; dye marker; an EPIRB signal</li>
+      <li>Inland only: a high-intensity white light flashing 50 to 70 times a minute</li>
+    </ul>
+  </section>
+  </div>
+</div>
+
+
+<!-- ================= CHARTS GUIDE ================= -->
+<div id="g-ch" class="guide" hidden>
+  <nav class="toc" aria-label="Charts contents">
+    <a href="#ch-latlon">Latitude &amp; longitude</a>
+    <a href="#ch-chart">Reading the chart</a>
+    <a href="#ch-lights">Buoy &amp; light labels</a>
+    <a href="#ch-compass">Compass &amp; variation</a>
+    <a href="#ch-plot">Plotting &amp; fixes</a>
+    <a href="#ch-dr">Dead reckoning</a>
+    <a href="#ch-tides">Tides &amp; currents</a>
+    <a href="#ch-lakes">Lake maps</a>
+  </nav>
+  <div>
+  <section id="ch-latlon">
+    <h2>Latitude and longitude</h2>
+    <dl class="terms">
+      <dt>Latitude</dt><dd>Distance north or south of the equator, 0° to 90° N or S. Lines of latitude (parallels) run east–west. The latitude scale runs up the <b>sides</b> of the chart.</dd>
+      <dt>Longitude</dt><dd>Distance east or west of the prime meridian at Greenwich, 0° to 180° E or W. Lines of longitude (meridians) run north–south. The scale runs along the <b>top and bottom</b>. All of the US is west longitude.</dd>
+      <dt>Writing a position</dt><dd>Latitude first: 32° 47.5' N, 096° 48.2' W. One degree = 60 minutes ('). Minutes are usually given with tenths.</dd>
+    </dl>
+    <div class="callout"><b>Distance comes from the latitude scale.</b> One minute of latitude equals one nautical mile anywhere on earth. Minutes of longitude shrink toward the poles, so never measure distance on the top or bottom scale. Measure on the side scale, level with where you're working.</div>
+  </section>
+
+  <section id="ch-chart">
+    <h2>Reading the chart</h2>
+    <ul>
+      <li><b>Scale:</b> a <em>large-scale</em> chart (1:20,000) shows a small area in great detail, like a harbor. A <em>small-scale</em> chart (1:1,200,000) shows a large area with little detail. Use the largest-scale chart available near hazards. Memory aid: large scale, large features.</li>
+      <li><b>Title block:</b> tells you the area, the scale, and whether soundings are in feet, fathoms (6 ft), or meters. Always check it first.</li>
+      <li><b>Soundings</b> are depths at the <b>chart datum</b>, in US tidal waters mean lower low water (MLLW), so most of the time you'll have a little more water than charted.</li>
+      <li><b>Heights</b> of bridges and lights are measured above mean high water, so you'll usually have a little more clearance than charted.</li>
+      <li><b>Depth contours</b> connect equal depths. Shallow water is tinted blue; land is buff; areas that cover and uncover with the tide are green.</li>
+      <li><b>Magenta</b> marks lighted aids, restricted areas, and other things you most need to notice.</li>
+      <li><b>Hazards:</b> rocks, wrecks, and obstructions have their own symbols; a dotted circle around one means it's a danger to navigation.</li>
+      <li><b>U.S. Chart No. 1</b> is the free key to every symbol and abbreviation on NOAA charts.</li>
+      <li><b>Updates:</b> NOAA charts are printed on demand or used electronically; the Local Notice to Mariners lists changes such as moved buoys.</li>
+    </ul>
+  </section>
+
+  <section id="ch-lights">
+    <h2>Buoy and light labels</h2>
+    <p>Next to each aid, the chart prints its color, shape, number, and light. Read <span class="mono">G "3" Fl G 4s</span> as: green, number 3, flashing green every 4 seconds.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Abbreviation</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">R N "4"</td><td>Red nun buoy number 4</td></tr>
+        <tr><td class="mono">G C "5"</td><td>Green can buoy number 5</td></tr>
+        <tr><td class="mono">F</td><td>Fixed: steady light</td></tr>
+        <tr><td class="mono">Fl</td><td>Flashing: light shorter than dark, regular interval</td></tr>
+        <tr><td class="mono">Q</td><td>Quick flashing: about 60 flashes a minute. Marks a spot needing extra caution</td></tr>
+        <tr><td class="mono">Iso</td><td>Isophase: equal periods of light and dark</td></tr>
+        <tr><td class="mono">Oc</td><td>Occulting: light longer than dark</td></tr>
+        <tr><td class="mono">Mo (A)</td><td>Morse code A (short-long): safe water mark</td></tr>
+        <tr><td class="mono">Fl (2+1) R</td><td>Composite group flashing: a preferred channel mark</td></tr>
+        <tr><td class="mono">4s</td><td>Period: the light's full cycle repeats every 4 seconds</td></tr>
+        <tr><td class="mono">15ft 5M</td><td>Height above mean high water; nominal range in nautical miles</td></tr>
+        <tr><td class="mono">Bell, Gong, Whis, Horn</td><td>Sound signal on the aid</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="ch-compass">
+    <h2>The compass, variation, and deviation</h2>
+    <ul>
+      <li>The <b>compass rose</b> on the chart has an outer ring for <b>true</b> north and an inner ring for <b>magnetic</b> north.</li>
+      <li><b>Variation</b> is the angle between true and magnetic north at your location. It's printed in the center of the rose with its year and annual change, e.g. "VAR 3°45'W (2024) 6'E" (decreasing 6' a year).</li>
+      <li><b>Deviation</b> is compass error caused by the boat's own iron and electronics. It changes with heading and comes from your boat's deviation card.</li>
+    </ul>
+    <div class="callout"><b>TVMDC.</b> True, Variation, Magnetic, Deviation, Compass ("True Virgins Make Dull Companions"). Going from true toward compass, <b>add west, subtract east</b> ("east is least, west is best"). Going the other way, reverse it.</div>
+    <p><b>Example:</b> true course 090°, variation 5° W, deviation 2° E. Magnetic = 090 + 5 = 095° M. Compass = 095 − 2 = 093° C.</p>
+    <p>Most small-boat sailors plot in magnetic, using the inner ring of the rose, so they can steer straight from the chart.</p>
+  </section>
+
+  <section id="ch-plot">
+    <h2>Plotting, bearings, and fixes</h2>
+    <dl class="terms">
+      <dt>Parallel rules</dt><dd>Walk them from your course line to the compass rose (or the reverse) to read or lay down a direction.</dd>
+      <dt>Dividers</dt><dd>Measure distance by spanning a line, then setting the dividers on the latitude scale beside it.</dd>
+      <dt>Course line</dt><dd>Labeled with direction above (C 095 M) and speed below (S 5).</dd>
+      <dt>Bearing</dt><dd>The direction from you to an object, taken with a hand-bearing compass.</dd>
+      <dt>Line of position (LOP)</dt><dd>A line you know you're somewhere on. Plot a bearing as a line through the object. Label the time above and bearing below.</dd>
+      <dt>Fix</dt><dd>Where two or more LOPs cross. Pick objects about 90° apart for two bearings, or about 60° apart for three. Three bearings usually form a small triangle (a cocked hat); you're probably inside it. A fix is drawn as a circle with the time.</dd>
+      <dt>Range</dt><dd>Two charted objects lined up, one behind the other. A very accurate LOP needing no compass.</dd>
+      <dt>Danger bearing</dt><dd>A bearing line to a landmark that keeps you clear of a hazard. Stay on the safe side of it.</dd>
+    </dl>
+  </section>
+
+  <section id="ch-dr">
+    <h2>Dead reckoning</h2>
+    <p>Dead reckoning (DR) is working out where you are from your course, speed, and time since your last fix. A DR position is drawn as a half circle with the time.</p>
+    <div class="callout"><b>60 D = S T.</b> Distance (nm) × 60 = speed (kt) × time (minutes). So D = S × T ÷ 60.<br>5 kt for 36 minutes: D = 5 × 36 ÷ 60 = 3 nm.<br>6 nm at 4 kt: T = 60 × 6 ÷ 4 = 90 minutes.</div>
+    <p>DR ignores current and leeway, so it drifts from the truth over time. An <b>estimated position</b> (a square) allows for them. Get a new fix whenever you can.</p>
+  </section>
+
+  <section id="ch-tides">
+    <h2>Tides and currents</h2>
+    <dl class="terms">
+      <dt>Tide</dt><dd>The vertical rise and fall of the water. Most US coasts have two highs and two lows a day.</dd>
+      <dt>Current</dt><dd>Horizontal movement of water. Tidal current <b>floods</b> toward land and <b>ebbs</b> toward the sea. <b>Slack</b> is the pause between.</dd>
+      <dt>Set and drift</dt><dd>Set is the direction a current flows <em>toward</em> (the opposite of how wind is named). Drift is its speed in knots.</dd>
+      <dt>Rule of twelfths</dt><dd>Across the roughly six hours from low to high, the tide rises about 1/12, 2/12, 3/12, 3/12, 2/12, 1/12 of its range each hour. Fastest change mid-tide.</dd>
+      <dt>Tide and current tables</dt><dd>NOAA predicts tide heights and current times at reference stations. Wind and river flow can push real levels well off the prediction.</dd>
+    </dl>
+    <p>Inland lakes have no meaningful tide, but rivers have current, and reservoirs can have current near dam releases and inflows.</p>
+  </section>
+
+  <section id="ch-lakes">
+    <h2>Lake maps</h2>
+    <ul>
+      <li>Most inland lakes aren't covered by NOAA charts. Sailors use lake maps from chart apps (Navionics and similar), the lake authority, or the Corps of Engineers.</li>
+      <li>Lake depths are often shown at a reference level such as normal or full pool. When the lake is 6 ft low, every depth is 6 ft less.</li>
+      <li>Reservoirs flooded old river channels, roads, and forest. The original river channel is the deep water; standing timber and stumps lurk on the flats and in coves.</li>
+      <li>Lake buoys follow the same US system: red and green lateral marks (red right returning means heading upstream or toward the head of the lake), and white regulatory buoys with orange shapes for danger, no-wake, and keep-out areas.</li>
+      <li>Learn the lake: note where the shallows, coves, and marinas are, and pick a few landmarks you can take bearings on.</li>
+    </ul>
+  </section>
+  </div>
+</div>
+
+<!-- ================= SAFETY GUIDE ================= -->
+<div id="g-sf" class="guide" hidden>
+  <nav class="toc" aria-label="Safety contents">
+    <a href="#sf-vhf">VHF channels</a>
+    <a href="#sf-call">Making a call</a>
+    <a href="#sf-mayday">Mayday call</a>
+    <a href="#sf-mob">Crew overboard</a>
+    <a href="#sf-heave">Heaving to</a>
+    <a href="#sf-pre">Before you leave</a>
+    <a href="#sf-trouble">Fire, fuel &amp; grounding</a>
+    <a href="#sf-health">Cold water &amp; heat</a>
+  </nav>
+  <div>
+  <section id="sf-vhf">
+    <h2>VHF radio channels</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Channel</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">16</td><td>Distress, safety, and calling. Monitor it whenever the radio is on. Make contact, then switch to a working channel.</td></tr>
+        <tr><td class="mono">9</td><td>Recreational calling channel, to keep routine calls off 16.</td></tr>
+        <tr><td class="mono">13</td><td>Bridge-to-bridge navigation safety between ships, at 1 watt. Also used to call many drawbridges and locks.</td></tr>
+        <tr><td class="mono">22A</td><td>Coast Guard working channel. They'll ask you to switch here from 16.</td></tr>
+        <tr><td class="mono">68, 69, 71, 72, 78A</td><td>Working channels for recreational boats to talk to each other or marinas.</td></tr>
+        <tr><td class="mono">70</td><td>Digital Selective Calling data only. Never used for voice.</td></tr>
+        <tr><td class="mono">WX1–WX7</td><td>NOAA weather broadcasts (receive only).</td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li>VHF range is line of sight: a few miles between small boats, farther to a tall shore antenna. Use low power (1 watt) for nearby calls and high power (25 watts) when you need range.</li>
+      <li>Recreational boats in US waters don't need an FCC station license for a VHF; you need one if you travel to foreign ports.</li>
+      <li><b>DSC:</b> a radio with a red DISTRESS button can send an automatic distress alert with your position to the Coast Guard and nearby boats. It only works if you've programmed your own <b>MMSI</b> number (free from BoatUS or Sea Tow for US use) and connected a GPS. Lift the cover and hold the button about 5 seconds.</li>
+    </ul>
+  </section>
+
+  <section id="sf-call">
+    <h2>Making a routine call</h2>
+    <ol>
+      <li>Listen first so you don't talk over anyone.</li>
+      <li>On 16 or 9: "<i>Sea Breeze, Sea Breeze</i>, this is <i>Windward</i>." (Say the other boat's name up to three times, then yours.)</li>
+      <li>When they answer, propose a working channel: "Switch six-eight." Both switch and continue there.</li>
+      <li>Keep it short. Say "over" when you expect a reply and "out" when you're done.</li>
+    </ol>
+    <p>Phonetic alphabet for spelling: Alfa, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliett, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, Yankee, Zulu.</p>
+    <dl class="terms">
+      <dt>Mayday</dt><dd>Grave and imminent danger to a vessel or person: sinking, fire, a person overboard you can't recover, a life-threatening medical emergency.</dd>
+      <dt>Pan-pan</dt><dd>Urgent but not immediately life-threatening: dismasted, engine failure drifting toward danger, a non-life-threatening injury.</dd>
+      <dt>Sécurité</dt><dd>Safety or navigation information, such as a big log adrift in the channel.</dd>
+    </dl>
+    <p>Each is said three times at the start of the call.</p>
+  </section>
+
+  <section id="sf-mayday">
+    <h2>Making a Mayday call</h2>
+    <p>Channel 16, high power. Speak slowly and clearly.</p>
+    <div class="callout"><b>Mayday script</b><br>
+      1. "MAYDAY, MAYDAY, MAYDAY."<br>
+      2. "This is <i>Windward, Windward, Windward</i>."<br>
+      3. "MAYDAY, <i>Windward</i>."<br>
+      4. <b>Position:</b> lat/long from the GPS, or a bearing and distance from a landmark.<br>
+      5. <b>Nature of distress:</b> "We are taking on water and sinking."<br>
+      6. <b>Help needed:</b> "Request immediate assistance."<br>
+      7. <b>Number aboard</b> and injuries: "Three people aboard, all wearing life jackets."<br>
+      8. <b>Description:</b> "26-foot sailboat, white hull, blue sail cover."<br>
+      9. "Over."</div>
+    <p>If nobody answers, repeat. If you hear a Mayday and no one answers it, write down the details and relay it ("Mayday relay"). "Seelonce Mayday" means stay off the channel except for the emergency.</p>
+  </section>
+
+  <section id="sf-mob">
+    <h2>Crew overboard, in more depth</h2>
+    <ol>
+      <li>Shout "Crew overboard!", throw flotation, appoint a spotter who points continuously, press the MOB button on the GPS.</li>
+      <li>Keep the boat close: the quick-stop (head up immediately, tack, leave the jib backed, circle back) keeps you within a few boat lengths.</li>
+      <li>Approach on a close reach so you can slow down by easing sails, and stop with the person to <b>leeward</b>, alongside the cockpit, so the boat drifts toward them and doesn't blanket them in its wind.</li>
+      <li>Get a line to them right away, then work out how to lift them. Getting someone aboard is often harder than getting back to them.</li>
+    </ol>
+    <dl class="terms">
+      <dt>Lifesling</dt><dd>A floating horseshoe collar on a long line, stowed at the stern rail. Deploy it, then sail in circles around the person until the line reaches them. They put the sling on under their arms; you stop the boat, pull them alongside, and hoist with a halyard and tackle or a winch.</dd>
+      <dt>Swim ladder</dt><dd>Only useful if the person can still climb. Cold or injured people often can't.</dd>
+      <dt>Under power</dt><dd>Approach slowly and put the engine in neutral well before you reach the person. Never come near anyone in the water with the prop turning.</dd>
+    </dl>
+    <p>Practice with a fender or a bucket on a calm day, with each person on board taking the helm.</p>
+  </section>
+
+  <section id="sf-heave">
+    <h2>Heaving to</h2>
+    <p>Heaving to parks a sailboat in a steady, comfortable position, moving slowly forward and drifting to leeward. Use it to reef, eat, fix something, wait for a squall to pass, or handle an emergency.</p>
+    <ol>
+      <li>Sail close-hauled.</li>
+      <li>Tack, but <b>don't release the jib sheet</b>. The jib stays backed on the old side.</li>
+      <li>Ease the mainsheet partway.</li>
+      <li>Push the tiller to leeward and lash it there.</li>
+    </ol>
+    <p>The backed jib pushes the bow away from the wind while the main and rudder push it back up, so the boat settles 45° to 60° off the wind making perhaps a knot. Leave plenty of room to leeward. To get going again, release the tiller and the jib and trim normally.</p>
+  </section>
+
+  <section id="sf-pre">
+    <h2>Before you leave the dock</h2>
+    <ul>
+      <li><b>Weather:</b> forecast, radar, and any advisories. Decide your limits before you go.</li>
+      <li><b>Float plan:</b> tell someone ashore where you're going, who's aboard, and when to call for help if you're not back.</li>
+      <li><b>Boat:</b> bilge dry, through-hulls checked, rigging pins and rings in place, sails and lines ready, fuel and battery checked, engine runs and pumps cooling water.</li>
+      <li><b>Safety gear:</b> life jackets for everyone (fitted for kids), throwable, horn, fire extinguisher, lights, radio and phone charged, first aid kit, water.</li>
+      <li><b>Crew briefing:</b> where the life jackets, extinguisher, and first aid kit are; how to use the radio; what to do if someone goes overboard; how to stop the engine; where to sit and what to hold.</li>
+    </ul>
+  </section>
+
+  <section id="sf-trouble">
+    <h2>Fire, fuel, and running aground</h2>
+    <dl class="terms">
+      <dt>Gasoline vapor</dt><dd>Heavier than air; it sinks into the bilge. Before starting a gasoline inboard, sniff the engine space and run the blower at least 4 minutes.</dd>
+      <dt>Fueling</dt><dd>Stop engines, close hatches and ports, no smoking, keep the nozzle touching the fill, don't overfill. Afterward, wipe spills, open up, run the blower, and sniff before starting.</dd>
+      <dt>Fire classes</dt><dd>A: wood, paper, cloth. B: flammable liquids like fuel and oil. C: electrical. Marine extinguishers are usually B or B-C.</dd>
+      <dt>Using an extinguisher</dt><dd>PASS: Pull the pin, Aim at the base of the fire, Squeeze, Sweep side to side.</dd>
+      <dt>Running aground</dt><dd>Check first for leaks or injury. Then try to back off the way you came. On a keelboat, heel the boat to reduce draft: crew to leeward, boom swung out with someone on it. You can also kedge off by setting an anchor in deep water and pulling. On a falling lake or tide, act fast.</dd>
+    </dl>
+  </section>
+
+  <section id="sf-health">
+    <h2>Cold water and heat</h2>
+    <div class="callout"><b>1-10-1.</b> After a fall into cold water: about <b>1 minute</b> of gasping cold shock (keep your head above water and get your breathing under control), about <b>10 minutes</b> of useful movement before your arms and hands stop working, and about <b>1 hour</b> before hypothermia makes you unconscious. Wearing a life jacket is what gets you through the first minute.</div>
+    <ul>
+      <li>Cold shock is a risk in water below about 60°F, which southern lakes reach in winter and early spring.</li>
+      <li>In the water, keep clothes on, stay still, and pull your knees to your chest (HELP position) or huddle with others to save heat.</li>
+      <li><b>Hypothermia</b> care: get them out of the water and wind, handle gently, replace wet clothes, insulate, warm the core first. Get medical help for anyone confused or not shivering.</li>
+      <li><b>Heat exhaustion:</b> heavy sweating, weakness, nausea, headache. Move to shade, cool down, sip water.</li>
+      <li><b>Heat stroke</b> is an emergency: confusion, hot skin, possibly no sweating. Cool them immediately with water and call for help.</li>
+    </ul>
+  </section>
+  </div>
+</div>
+
+<!-- ================= DOCKING GUIDE ================= -->
+<div id="g-dk" class="guide" hidden>
+  <nav class="toc" aria-label="Docking contents">
+    <a href="#dk-power">Handling under power</a>
+    <a href="#dk-approach">Coming alongside</a>
+    <a href="#dk-lines">Dock lines &amp; springs</a>
+    <a href="#dk-leave">Leaving the dock</a>
+    <a href="#dk-slip">Slips</a>
+    <a href="#dk-sail">Under sail &amp; moorings</a>
+    <a href="#dk-anchor">Anchoring, in depth</a>
+  </nav>
+  <div>
+  <section id="dk-power">
+    <h2>How a sailboat handles under power</h2>
+    <ul>
+      <li><b>No brakes.</b> You stop with reverse, and the boat carries way for a long time. Learn how far your boat coasts in neutral.</li>
+      <li><b>Steering needs flow.</b> The rudder works only when water moves past it. At very low speed you have little control, especially in reverse.</li>
+      <li><b>Prop wash.</b> A short burst of forward throttle with the tiller over pushes water across the rudder and kicks the stern sideways, even before the boat picks up speed.</li>
+      <li><b>Prop walk.</b> In reverse, a propeller pulls the stern sideways. With a right-hand prop, the most common kind on inboards, the stern walks to <b>port</b> in reverse. Find out which way your boat walks by backing up in open water. Use it: dock on the side your stern walks toward.</li>
+      <li><b>Outboards</b>, common on lake keelboats, have little prop walk and can be turned to steer, but the rudder and outboard must work together.</li>
+      <li><b>Pivot point.</b> A sailboat turns around a point near its keel, so the stern swings out as the bow turns. Watch the stern near docks and other boats.</li>
+      <li><b>Windage.</b> In wind, the bow blows downwind quickly when you're going slowly. Keep enough speed to steer, and expect the bow to fall off.</li>
+    </ul>
+  </section>
+
+  <section id="dk-approach">
+    <h2>Coming alongside a dock</h2>
+    <ol>
+      <li>Rig fenders and dock lines on the docking side before you get close, and brief the crew on who handles which line.</li>
+      <li>Check the wind and current. Approach into whichever is stronger so it helps you stop.</li>
+      <li>Approach slowly at a shallow angle, about 20° to 30°. "Never approach a dock faster than you're willing to hit it."</li>
+      <li>Shift to neutral early and coast in. A touch of reverse stops you (and walks the stern).</li>
+      <li>Crew steps, never jumps, onto the dock with the midships or bow line and takes a turn around a cleat.</li>
+    </ol>
+    <dl class="terms">
+      <dt>Wind blowing onto the dock</dt><dd>Easy: stop parallel to the dock a few feet off and let the wind push you in. Don't come in at an angle or the bow will hit first.</dd>
+      <dt>Wind blowing off the dock</dt><dd>Harder: come in at a steeper angle and a bit faster, get the bow or midships line on fast, then motor gently against a spring to bring the stern in.</dd>
+    </dl>
+    <p>Never put hands, feet, or bodies between the boat and the dock. Let fenders take the load.</p>
+  </section>
+
+  <section id="dk-lines">
+    <h2>Dock lines and springs</h2>
+    <dl class="terms">
+      <dt>Bow line</dt><dd>From the bow forward to the dock. Holds the bow in.</dd>
+      <dt>Stern line</dt><dd>From the stern aft to the dock. Holds the stern in.</dd>
+      <dt>Spring lines</dt><dd>Run diagonally. A spring from the bow area leading <b>aft</b> to the dock stops the boat moving forward; one from the stern area leading <b>forward</b> stops it moving aft.</dd>
+      <dt>Breast line</dt><dd>Straight across from boat to dock; holds the boat close. Usually temporary.</dd>
+    </dl>
+    <ul>
+      <li>Leave some slack for wind and waves (and in tidal water, enough for the tide's range).</li>
+      <li>Secure to the dock with a cleat hitch or a bowline over a piling; adjust from on board.</li>
+      <li>Chafe guards where lines pass over edges.</li>
+    </ul>
+  </section>
+
+  <section id="dk-leave">
+    <h2>Leaving the dock: springing off</h2>
+    <p>When the wind pins you to the dock, use a spring line to swing one end out first.</p>
+    <dl class="terms">
+      <dt>Stern out</dt><dd>Rig a spring from the bow cleat leading aft to the dock, with a fender at the bow. Release the other lines, then motor slowly <b>forward</b> with the tiller turned to push the stern out. The spring holds the bow; the stern swings away from the dock. When it's well out, back away in reverse and release the spring.</dd>
+      <dt>Bow out</dt><dd>Rig a spring from the stern leading forward to the dock, with a fender at the stern. Back gently in <b>reverse</b>; the bow swings out. Then motor forward and release.</dd>
+    </dl>
+    <p>Rig springs as <b>slip lines</b>: around the dock cleat and back to the boat, so you can release them from on board.</p>
+  </section>
+
+  <section id="dk-slip">
+    <h2>Slips</h2>
+    <ul>
+      <li>Before entering a marina, decide which slip, which side the lines go on, and whether you'll go in bow or stern first.</li>
+      <li>Line up well outside the fairway so you're straight as you enter. Turn into the slip early enough to allow for the stern swinging out.</li>
+      <li>Backing in is harder because of prop walk and weak steering in reverse; get some sternway going in open water first so the rudder bites.</li>
+      <li>Have a crew member ready forward with a boat hook and a line to drop over a piling, and someone aft to stop the boat with a stern line if needed.</li>
+      <li>If an approach goes wrong, abort early: back out or go around and try again. There's no prize for saving a bad approach.</li>
+    </ul>
+  </section>
+
+  <section id="dk-sail">
+    <h2>Under sail and picking up a mooring</h2>
+    <ul>
+      <li>Under sail, plan to stop by heading into the wind. Know your boat's <b>carry</b>, how far it coasts head to wind.</li>
+      <li>Make the final approach on a close reach so you can control speed by easing and trimming, as in a crew-overboard recovery.</li>
+      <li>Under sail, the leeward side of a dock (wind blowing you away from it) is safer: if you misjudge, the wind carries you off rather than slamming you in.</li>
+      <li><b>Mooring:</b> approach slowly into the wind (or current, if stronger), aiming to stop with the pickup buoy at the bow. A crew member points at it the whole time and picks up the pennant with a boat hook. Secure it to the bow cleat.</li>
+      <li>Under power, keep the buoy on the side the helmsman can see and go to neutral before the pennant reaches the prop.</li>
+    </ul>
+  </section>
+
+  <section id="dk-anchor">
+    <h2>Anchoring, in depth</h2>
+    <dl class="terms">
+      <dt>Ground tackle</dt><dd>Anchor plus rode. Rode is usually some chain (resists chafe, adds weight) plus nylon line (stretches to absorb shock). Secure the bitter end to the boat.</dd>
+      <dt>Anchor types</dt><dd>Fluke (Danforth style): light, strong in sand and mud, common on lake boats. Plow and scoop types (CQR, Delta, Rocna): reset well when the wind shifts. Claw (Bruce): sets easily, holds less for its weight. Mushroom: permanent moorings.</dd>
+      <dt>Scope</dt><dd>Rode length ÷ (depth + bow height). About 7:1 normally, 5:1 in calm conditions with chain, 10:1 in a blow.</dd>
+      <dt>Swing room</dt><dd>You'll swing in a circle with radius about equal to your rode. Keep that clear of other boats, docks, and shallows.</dd>
+    </dl>
+    <ol>
+      <li>Choose a spot with good holding, protection from the wind, and room to swing. Check the depth and bottom on the chart.</li>
+      <li>Approach head to wind and stop. Lower the anchor to the bottom.</li>
+      <li>Let the boat fall back as you pay out rode. Snub it at about half scope to help it bite, then pay out the rest.</li>
+      <li>Set it by backing down gently, then more firmly, while watching a range on shore. If the range doesn't change, you're holding.</li>
+      <li>Keep an anchor watch: check landmarks or a GPS anchor alarm, especially when the wind changes.</li>
+      <li>To leave, motor slowly toward the anchor while the crew takes in rode. When the boat is directly over it, the anchor breaks out. Don't pull the boat forward by the rode alone.</li>
+    </ol>
+  </section>
+  </div>
+</div>
+
+<!-- ================= SAIL TRIM GUIDE ================= -->
+<div id="g-st" class="guide" hidden>
+  <nav class="toc" aria-label="Sail trim contents">
+    <a href="#st-wind">Apparent wind</a>
+    <a href="#st-shape">Sail shape</a>
+    <a href="#st-tell">Telltales</a>
+    <a href="#st-controls">The controls</a>
+    <a href="#st-power">Power up, power down</a>
+    <a href="#st-helm">Heel &amp; helm</a>
+    <a href="#st-shifts">Shifts &amp; puffs</a>
+    <a href="#st-down">Downwind</a>
+  </nav>
+  <div>
+  <section id="st-wind">
+    <h2>Apparent wind</h2>
+    <p>The wind you feel on a moving boat is the <b>apparent wind</b>: the true wind combined with the "wind" made by your own motion. Sails, telltales, and the masthead fly all respond to apparent wind.</p>
+    <ul>
+      <li>It always comes from farther forward than the true wind (except dead downwind).</li>
+      <li>Sailing upwind it feels stronger than the true wind; sailing downwind it feels weaker. A run can feel gentle while the true wind is strong, so be careful turning upwind.</li>
+      <li>When the boat speeds up, the apparent wind moves forward and you can trim in. When a puff hits, the apparent wind moves aft for a moment, so you can head up a little.</li>
+    </ul>
+  </section>
+
+  <section id="st-shape">
+    <h2>Sail shape</h2>
+    <dl class="terms">
+      <dt>Draft (depth)</dt><dd>How deep the curve of the sail is. A fuller sail gives more power for light air and chop; a flatter sail gives less drag and heel for strong wind.</dd>
+      <dt>Draft position</dt><dd>Where the deepest part sits, ideally about 40% to 50% back from the luff. Wind pushes it aft; tensioning the luff pulls it forward.</dd>
+      <dt>Twist</dt><dd>How much the top of the sail opens (falls off to leeward) compared with the bottom. More twist spills wind and depowers; less twist powers up and points higher.</dd>
+      <dt>Leech</dt><dd>A tight leech means little twist; an open leech means more.</dd>
+    </dl>
+  </section>
+
+  <section id="st-tell">
+    <h2>Reading telltales</h2>
+    <dl class="terms">
+      <dt>Jib luff telltales</dt><dd>Both sides streaming = trimmed right. <b>Windward</b> one lifting or fluttering: you're too close to the wind or the sail is too loose. Bear away or trim in. <b>Leeward</b> one fluttering: sail is stalled. Head up or ease. Steering rule: move the tiller toward the fluttering telltale.</dd>
+      <dt>Top vs bottom</dt><dd>If the top telltales break first, the jib has too much twist: move the jib lead (fairlead car) <b>forward</b>. If the bottom ones break first, move it <b>aft</b>. Aim for top and bottom breaking together.</dd>
+      <dt>Main leech telltales</dt><dd>Ribbons on the leech should mostly stream aft. If the top one keeps curling behind the sail, the leech is too tight: ease the mainsheet or vang, or drop the traveler.</dd>
+      <dt>Masthead fly (Windex)</dt><dd>Shows the apparent wind direction at the top of the mast. Useful downwind to avoid sailing by the lee.</dd>
+    </dl>
+  </section>
+
+  <section id="st-controls">
+    <h2>The trim controls</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Control</th><th>What it does</th><th>More wind</th></tr></thead>
+      <tbody>
+        <tr><td><b>Mainsheet</b></td><td>Sail angle; upwind it also sets leech tension and twist</td><td>Ease in gusts</td></tr>
+        <tr><td><b>Traveler</b></td><td>Moves the boom sideways without changing leech tension</td><td>Drop to leeward</td></tr>
+        <tr><td><b>Boom vang</b></td><td>Holds the boom down; controls twist off the wind when the sheet is eased</td><td>Snug upwind to keep the leech under control, ease in big gusts to spill</td></tr>
+        <tr><td><b>Outhaul</b></td><td>Foot tension: depth in the lower main</td><td>Tighten to flatten</td></tr>
+        <tr><td><b>Halyard / cunningham</b></td><td>Luff tension: pulls the draft forward</td><td>Tighten (draft blows aft as wind builds)</td></tr>
+        <tr><td><b>Backstay</b> (if adjustable)</td><td>Bends the mast to flatten the main and tightens the forestay</td><td>Tighten</td></tr>
+        <tr><td><b>Jib sheet</b></td><td>Jib angle</td><td>Ease slightly in gusts</td></tr>
+        <tr><td><b>Jib lead</b></td><td>Fore and aft: twist and foot depth</td><td>Move aft to open the leech and flatten the foot</td></tr>
+      </tbody>
+    </table></div>
+    <p>Luff tension check: horizontal wrinkles running from the luff mean it's too loose; a vertical crease along the luff means it's too tight.</p>
+  </section>
+
+  <section id="st-power">
+    <h2>Power up, power down</h2>
+    <dl class="terms">
+      <dt>Light air</dt><dd>Fuller sails: ease outhaul, halyard, and backstay. Traveler up to windward to bring the boom to the centerline without over-tightening the leech. Some twist. Keep the boat moving; don't pinch. Crew to leeward to help the sails fill.</dd>
+      <dt>Medium air</dt><dd>Full power. Leech telltales streaming, jib telltales flowing, boat at moderate heel.</dd>
+      <dt>Heavy air</dt><dd>Flatten (outhaul, halyard or cunningham, backstay), then drop the traveler, then add twist and ease the main in gusts. Crew weight on the rail. When that's not enough, reef.</dd>
+    </dl>
+    <div class="callout"><b>Depower in this order:</b> flatten the sails, drop the traveler, twist and ease in the puffs, then reef. Reef the main before the jib on most sloops.</div>
+  </section>
+
+  <section id="st-helm">
+    <h2>Heel and helm</h2>
+    <ul>
+      <li>Most keelboats sail fastest at moderate heel, roughly 15° to 20°. Beyond that, the boat makes more leeway, weather helm builds, and speed drops.</li>
+      <li><b>Weather helm</b> (boat wants to round up) increases with heel and with an over-trimmed main. A few degrees of weather helm is good: it gives feel and lift from the rudder. Lots of it means too much sail or too much heel.</li>
+      <li>To reduce weather helm: ease the main or drop the traveler, flatten the main, reef the main, or move crew weight to windward.</li>
+      <li><b>Lee helm</b> (boat wants to bear away) usually appears in very light air or with too much jib. Trim the main in a little, or ease the jib.</li>
+    </ul>
+  </section>
+
+  <section id="st-shifts">
+    <h2>Shifts and puffs</h2>
+    <dl class="terms">
+      <dt>Header</dt><dd>A shift that moves the wind forward, so close-hauled you have to bear away. The jib luffs.</dd>
+      <dt>Lift</dt><dd>A shift that moves the wind aft, so you can head up.</dd>
+      <dt>Working shifts upwind</dt><dd>Sail the lifts, and tack on the headers: a header on one tack is a lift on the other.</dd>
+      <dt>Feathering</dt><dd>Heading up slightly in a gust upwind so the jib just starts to luff, which reduces heel without losing speed.</dd>
+      <dt>Puffs</dt><dd>Dark patches on the water. Ease the main or feather as one hits; trim back in as it passes.</dd>
+    </dl>
+    <p>On lakes, shifts are frequent and big. Keep looking upwind for dark water and at boats ahead to see what's coming.</p>
+  </section>
+
+  <section id="st-down">
+    <h2>Downwind</h2>
+    <ul>
+      <li>Ease the sails out until they just start to luff, then trim in slightly. On a run, the main goes nearly to the shrouds.</li>
+      <li>Ease the vang off a reach a little to let the main breathe, but keep enough on to stop the boom lifting and the top of the sail twisting off.</li>
+      <li><b>Wing-and-wing:</b> on a run, set the jib on the opposite side from the main. A whisker pole holds the jib out steadily.</li>
+      <li>A <b>broad reach</b> is often faster and safer than a dead run, and less likely to cause an accidental jibe.</li>
+      <li>A <b>preventer</b> (a line from the boom end forward to the bow and back to the cockpit) holds the boom out to stop an accidental jibe in waves.</li>
+      <li>Watch the masthead fly and the jib: if the jib starts to collapse and fill on the other side, you're close to sailing by the lee.</li>
+    </ul>
+  </section>
+  </div>
+</div>
+
+<!-- ================= FLASHCARDS ================= -->
+<div id="v-cards" hidden>
+  <div class="bar">
+    <label class="meta" for="fc-topic">Topic</label>
+    <select id="fc-topic"></select>
+    <button class="btn" id="fc-shuffle" type="button">Shuffle</button>
+    <button class="btn" id="fc-reset" type="button">Reset progress</button>
+  </div>
+  <div class="meta" id="fc-count"></div>
+  <div class="progress"><i id="fc-prog"></i></div>
+  <div class="cardstage">
+    <div class="fc" id="fc" tabindex="0" role="button" aria-label="Flip card">
+      <div class="hint" id="fc-hint">Term · tap to flip</div>
+      <div id="fc-pic"></div>
+      <div class="term" id="fc-term"></div>
+      <div class="def" id="fc-def" hidden></div>
+    </div>
+    <div class="fcbtns">
+      <button class="btn again" id="fc-again" type="button">Still learning</button>
+      <button class="btn good" id="fc-good" type="button">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= QUIZ ================= -->
+<div id="v-quiz" hidden>
+  <div class="bar">
+    <label class="meta" for="qz-topic">Topic</label>
+    <select id="qz-topic"></select>
+    <label class="meta" for="qz-len">Questions</label>
+    <select id="qz-len"><option value="10">10</option><option value="20" selected>20</option><option value="40">40</option><option value="999">All</option></select>
+    <button class="btn primary" id="qz-start" type="button">New quiz</button>
+    <span class="meta" id="qz-best"></span>
+  </div>
+  <div class="qwrap" id="qz"></div>
+</div>
+
+</main>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="wa" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+    <marker id="wr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--port)"/></marker>
+    <marker id="wm" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+</svg>
+
+<script>
+const MODS = {wx:"Marine weather", nr:"Navigation Rules", ch:"Charts", sf:"Safety & VHF", dk:"Docking & anchoring", st:"Sail trim"};
+const TOPICS = {
+  "wx-forecast":["wx","Reading a forecast"], "wx-warn":["wx","Advisories & warnings"], "wx-wind":["wx","Wind, Beaufort & pressure"],
+  "wx-local":["wx","Sea & land breezes"], "wx-fronts":["wx","Fronts"], "wx-storms":["wx","Thunderstorms & squalls"],
+  "wx-fog":["wx","Fog"], "wx-reef":["wx","When to reef"],
+  "nr-basics":["nr","Definitions & first rules"], "nr-conduct":["nr","Steering & sailing rules"], "nr-lights":["nr","Lights"],
+  "nr-night":["nr","Night identification"], "nr-shapes":["nr","Day shapes"], "nr-sound":["nr","Sound signals"], "nr-distress":["nr","Distress signals"]
+};
+
+/* ---------- night-light and day-shape pictures ---------- */
+const LC={w:"var(--lw)",r:"var(--lr)",g:"var(--lg)",y:"var(--ly)"};
+function night(spec){
+  let s=`<svg viewBox="0 0 100 76" role="img" aria-label="Lights seen at night"><rect width="100" height="76" fill="var(--night)"/><line x1="0" y1="68" x2="100" y2="68" stroke="var(--night-line)" stroke-width="1"/>`;
+  spec.split(" ").forEach(t=>{const c=LC[t[0]],[x,y]=t.slice(2).split(",");s+=`<circle cx="${x}" cy="${y}" r="5.5" fill="${c}" opacity=".55" filter="url(#glow)"/><circle cx="${x}" cy="${y}" r="2.6" fill="${c}"/>`});
+  return s+"</svg>";
+}
+function shapeSvg(kind,cx,cy){
+  const f='fill="var(--shape)"';
+  if(kind==="ball")return `<circle cx="${cx}" cy="${cy}" r="7" ${f}/>`;
+  if(kind==="diamond")return `<path d="M${cx},${cy-9} L${cx+7},${cy} L${cx},${cy+9} L${cx-7},${cy} Z" ${f}/>`;
+  if(kind==="conedown")return `<path d="M${cx-8},${cy-7} L${cx+8},${cy-7} L${cx},${cy+8} Z" ${f}/>`;
+  if(kind==="coneup")return `<path d="M${cx-8},${cy+7} L${cx+8},${cy+7} L${cx},${cy-8} Z" ${f}/>`;
+  if(kind==="cyl")return `<rect x="${cx-6}" y="${cy-9}" width="12" height="18" ${f}/>`;
+  if(kind==="hourglass")return `<path d="M${cx-8},${cy-15} L${cx+8},${cy-15} L${cx},${cy} Z M${cx-8},${cy+15} L${cx+8},${cy+15} L${cx},${cy} Z" ${f}/>`;
+  if(kind==="basket")return `<path d="M${cx-8},${cy-8} L${cx+8},${cy-8} L${cx+5},${cy+8} L${cx-5},${cy+8} Z" fill="none" stroke="var(--shape)" stroke-width="2"/><path d="M${cx-7},${cy-3} L${cx+7},${cy-3} M${cx-6},${cy+3} L${cx+6},${cy+3} M${cx-2},${cy-8} L${cx-1.5},${cy+8} M${cx+2},${cy-8} L${cx+1.5},${cy+8}" stroke="var(--shape)" stroke-width="1.5"/>`;
+  return "";
+}
+function day(spec){
+  const items=spec.split(",");
+  const h=items.reduce((a,k)=>a+(k==="hourglass"?34:22),0);
+  let y=38-h/2, s=`<svg viewBox="0 0 100 76" role="img" aria-label="Day shapes hoisted on a mast"><rect width="100" height="76" fill="var(--sky)"/><rect x="0" y="62" width="100" height="14" fill="var(--water)"/><line x1="30" y1="4" x2="30" y2="66" stroke="var(--shape)" stroke-width="2.5"/><line x1="30" y1="10" x2="62" y2="10" stroke="var(--shape)" stroke-width="1.5"/><line x1="62" y1="10" x2="62" y2="${y}" stroke="var(--shape)" stroke-width="1"/>`;
+  items.forEach(k=>{const hh=k==="hourglass"?34:22;s+=shapeSvg(k,62,y+hh/2);y+=hh});
+  return s+"</svg>";
+}
+
+const LIGHTS = [
+  ["w:50,16 g:36,58 r:64,58","Power-driven vessel, head-on","Masthead light and both sidelights. Under 50 m, or a small boat with an all-round white. Both of you turn to starboard."],
+  ["w:30,40 w:70,16 r:30,60","Power-driven vessel, 50 m+, port side","Two masthead lights, lower one forward, plus red. It's crossing from your right toward your left."],
+  ["w:50,22 g:50,60","Power-driven vessel, starboard side","Masthead light and green. It's crossing from your left toward your right; if you're under power, you're the stand-on vessel."],
+  ["r:50,60","Sailing vessel, port side","Red sidelight only, no masthead light. It's crossing from your right toward your left."],
+  ["g:38,60 r:62,60","Sailing vessel, head-on","Both sidelights and no white light above: a sailboat (or a small boat) pointed at you."],
+  ["r:50,14 g:50,28 r:44,62","Sailing vessel with red over green","Optional all-round red over green at the masthead, plus its port sidelight."],
+  ["w:50,58","Single white light","A vessel's sternlight (you're overtaking it), a vessel at anchor, or a small power boat seen from astern."],
+  ["w:32,24 w:72,44","Vessel at anchor, 50 m+","Two all-round whites, the forward one higher. A ship this size may also light its decks."],
+  ["r:50,20 r:50,38","Not under command","Red over red, the captain is dead. If it's making way you'd also see sidelights and a sternlight."],
+  ["r:50,14 w:50,30 r:50,46","Restricted in ability to maneuver","Red, white, red. Dredges and tugs add more lights when they're under way."],
+  ["g:50,22 w:50,38","Trawling","Green over white, trawling tonight. Not making way, or seen from astern."],
+  ["r:50,22 w:50,38","Fishing (not trawling)","Red over white, fishing at night. Nets or lines out; keep clear."],
+  ["w:50,22 r:50,38","Pilot vessel on duty","White over red, pilot ahead."],
+  ["r:50,12 r:50,28 r:50,44","Constrained by draft","Three all-round reds in a vertical line. International Rules only."],
+  ["y:50,40 w:50,56","Towing astern, seen from behind","Yellow towing light above the white sternlight. Never pass between a tug and its tow."],
+  ["w:50,14 w:50,30 g:38,60 r:62,60","Towing vessel, head-on","Two masthead lights in a vertical line (three if the tow is over 200 m) plus sidelights."],
+  ["w:28,26 r:66,30 r:66,46","Vessel aground","Anchor light plus red over red. Shallow water nearby."]
+];
+const SHAPES = [
+  ["ball","Anchored","One black ball forward."],
+  ["ball,ball","Not under command","Two balls, like its two red lights."],
+  ["ball,ball,ball","Aground","Three balls in a vertical line."],
+  ["ball,diamond,ball","Restricted in ability to maneuver","Ball, diamond, ball, matching red-white-red."],
+  ["diamond","Towing, tow over 200 m","A diamond on both the tug and the tow."],
+  ["conedown","Sailboat motorsailing","Cone, point down, forward. Inland, boats under 12 m needn't show it."],
+  ["hourglass","Engaged in fishing","Two cones with points together."],
+  ["basket","Fishing, under 20 m","May show a basket instead of the two cones."],
+  ["cyl","Constrained by draft","A cylinder. International Rules only."]
+];
+const FOG = [
+  ["—","2 min","Power-driven vessel making way"],
+  ["— —","2 min","Power-driven vessel underway but stopped (not making way)"],
+  ["— • •","2 min","Sailing vessel; also NUC, RAM, CBD, fishing, and a vessel towing or pushing"],
+  ["— • • •","2 min","Manned vessel being towed (last in the tow), right after the tug's signal"],
+  ["Bell rung rapidly for 5 s","1 min","Vessel at anchor (100 m+: bell forward, then gong aft). May add • — • to warn an approaching vessel"],
+  ["3 strokes, rapid bell, 3 strokes","1 min","Vessel aground"],
+  ["• • • •","with its signal","Pilot vessel on duty, as an identity signal"]
+];
+
+/* ---------- flashcards: [topic, term, definition, optional picture] ---------- */
+const CARDS = [
+ ["wx-forecast","NOAA Weather Radio","Continuous NWS broadcasts on VHF weather channels WX1–WX7 (162.400–162.550 MHz)."],
+ ["wx-forecast","Coastal Waters Forecast","NWS zone forecast for bays and coastal waters: wind, seas, weather, and hazards."],
+ ["wx-forecast","Knots vs mph","Marine forecasts use knots; land forecasts use mph. 1 kt ≈ 1.15 mph."],
+ ["wx-forecast","Wind direction","Named for where the wind comes from. A NW wind blows from the northwest."],
+ ["wx-forecast","Significant wave height","Average height of the highest one-third of waves. Some waves will be about twice that."],
+ ["wx-forecast","Wave period","Seconds between crests. Short period = steep chop; long period = gentle swell."],
+ ["wx-forecast","Gusts","Brief peaks above the sustained wind. Set sail area for the gusts."],
+ ["wx-warn","Small Craft Advisory","Wind of roughly 18–25 kt (set by region) up to 33 kt, or hazardous seas."],
+ ["wx-warn","Gale Warning","Sustained winds or frequent gusts of 34–47 kt."],
+ ["wx-warn","Storm Warning","Sustained winds or frequent gusts of 48–63 kt."],
+ ["wx-warn","Special Marine Warning","Short-fused: thunderstorm or squall with 34+ kt, waterspouts, or large hail, usually under 2 hours."],
+ ["wx-warn","Watch vs warning","Watch: conditions possible, be ready. Warning: happening or imminent, act."],
+ ["wx-warn","Dense Fog Advisory","Widespread fog with visibility typically 1 nautical mile or less."],
+ ["wx-wind","Beaufort scale","Scale of wind force 0–12 matched to the look of the sea."],
+ ["wx-wind","Force 3","Gentle breeze, 7–10 kt. Large wavelets, scattered whitecaps."],
+ ["wx-wind","Force 4","Moderate breeze, 11–16 kt. Fairly frequent whitecaps. Often time to reef a small keelboat."],
+ ["wx-wind","Force 5","Fresh breeze, 17–21 kt. Many whitecaps, some spray."],
+ ["wx-wind","Force 6","Strong breeze, 22–27 kt. Large waves, foam crests everywhere."],
+ ["wx-wind","Force 8","Gale, 34–40 kt."],
+ ["wx-wind","Wind pressure","Rises with the square of wind speed: 20 kt pushes about 4× as hard as 10 kt."],
+ ["wx-wind","Isobars","Lines of equal pressure. Close together = strong wind."],
+ ["wx-wind","Buys Ballot's law","Northern Hemisphere: back to the wind, low pressure is on your left."],
+ ["wx-wind","Circulation (N. Hemisphere)","Counterclockwise around a low, clockwise around a high."],
+ ["wx-wind","Falling barometer","A drop of 3 mb or more in 3 hours means strengthening wind and worsening weather."],
+ ["wx-wind","Standard pressure","1013 mb, or 29.92 inches of mercury."],
+ ["wx-wind","Veering","Wind shifting clockwise (e.g., S to W)."],
+ ["wx-wind","Backing","Wind shifting counterclockwise (e.g., W to S)."],
+ ["wx-local","Sea breeze","Afternoon onshore wind as land heats and warm air rises. Peaks mid to late afternoon."],
+ ["wx-local","Land breeze","Lighter offshore wind at night as land cools faster than water. Strongest near dawn."],
+ ["wx-local","Gradient wind","The large-scale wind from weather systems, as opposed to local breezes."],
+ ["wx-local","Lake breeze","The sea breeze effect on a large lake."],
+ ["wx-fronts","Cold front","Fast, steep. Squalls and thunderstorms, sharp veer to NW, pressure jumps, then clearing and cooler."],
+ ["wx-fronts","Warm front","Slow, gentle. Lowering clouds, long steady rain, poor visibility, gradual veer."],
+ ["wx-fronts","Cirrus","High, wispy ice clouds (mares' tails); can signal a warm front a day or more ahead."],
+ ["wx-fronts","Halo around sun or moon","Cirrostratus. Often a sign of an approaching warm front and rain."],
+ ["wx-fronts","Occluded front","A cold front that has caught up with a warm front."],
+ ["wx-fronts","Squall line","Line of thunderstorms, often ahead of a cold front."],
+ ["wx-storms","Cumulonimbus","Towering thunderstorm cloud with a flat anvil top."],
+ ["wx-storms","Gust front","Outflow wind ahead of a storm. Can arrive before the rain, from a new direction, and much stronger."],
+ ["wx-storms","Shelf cloud","Low, dark wedge along a storm's leading edge."],
+ ["wx-storms","Flash to bang","Seconds from lightning to thunder ÷ 5 = distance in statute miles."],
+ ["wx-storms","Waterspout","A tornado over water. Move away at right angles to its path."],
+ ["wx-fog","Dew point","Temperature at which air becomes saturated. Fog forms when air cools to it."],
+ ["wx-fog","Radiation fog","Forms on clear, calm nights as land cools; burns off by late morning."],
+ ["wx-fog","Advection fog","Warm, moist air over colder water; can persist for days and in wind."],
+ ["wx-fog","Sea smoke","Very cold air over warmer water; looks like steam."],
+ ["wx-reef","Reef early","Reef when you first think about it; easier to shake out than tie in."],
+ ["wx-reef","Slab (jiffy) reef","Lower the main to a reef cringle, hook the tack, re-tension the halyard, haul in the reef line."],
+ ["wx-reef","Reef points","Tied around the loose sail bundle with reef knots, not around the boom."],
+ ["wx-reef","Tack horn","Hook at the gooseneck where the luff reef cringle goes."],
+
+ ["nr-basics","COLREGS","International Regulations for Preventing Collisions at Sea, 1972."],
+ ["nr-basics","Demarcation line","Dashed magenta line on the chart dividing Inland and International Rules waters."],
+ ["nr-basics","Underway","Not at anchor, made fast to shore, or aground."],
+ ["nr-basics","Making way","Underway and moving through the water."],
+ ["nr-basics","Sailing vessel (definition)","Under sail with no engine in use. Motoring with sails up = power-driven."],
+ ["nr-basics","Engaged in fishing","Using nets, lines, or trawls that restrict maneuverability. Not trolling."],
+ ["nr-basics","CBD","Constrained by draft. International Rules only."],
+ ["nr-basics","Rule 2","Responsibility: good seamanship comes first; depart from the rules to avoid immediate danger."],
+ ["nr-basics","Rule 5","Lookout by sight and hearing at all times."],
+ ["nr-basics","Rule 6","Safe speed: able to stop or maneuver in time for the conditions."],
+ ["nr-basics","Rule 7","Risk of collision: steady bearing and closing range. If in doubt, it exists."],
+ ["nr-basics","Rule 8","Action to avoid collision: early, positive, large enough to be obvious."],
+ ["nr-conduct","Rule 9","Narrow channels: keep to starboard side; sailboats and boats under 20 m must not impede."],
+ ["nr-conduct","Rule 10","Traffic separation schemes: cross at right angles; don't impede ships in the lane."],
+ ["nr-conduct","Rule 12","Sailboats: port tack keeps clear; same tack, windward keeps clear."],
+ ["nr-conduct","Rule 13","Overtaking vessel keeps clear. Overtaking = approaching from more than 22.5° abaft the beam."],
+ ["nr-conduct","Rule 14","Power head-on: both turn to starboard."],
+ ["nr-conduct","Rule 15","Power crossing: the vessel with the other on its starboard side gives way."],
+ ["nr-conduct","Rule 16","Give-way vessel: early and substantial action."],
+ ["nr-conduct","Rule 17","Stand-on vessel: hold course and speed; may act, then must act if collision is imminent."],
+ ["nr-conduct","Rule 18","Pecking order: NUC, RAM, CBD, fishing, sailing, power."],
+ ["nr-conduct","Rule 19","Restricted visibility: no stand-on vessel; safe speed; slow on hearing a fog signal forward of the beam."],
+ ["nr-conduct","Windward side","The side opposite the main boom."],
+ ["nr-conduct","Not impede","Act early so the other vessel never has to change course for you."],
+ ["nr-lights","Masthead light","White, 225°, forward. Power-driven vessels."],
+ ["nr-lights","Sidelights","Green starboard, red port, 112.5° each."],
+ ["nr-lights","Sternlight","White, 135° aft."],
+ ["nr-lights","Towing light","Yellow, 135° aft, above the sternlight."],
+ ["nr-lights","Tricolor","Combined sidelights and sternlight at the masthead; sailboats under 20 m under sail only."],
+ ["nr-lights","Red over green (all-round)","Optional sailing-vessel lights at the masthead. Never with a tricolor."],
+ ["nr-lights","Sailboat under 7 m","Lights if practicable; otherwise a white flashlight ready to show."],
+ ["nr-lights","Range lights","Two masthead lights, lower forward, on vessels 50 m+. Show heading."],
+ ["nr-lights","Flashing blue light","Inland: law enforcement vessel."],
+ ["nr-lights","Special flashing yellow","Inland: bow of a barge being pushed ahead."],
+ ["nr-shapes","Cone, point down","Sailboat motorsailing."],
+ ["nr-shapes","One ball","Anchored."],
+ ["nr-shapes","Two balls","Not under command."],
+ ["nr-shapes","Three balls","Aground."],
+ ["nr-shapes","Ball, diamond, ball","Restricted in ability to maneuver."],
+ ["nr-shapes","Two cones, points together","Engaged in fishing."],
+ ["nr-shapes","Cylinder","Constrained by draft."],
+ ["nr-shapes","Diamond","Towing, with tow over 200 m."],
+ ["nr-sound","Short blast","About 1 second."],
+ ["nr-sound","Prolonged blast","4 to 6 seconds."],
+ ["nr-sound","1 short (International)","I am altering course to starboard."],
+ ["nr-sound","1 short (Inland)","I intend to leave you on my port side."],
+ ["nr-sound","2 short (International)","I am altering course to port."],
+ ["nr-sound","2 short (Inland)","I intend to leave you on my starboard side."],
+ ["nr-sound","3 short","Operating astern propulsion."],
+ ["nr-sound","5+ short and rapid","Danger or doubt."],
+ ["nr-sound","1 prolonged (in sight)","Approaching a blind bend. Inland: also leaving a dock."],
+ ["nr-sound","Fog: 1 prolonged / 2 min","Power-driven vessel making way."],
+ ["nr-sound","Fog: 2 prolonged / 2 min","Power-driven vessel underway, not making way."],
+ ["nr-sound","Fog: 1 prolonged + 2 short","Sailing vessel (also NUC, RAM, CBD, fishing, towing)."],
+ ["nr-sound","Fog: 1 prolonged + 3 short","Manned vessel being towed."],
+ ["nr-sound","Fog: rapid bell 5 s / 1 min","Vessel at anchor."],
+ ["nr-sound","Fog: 3 strokes, bell, 3 strokes","Vessel aground."],
+ ["nr-sound","Boat under 12 m in fog","Any efficient sound signal at least every 2 minutes."],
+ ["nr-distress","Continuous fog signal","Distress."],
+ ["nr-distress","Arms raised and lowered","Slowly and repeatedly: distress."],
+ ["nr-distress","N over C","Code flags meaning distress."],
+ ["nr-distress","Orange smoke","Daytime distress signal."]
+];
+LIGHTS.forEach(l=>CARDS.push(["nr-night",l[1],l[2],night(l[0])]));
+
+/* ---------- quiz: [topic, question, options, answer index, explanation, optional picture] ---------- */
+const Q = [
+ ["wx-forecast","A forecast says \"NE winds 10 to 15 kt.\" Where is the wind coming from?",["The northeast","The southwest","It's blowing toward the northeast","It varies"],0,"Wind is always named for the direction it comes from."],
+ ["wx-forecast","Marine forecasts give wind speed in:",["Miles per hour","Knots","Kilometers per hour","Beaufort force only"],1,"NWS marine forecasts use knots. Public land forecasts use mph."],
+ ["wx-forecast","A land forecast calls for 23 mph winds. That's about:",["15 kt","20 kt","26 kt","30 kt"],1,"Divide mph by about 1.15. 23 mph ≈ 20 kt."],
+ ["wx-forecast","\"Seas 3 ft\" means:",["Every wave will be 3 ft","The largest wave will be 3 ft","The average of the highest third of waves is about 3 ft","Swell only"],2,"Seas are given as significant wave height. Occasional waves may reach about 6 ft."],
+ ["wx-forecast","Which waves are steepest and most uncomfortable for a given height?",["Long-period swell","Short-period wind waves","Waves in deep water","Waves with a 15-second period"],1,"Short period means crests close together, so steeper, choppier waves."],
+ ["wx-forecast","Where do most VHF radios get NOAA weather broadcasts?",["Channel 16","Channel 9","The WX channels","Channel 22A"],2,"NOAA Weather Radio broadcasts on the WX channels, 162.400–162.550 MHz."],
+ ["wx-forecast","You sail on an inland lake with no marine forecast. The best official source is:",["The nearest Coastal Waters Forecast","The NWS point forecast and hourly graph for the lake","A tide table","Channel 16"],1,"Use the point forecast for the lake and watch for a Lake Wind Advisory."],
+ ["wx-warn","A Small Craft Advisory means:",["Only boats under 16 ft are affected","Conditions are hazardous to small boats like yours","A gale is in progress","The harbor is closed"],1,"\"Small craft\" has no fixed size. If you're on a small sailboat, it applies to you."],
+ ["wx-warn","A Gale Warning is issued for winds of:",["22–33 kt","34–47 kt","48–63 kt","64+ kt"],1,"Gale: 34–47 kt. Storm: 48–63 kt."],
+ ["wx-warn","A Special Marine Warning is broadcast for:",["A forecast of light winds","A short-lived thunderstorm or squall with 34+ kt winds, waterspouts, or large hail","High tides","A scheduled bridge closure"],1,"Short-fused, usually under 2 hours. Take action immediately."],
+ ["wx-warn","The difference between a watch and a warning:",["None","Watch: possible; warning: happening or imminent","Watch: imminent; warning: possible","A warning applies only offshore"],1,"A watch means be ready; a warning means act now."],
+ ["wx-warn","What upper wind limit ends a Small Craft Advisory and starts a Gale Warning?",["25 kt","30 kt","33/34 kt","40 kt"],2,"Small Craft Advisory tops out at 33 kt; a Gale Warning starts at 34 kt."],
+ ["wx-wind","Fairly frequent whitecaps and small waves indicate about:",["Force 1, 1–3 kt","Force 2, 4–6 kt","Force 4, 11–16 kt","Force 7, 28–33 kt"],2,"Force 4, moderate breeze. Scattered whitecaps start at force 3."],
+ ["wx-wind","If the wind goes from 10 kt to 20 kt, the force on your sails becomes roughly:",["The same","Twice as strong","Four times as strong","Eight times as strong"],2,"Wind force rises with the square of speed."],
+ ["wx-wind","On a weather map, closely spaced isobars mean:",["Light wind","Strong wind","Rain","High pressure"],1,"A steep pressure gradient drives strong wind."],
+ ["wx-wind","In the Northern Hemisphere, wind circulates around a low pressure center:",["Clockwise","Counterclockwise","Straight in","Straight out"],1,"Counterclockwise around a low, clockwise around a high."],
+ ["wx-wind","You stand with your back to the wind (Northern Hemisphere). The low pressure is:",["On your right","On your left","Directly behind you","Directly ahead"],1,"Buys Ballot's law: low on the left, slightly ahead."],
+ ["wx-wind","Your barometer drops 4 mb in 3 hours. This suggests:",["Fair weather","Strengthening wind and worsening weather","Fog","Nothing; the number is what matters"],1,"A fall of 3 mb or more in 3 hours is a warning sign."],
+ ["wx-wind","The wind shifts from south to west. This is called:",["Backing","Veering","Heading","Lifting"],1,"Clockwise is veering; counterclockwise is backing."],
+ ["wx-wind","Standard sea-level pressure is:",["1000 mb","1013 mb","1050 mb","950 mb"],1,"1013 mb, or 29.92 inches of mercury."],
+ ["wx-local","A sea breeze is caused by:",["The tide","Land heating faster than water","Cold fronts","The moon"],1,"Warm air rises over hot land; cooler air flows in from the water."],
+ ["wx-local","A sea breeze usually peaks:",["Before dawn","Mid to late afternoon","At midnight","Right at sunrise"],1,"It builds late morning and peaks mid to late afternoon, fading near sunset."],
+ ["wx-local","Which day is most likely to produce a strong sea breeze?",["Cloudy and cool with strong offshore wind","Hot and sunny with light gradient wind","Rainy","Foggy and calm all day"],1,"Strong heating and a light gradient wind give the sea breeze room to build."],
+ ["wx-local","A land breeze blows:",["Onshore in the afternoon","Offshore at night","Only in winter","Along the shore"],1,"At night land cools faster, so air flows from land to water."],
+ ["wx-local","A sign the sea breeze is about to fill in:",["Cirrus overhead","A line of cumulus over the shore and a dark band of ripples on the water","A falling barometer","Fog"],1,"Cumulus forms over the heated land; the new breeze shows as darker water moving in."],
+ ["wx-fronts","Which front brings a narrow band of thunderstorms and a sharp wind shift?",["Warm front","Cold front","Stationary front","Sea breeze front"],1,"Cold fronts are steep and fast, with squalls and a sharp veer."],
+ ["wx-fronts","After a cold front passes, you typically get:",["Warm, humid, hazy air","Clearing skies, cooler air, gusty NW wind","Days of drizzle","Dead calm"],1,"Behind a cold front: clearing, cooler, and often a strong, gusty northwest wind."],
+ ["wx-fronts","High cirrus followed by a halo around the sun and gradually lowering clouds suggests:",["A cold front within the hour","An approaching warm front and steady rain","Clearing weather","A sea breeze"],1,"That's the classic warm front cloud sequence."],
+ ["wx-fronts","Which front usually gives more warning time?",["Cold front","Warm front","Both the same","Neither gives warning"],1,"Warm front cirrus can show a day or more ahead; cold fronts arrive quickly."],
+ ["wx-fronts","In mid-latitudes, weather systems generally move:",["East to west","West to east","North to south","Randomly"],1,"That's why a red sky at sunset (clear to the west) suggests fair weather coming."],
+ ["wx-storms","A tall cloud with a flat, spreading anvil top is a:",["Cirrus","Stratus","Cumulonimbus","Fair-weather cumulus"],2,"Cumulonimbus is the thunderstorm cloud."],
+ ["wx-storms","The first strong wind from a thunderstorm often:",["Arrives after the rain","Arrives before the rain and from a different direction","Is always light","Comes from the same direction as the breeze"],1,"The gust front (outflow) runs ahead of the storm."],
+ ["wx-storms","You count 10 seconds between lightning and thunder. The strike was about:",["10 miles away","5 miles away","2 miles away","Half a mile away"],2,"10 ÷ 5 = 2 statute miles. Well within striking distance."],
+ ["wx-storms","A thunderstorm is approaching and you can't reach shelter. First priority:",["Raise more sail to outrun it","Life jackets on and reduce sail before it hits","Anchor next to the shore it's blowing toward","Stand by the mast"],1,"Get everyone in PFDs, reef or drop sail early, and find sea room."],
+ ["wx-storms","During lightning, the safest place aboard a small sailboat is:",["Holding the backstay","Low in the cockpit away from metal fittings","On the bow","Up the mast"],1,"Stay low and avoid the mast, shrouds, and touching two metal fittings."],
+ ["wx-storms","How long should you wait after the last thunder before considering it safe?",["5 minutes","About 30 minutes","Until the rain stops","No need to wait"],1,"Lightning can strike well behind the storm."],
+ ["wx-fog","Fog forms when:",["Air temperature rises above the dew point","Air cools to its dew point","Wind exceeds 20 kt","The barometer rises"],1,"Saturated air condenses into fog."],
+ ["wx-fog","Fog that forms on a clear, calm night and burns off by late morning is:",["Advection fog","Radiation fog","Sea smoke","Frontal fog"],1,"Radiation fog comes from the land cooling overnight."],
+ ["wx-fog","Fog caused by warm, moist air moving over cold water, which can last for days, is:",["Radiation fog","Advection fog","Ice fog","Steam fog"],1,"Advection fog can persist even in a fair breeze."],
+ ["wx-fog","In fog under sail, your sound signal is:",["One prolonged blast every 2 minutes","One prolonged and two short every 2 minutes","Two prolonged every 2 minutes","Five short blasts"],1,"Sailing vessels sound one prolonged followed by two short."],
+ ["wx-reef","The best time to reef is:",["When the rail is under water","When you first think about it","After the storm arrives","Only at the dock"],1,"Reef early; it's easy to shake out a reef in a lull."],
+ ["wx-reef","Which is a sign you need to reef?",["Light, steady wind","Heavy weather helm and rounding up in gusts","Telltales streaming","Seas under 1 ft"],1,"Too much sail makes the boat heel hard, load up the helm, and round up."],
+ ["wx-reef","When tying in a slab reef, the reef points are tied:",["Around the boom","Around the loose bundle of sail","To the lifelines","To the tack horn"],1,"Tying around the boom can tear the sail if the reef line slips."],
+ ["wx-reef","Before lowering the main halyard to reef, you should:",["Tighten the vang hard","Ease the mainsheet and vang and take up the topping lift","Jibe","Raise the jib halyard"],1,"That takes load off the sail and keeps the boom from dropping."],
+
+ ["nr-basics","The International Rules and Inland Rules are separated on the chart by:",["The 3-mile line","COLREGS demarcation lines","The 100-fathom curve","State boundaries"],1,"Dashed magenta demarcation lines, usually across harbor entrances."],
+ ["nr-basics","A sailboat drifting with sails down and no anchor is:",["Not underway","Underway but not making way","Making way","At anchor"],1,"Underway means not anchored, made fast, or aground. Drifting is underway."],
+ ["nr-basics","A sailboat with its sails up and engine running is, under the rules:",["A sailing vessel","A power-driven vessel","Restricted in ability to maneuver","Not under command"],1,"Any vessel using machinery for propulsion is power-driven."],
+ ["nr-basics","A boat trolling fishing lines is:",["Engaged in fishing","Not engaged in fishing under the rules","Not under command","RAM"],1,"Trolling lines don't restrict maneuverability, so it's an ordinary vessel."],
+ ["nr-basics","Which category exists only in the International Rules?",["NUC","RAM","Constrained by draft","Engaged in fishing"],2,"The Inland Rules have no constrained-by-draft category."],
+ ["nr-basics","You take a series of bearings on an approaching ship. They stay the same while it gets closer. This means:",["It will pass ahead","It will pass astern","Risk of collision exists","It's anchored"],2,"Steady bearing, decreasing range: risk of collision (Rule 7)."],
+ ["nr-basics","Rule 8 says action to avoid collision should be:",["Small and gradual","Early, positive, and large enough to be obvious","Taken only by the stand-on vessel","Taken at the last moment"],1,"A bold, early change is easy for the other vessel to see."],
+ ["nr-basics","Rule 2 (Responsibility) allows you to:",["Ignore the rules on weekends","Depart from the rules when needed to avoid immediate danger","Skip a lookout","Always claim right of way"],1,"Good seamanship comes first."],
+ ["nr-conduct","A sailboat on port tack meets one on starboard tack. Who keeps clear?",["Starboard tack","Port tack","The faster one","The larger one"],1,"Rule 12: port tack keeps clear."],
+ ["nr-conduct","Two sailboats on the same tack converge. Who keeps clear?",["The leeward boat","The windward boat","The boat on the right","Neither"],1,"Rule 12: windward keeps clear of leeward."],
+ ["nr-conduct","You're on port tack and can't tell which tack a sailboat to windward is on. You should:",["Hold course","Keep clear","Sound one short blast","Tack immediately onto starboard"],1,"Rule 12(a)(iii): keep clear if in doubt."],
+ ["nr-conduct","Your sailboat is overtaking a slower power boat. Who keeps clear?",["The power boat","Your sailboat","Whoever is larger","Neither"],1,"Rule 13: the overtaking vessel keeps clear, whatever its type."],
+ ["nr-conduct","You're overtaking if you approach another vessel from more than ____ abaft its beam.",["10°","22.5°","45°","90°"],1,"At night you'd see only its sternlight."],
+ ["nr-conduct","Two power-driven vessels meet head-on. They should:",["Both turn to port","Both turn to starboard","The smaller one stops","The one on the right holds course"],1,"Rule 14: both alter to starboard and pass port to port."],
+ ["nr-conduct","Two power-driven vessels are crossing. Who gives way?",["The one with the other on its port side","The one with the other on its starboard side","The faster one","The smaller one"],1,"Rule 15: if the other vessel is on your starboard side, you give way."],
+ ["nr-conduct","The stand-on vessel must:",["Turn away early","Hold course and speed, and act if collision becomes unavoidable by the give-way vessel alone","Sound five short blasts first","Always stop"],1,"Rule 17."],
+ ["nr-conduct","Under sail, which must you keep clear of?",["A power-driven pleasure boat crossing","A vessel engaged in fishing with nets","A power boat that is overtaking you","A seaplane on the water"],1,"Rule 18: sailing vessels keep clear of NUC, RAM, and fishing vessels (and avoid impeding CBD)."],
+ ["nr-conduct","In a narrow channel, a 26 ft sailboat meets a container ship that can only navigate inside the channel. The sailboat:",["Is stand-on because it's under sail","Must not impede the ship","Should sound one prolonged blast and hold course","Should cross ahead quickly"],1,"Rule 9: vessels under 20 m and sailing vessels must not impede."],
+ ["nr-conduct","When crossing a traffic lane in a traffic separation scheme, you should head:",["Diagonally with the traffic","As close to a right angle to the lane as practical","Against the traffic","Along the separation zone"],1,"Rule 10: cross at right angles to spend the least time in the lane."],
+ ["nr-conduct","In fog, you hear a fog signal apparently forward of your beam. You should:",["Hold course and speed as stand-on vessel","Reduce to minimum steering speed and, if necessary, stop","Turn hard to port","Speed up to pass quickly"],1,"Rule 19(e)."],
+ ["nr-conduct","In restricted visibility with vessels not in sight of each other:",["Normal stand-on rules apply","There is no stand-on vessel; Rule 19 applies","Sailboats always have right of way","Larger vessels have right of way"],1,"Rules 11–18 apply only to vessels in sight of one another."],
+ ["nr-lights","A sidelight shows over an arc of:",["90°","112.5°","135°","225°"],1,"Each sidelight shows from dead ahead to 22.5° abaft the beam."],
+ ["nr-lights","A sternlight shows over an arc of:",["112.5°","135°","180°","225°"],1,"67.5° either side of dead astern."],
+ ["nr-lights","The white masthead (steaming) light is shown by:",["Sailing vessels under sail","Power-driven vessels underway","Anchored vessels","All vessels"],1,"A sailboat under sail shows no masthead light; showing one says you're motoring."],
+ ["nr-lights","A masthead tricolor may be used by:",["Any vessel","Sailing vessels under 20 m under sail only","Power boats under 12 m","Sailboats when motoring"],1,"Never use the tricolor when the engine is running."],
+ ["nr-lights","A sailboat may show optional all-round red over green at the masthead:",["Together with the tricolor","Only instead of the tricolor, with sidelights and sternlight","Only at anchor","Only when motoring"],1,"Red over green can't be combined with the tricolor."],
+ ["nr-lights","A sailboat under 7 m with no fixed lights must:",["Stay in port at night","Have a white flashlight or lantern ready to show in time","Show a red flare","Show nothing"],1,"Rule 25(d)."],
+ ["nr-lights","Inland, a flashing blue light is shown by:",["Dredges","Law enforcement vessels","Pilot boats","Fishing boats"],1,"Inland Annex V allows law enforcement vessels to show flashing blue."],
+ ["nr-night","Identify these lights.",["Sailing vessel, port side","Power-driven vessel, starboard side","Vessel at anchor","Pilot vessel"],1,"White masthead light plus green: power-driven, starboard side toward you. It's crossing from your left; you're the stand-on vessel if you're power-driven.","w:50,22 g:50,60"],
+ ["nr-night","You're motoring and see these lights on your starboard bow. What should you do?",["Hold course and speed","Give way; it's on your starboard side","Sound one prolonged blast","Nothing; it's anchored"],1,"Red and a masthead light: a power-driven vessel showing its port side, on your starboard side. \"If to starboard red appear, 'tis your duty to keep clear.\"","w:50,22 r:50,60"],
+ ["nr-night","You see two white lights in a vertical line with red and green below. This is:",["Two anchored vessels","A vessel towing, coming toward you","A pilot vessel","A sailboat"],1,"Two masthead lights in a vertical line mark a towing vessel; sidelights show it's head-on.","w:50,14 w:50,30 g:38,60 r:62,60"],
+ ["nr-night","Two white lights, the lower one on the left, with a red light below the left one. The vessel is:",["Heading to your right","Heading to your left","Coming straight at you","Anchored"],1,"The lower masthead light is forward. Seeing its port (red) side confirms it's heading left.","w:30,40 w:70,16 r:30,60"]
+];
+/* generated identification questions from the galleries */
+function genFrom(list,topic,picFn,stem){
+  list.forEach((it,i)=>{
+    const others=shuffle(list.filter((x,j)=>j!==i)).slice(0,3).map(x=>x[1]);
+    Q.push([topic,stem,[it[1],...others],0,it[2],picFn(it[0])]);
+  });
+}
+
+/* ---------- helpers ---------- */
+function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function el(tag,attrs,html){const e=document.createElement(tag);for(const k in attrs||{})e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e}
+
+genFrom(LIGHTS,"nr-night",s=>night(s),"What vessel shows these lights?");
+genFrom(SHAPES,"nr-shapes",s=>day(s),"What does this day shape mean?");
+FOG.forEach((f,i)=>{
+  const others=shuffle(FOG.filter((x,j)=>j!==i)).slice(0,3).map(x=>x[2]);
+  Q.push(["nr-sound",`In fog you hear: ${f[0]}${/min/.test(f[1])&&!/Bell|strokes/.test(f[0])?` (every ${f[1]})`:""}. What is it?`,[f[2],...others],0,`${f[0]}: ${f[2]}.`]);
+});
+Q.push(
+ ["nr-sound","A short blast lasts about:",["1 second","2 seconds","4–6 seconds","10 seconds"],0,"Short: about 1 s. Prolonged: 4–6 s."],
+ ["nr-sound","Under International Rules, one short blast from a ship in sight means:",["I intend to leave you on my port side","I am altering my course to starboard","I'm backing","Danger"],1,"International signals announce an action being taken."],
+ ["nr-sound","Under Inland Rules, one short blast from a power vessel in sight means:",["I am altering course to starboard","I intend to leave you on my port side","I'm operating astern","Danger"],1,"Inland signals state intent; answer with the same signal to agree."],
+ ["nr-sound","Three short blasts mean:",["I'm turning to port","I'm operating astern propulsion","I'm anchored","Danger"],1,"Same under both sets of rules."],
+ ["nr-sound","Five or more short, rapid blasts mean:",["Hello","Danger or doubt about your intentions","I'm overtaking","Distress"],1,"The danger/doubt signal. Not a distress signal."],
+ ["nr-sound","Inland, a vessel being overtaken hears two short blasts. If it agrees, it should:",["Sound one short","Sound two short","Sound five short","Sound one prolonged"],1,"Answer with the same signal to agree; sound the danger signal if it isn't safe."],
+ ["nr-sound","One prolonged blast when nearing a blind bend in a river is answered by:",["One short","One prolonged","Three short","Nothing"],1,"Vessels around the bend reply with a prolonged blast."],
+ ["nr-sound","Your boat is under 12 m. In fog you must:",["Sound nothing","Make some efficient sound signal at least every 2 minutes","Sound only at night","Use only the radio"],1,"Rule 35(i). Most small boats use the standard signal on an air horn."],
+ ["nr-sound","A whistle and bell are both required on vessels of:",["Any size","12 m and over","20 m and over","100 m and over"],2,"Whistle at 12 m+, whistle and bell at 20 m+, plus gong at 100 m+."],
+ ["nr-distress","Which is a distress signal?",["Five short blasts","Continuous sounding of a fog horn","One prolonged blast","A white flashlight"],1,"Continuous sounding of any fog-signal device is a distress signal."],
+ ["nr-distress","Slowly and repeatedly raising and lowering outstretched arms means:",["Hello","Distress","Come alongside","All clear"],1,"An Annex IV distress signal."],
+ ["nr-distress","Which daytime signal indicates distress?",["Orange smoke","A black ball","A cone point down","A white flag"],0,"Orange smoke is a daytime visual distress signal."],
+ ["nr-distress","Code flags N over C mean:",["Not under command","Distress","Need a pilot","Diver down"],1,"N over C is an international distress signal."]
+);
+
+/* ---------- added modules ---------- */
+Object.assign(TOPICS,{
+  "wx-lakes":["wx","Southern lake weather"],
+  "ch-latlon":["ch","Latitude & longitude"], "ch-chart":["ch","Reading the chart"], "ch-lights":["ch","Buoy & light labels"],
+  "ch-compass":["ch","Compass & variation"], "ch-plot":["ch","Plotting & dead reckoning"], "ch-tides":["ch","Tides, currents & lakes"],
+  "sf-vhf":["sf","VHF radio"], "sf-mayday":["sf","Mayday & urgency calls"], "sf-mob":["sf","Crew overboard & heaving to"],
+  "sf-pre":["sf","Prep, fire & grounding"], "sf-health":["sf","Cold water & heat"],
+  "dk-power":["dk","Handling under power"], "dk-dock":["dk","Docking & leaving"], "dk-lines":["dk","Dock lines"],
+  "dk-moor":["dk","Sail & mooring approaches"], "dk-anchor":["dk","Anchoring"],
+  "st-wind":["st","Apparent wind"], "st-shape":["st","Sail shape"], "st-tell":["st","Telltales"],
+  "st-controls":["st","Trim controls"], "st-power":["st","Power, heel & helm"], "st-shifts":["st","Shifts & downwind"]
+});
+CARDS.push(
+ ["wx-lakes","Hourly weather graph","NWS point-forecast graph of wind, gusts, and storm chances hour by hour. Best lake-day planning tool."],
+ ["wx-lakes","Lake Wind Advisory","Inland NWS advisory for wind strong enough to make small boats on lakes hazardous."],
+ ["wx-lakes","Pop-up thunderstorm","Summer air-mass storm that grows from cumulus in an hour or less, usually afternoon."],
+ ["wx-lakes","Blue norther","Strong southern Plains cold front: sudden north wind, often 25+ kt, and a sharp temperature drop."],
+ ["wx-lakes","Wind shadow","Light or no wind near a high or tree-lined windward shore."],
+ ["wx-lakes","Fetch","Distance of open water the wind blows across. Longer fetch = bigger chop."],
+ ["wx-lakes","Funneling","Wind accelerating through a gap, valley, or long cove."],
+ ["wx-lakes","Full pool","A reservoir's normal full level. Below it, hazards come closer to the surface."],
+
+ ["ch-latlon","Latitude","0–90° N or S of the equator. Scale on the chart's sides."],
+ ["ch-latlon","Longitude","0–180° E or W of Greenwich. Scale on the top and bottom."],
+ ["ch-latlon","1 minute of latitude","1 nautical mile."],
+ ["ch-latlon","Position order","Latitude first, then longitude."],
+ ["ch-chart","Large-scale chart","Small area, lots of detail (e.g., 1:20,000 harbor chart)."],
+ ["ch-chart","Small-scale chart","Large area, little detail (e.g., 1:1,200,000)."],
+ ["ch-chart","Chart datum (US tidal)","Mean lower low water. Soundings are measured from it."],
+ ["ch-chart","Bridge clearance","Measured above mean high water."],
+ ["ch-chart","Chart No. 1","The key to all NOAA chart symbols and abbreviations."],
+ ["ch-chart","Title block","Shows area, scale, and depth units. Check it first."],
+ ["ch-lights","Fl G 4s","Flashing green, once every 4 seconds."],
+ ["ch-lights","Q","Quick flashing, about 60 per minute: extra caution."],
+ ["ch-lights","Iso","Equal periods of light and dark."],
+ ["ch-lights","Oc","Occulting: light longer than dark."],
+ ["ch-lights","Mo (A)","Morse A (short-long): safe water mark."],
+ ["ch-lights","Nominal range (M)","How far a light is visible in clear weather, in nautical miles."],
+ ["ch-compass","Variation","Angle between true and magnetic north, from the compass rose."],
+ ["ch-compass","Deviation","Compass error from the boat's own magnetism; varies with heading."],
+ ["ch-compass","TVMDC","True, Variation, Magnetic, Deviation, Compass."],
+ ["ch-compass","East is least, west is best","True to magnetic: subtract east, add west."],
+ ["ch-compass","Compass rose rings","Outer ring true, inner ring magnetic."],
+ ["ch-plot","Parallel rules","Transfer a direction between the course line and the compass rose."],
+ ["ch-plot","Dividers","Measure distance against the latitude scale."],
+ ["ch-plot","Line of position","A line you know you're somewhere on, from a bearing or range."],
+ ["ch-plot","Fix","Intersection of two or more LOPs. Drawn as a circle."],
+ ["ch-plot","Cocked hat","Small triangle from three bearings; you're probably inside it."],
+ ["ch-plot","Range","Two charted objects in line: a precise LOP."],
+ ["ch-plot","DR position","Position from course, speed, and time. Drawn as a half circle."],
+ ["ch-plot","60 D = S T","Distance × 60 = speed × minutes."],
+ ["ch-tides","Flood / ebb","Tidal current toward land / toward the sea."],
+ ["ch-tides","Slack water","Pause in tidal current between flood and ebb."],
+ ["ch-tides","Set","Direction a current flows toward."],
+ ["ch-tides","Drift","Speed of a current in knots."],
+ ["ch-tides","Rule of twelfths","Tide rises 1, 2, 3, 3, 2, 1 twelfths of its range in successive hours."],
+
+ ["sf-vhf","Channel 16","Distress, safety, and calling. Monitor it."],
+ ["sf-vhf","Channel 9","Recreational calling channel."],
+ ["sf-vhf","Channel 13","Bridge-to-bridge navigation safety, 1 watt; bridges and locks."],
+ ["sf-vhf","Channel 22A","Coast Guard working channel."],
+ ["sf-vhf","Channel 70","DSC data only, never voice."],
+ ["sf-vhf","Channels 68, 69, 71, 72, 78A","Recreational working channels."],
+ ["sf-vhf","MMSI","Your radio's ID number; required for a DSC distress alert."],
+ ["sf-vhf","DSC distress button","Sends an automatic alert with GPS position. Hold about 5 seconds."],
+ ["sf-mayday","Mayday","Grave and imminent danger to vessel or life."],
+ ["sf-mayday","Pan-pan","Urgent, not immediately life-threatening."],
+ ["sf-mayday","Sécurité","Safety or navigation information."],
+ ["sf-mayday","Mayday contents","Boat name, position, nature of distress, help needed, number aboard, description."],
+ ["sf-mayday","Seelonce Mayday","Radio silence except for the emergency traffic."],
+ ["sf-mayday","Mayday relay","Passing on a distress call that has gone unanswered."],
+ ["sf-mob","Quick-stop","Head up right away, tack, leave the jib backed, circle back."],
+ ["sf-mob","Lifesling","Floating collar on a line; circle the person until they can reach it."],
+ ["sf-mob","Pick-up side","Stop with the person to leeward, alongside the cockpit."],
+ ["sf-mob","Heaving to","Tack without releasing the jib, ease the main, lash the tiller to leeward."],
+ ["sf-pre","Float plan","Where you're going, who's aboard, when to raise the alarm. Leave it ashore."],
+ ["sf-pre","Blower","Run at least 4 minutes before starting a gasoline inboard."],
+ ["sf-pre","Class B fire","Flammable liquids: fuel, oil."],
+ ["sf-pre","PASS","Pull, Aim at the base, Squeeze, Sweep."],
+ ["sf-pre","Kedging off","Setting an anchor in deep water and pulling the boat off a grounding."],
+ ["sf-health","1-10-1","1 min cold shock, 10 min useful movement, 1 hour to unconsciousness."],
+ ["sf-health","HELP position","Knees to chest in the water to save body heat."],
+ ["sf-health","Heat stroke","Confusion, hot skin. Emergency: cool immediately and call for help."],
+ ["sf-health","Heat exhaustion","Heavy sweating, weakness, nausea. Shade, cool, water."],
+
+ ["dk-power","Prop walk","Prop pulls the stern sideways in reverse. Right-hand prop: stern to port."],
+ ["dk-power","Prop wash","Burst of forward throttle across the rudder kicks the stern sideways."],
+ ["dk-power","Carry","How far the boat coasts after you stop power or head to wind."],
+ ["dk-power","Pivot point","Near the keel; the stern swings out as you turn."],
+ ["dk-power","Windage","Bow blows downwind at low speed."],
+ ["dk-dock","Approach angle","About 20–30°, slowly, into the stronger of wind or current."],
+ ["dk-dock","Wind onto the dock","Stop parallel a few feet off and let the wind push you in."],
+ ["dk-dock","Wind off the dock","Steeper approach, get a line on fast, power against a spring."],
+ ["dk-dock","Stern out","Motor forward against a bow spring led aft; stern swings out."],
+ ["dk-dock","Bow out","Back against a stern spring led forward; bow swings out."],
+ ["dk-dock","Slip line","Led around the dock cleat and back aboard so you can release it from the boat."],
+ ["dk-lines","Bow and stern lines","Hold the ends of the boat to the dock."],
+ ["dk-lines","Spring lines","Diagonal lines that stop fore-and-aft movement."],
+ ["dk-lines","Breast line","Straight across to the dock; usually temporary."],
+ ["dk-moor","Mooring pennant","Line from the mooring buoy you bring aboard to the bow cleat."],
+ ["dk-moor","Mooring approach","Slowly into the wind or current, stopping with the buoy at the bow."],
+ ["dk-moor","Docking under sail","Final approach on a close reach; stop by heading into the wind."],
+ ["dk-anchor","Rode","Chain and/or line between anchor and boat."],
+ ["dk-anchor","Bitter end","The inboard end of the rode; secure it to the boat."],
+ ["dk-anchor","Scope","Rode ÷ (depth + bow height). 7:1 normal, 10:1 in a blow."],
+ ["dk-anchor","Fluke (Danforth) anchor","Light, strong in sand and mud."],
+ ["dk-anchor","Swing room","Circle with radius about the length of your rode."],
+ ["dk-anchor","Setting the anchor","Back down gently, then firmly, watching a range ashore."],
+ ["dk-anchor","Anchor watch","Checking landmarks or a GPS alarm for dragging."],
+
+ ["st-wind","Apparent wind","True wind combined with wind from the boat's motion."],
+ ["st-wind","Apparent wind upwind","Stronger and farther forward than true wind."],
+ ["st-wind","Apparent wind downwind","Weaker than true wind; a run can hide how strong it's blowing."],
+ ["st-shape","Draft","Depth of the sail's curve. Full = power, flat = less heel."],
+ ["st-shape","Twist","Top of the sail falling off more than the bottom. More twist depowers."],
+ ["st-shape","Draft position","Ideally about 40–50% aft of the luff; wind blows it aft."],
+ ["st-tell","Windward telltale lifting","Too close to the wind or under-trimmed: bear away or trim in."],
+ ["st-tell","Leeward telltale fluttering","Stalled: head up or ease."],
+ ["st-tell","Top jib telltales break first","Move the jib lead forward."],
+ ["st-tell","Bottom jib telltales break first","Move the jib lead aft."],
+ ["st-tell","Top leech telltale curling behind","Main leech too tight: ease sheet or vang, or drop the traveler."],
+ ["st-controls","Traveler","Moves the boom sideways without changing leech tension."],
+ ["st-controls","Outhaul","Foot tension; tighten to flatten the lower main."],
+ ["st-controls","Cunningham","Luff tension; pulls draft forward."],
+ ["st-controls","Backstay","Bends the mast to flatten the main, tightens the forestay."],
+ ["st-controls","Jib lead","Car on a track; position controls jib twist and foot depth."],
+ ["st-controls","Horizontal luff wrinkles","Luff too loose; tighten halyard or cunningham."],
+ ["st-power","Depower order","Flatten, drop traveler, twist and ease in puffs, then reef."],
+ ["st-power","Best heel","Roughly 15–20° for most keelboats."],
+ ["st-power","Weather helm","Boat wants to round up. A little is good; a lot means too much sail or heel."],
+ ["st-power","Feathering","Heading up slightly in a gust to reduce heel."],
+ ["st-shifts","Header","Wind shifts forward; you must bear away."],
+ ["st-shifts","Lift","Wind shifts aft; you can head up."],
+ ["st-shifts","Tack on the headers","A header on one tack is a lift on the other."],
+ ["st-shifts","Preventer","Line holding the boom out to prevent an accidental jibe."],
+ ["st-shifts","Whisker pole","Holds the jib out when sailing wing-and-wing."]
+);
+Q.push(
+ ["wx-lakes","On most southern inland lakes, your main forecast source is:",["The Coastal Waters Forecast","The NWS point forecast and hourly graph for the lake","Tide tables","The Gulf of Mexico offshore forecast"],1,"Most inland lakes don't get marine forecasts. Use the point forecast and watch for a Lake Wind Advisory."],
+ ["wx-lakes","On a hot summer day on a southern lake, thunderstorms are most likely:",["Just after sunrise","From early afternoon into evening","Only at night","Only in winter"],1,"Daytime heating builds air-mass storms by afternoon. Sail in the morning."],
+ ["wx-lakes","The forecast says \"south wind 10 to 15 mph, gusts to 25 mph.\" In knots the gusts are about:",["15 kt","22 kt","29 kt","35 kt"],1,"25 ÷ 1.15 ≈ 22 kt."],
+ ["wx-lakes","A blue norther brings:",["Light south winds and humidity","A sudden strong north wind and sharp temperature drop","Fog","A sea breeze"],1,"A strong cold front across the southern Plains."],
+ ["wx-lakes","Sailing near a high, tree-lined shore with the wind blowing off it, you should expect:",["Steady wind","A wind shadow and big, gusty shifts","Larger waves","Stronger, steadier wind"],1,"Land breaks up the wind; it fills in farther offshore."],
+ ["wx-lakes","The chop is usually biggest:",["At the upwind end of the lake","At the downwind end of a long open stretch","In a sheltered cove","Close to the windward shore"],1,"Longer fetch, bigger waves."],
+ ["wx-lakes","Your reservoir is 5 ft below full pool. That means:",["Nothing changes","Charted depths are about 5 ft less, and stumps and shoals are closer to the surface","Depths are 5 ft more","The lake is closed"],1,"Lake maps often show depths at a reference level; subtract the drop."],
+ ["wx-lakes","Which season usually brings the strongest winds and most severe storms to southern lakes?",["Spring","Midsummer","Late summer","There's no pattern"],0,"Spring cold fronts bring strong winds, squall lines, and severe weather."],
+
+ ["ch-latlon","Distance on a chart is measured on:",["The longitude scale at the top","The latitude scale at the side","The compass rose","Any scale"],1,"One minute of latitude is one nautical mile. Longitude minutes shrink toward the poles."],
+ ["ch-latlon","The latitude scale is found:",["Along the top and bottom","Along the sides","Inside the compass rose","In the title block"],1,"Latitude runs north–south, so its scale is on the sides."],
+ ["ch-latlon","32° 47.5' N, 096° 48.2' W. Which part is the latitude?",["096° 48.2' W","32° 47.5' N","Both","Neither"],1,"Latitude is always given first."],
+ ["ch-chart","A 1:20,000 chart compared with a 1:200,000 chart:",["Covers more area","Is larger scale and shows more detail","Is smaller scale","Has no soundings"],1,"Large scale: small area, more detail."],
+ ["ch-chart","Where do you find whether soundings are in feet, fathoms, or meters?",["The compass rose","The title block","Chart No. 1","The latitude scale"],1,"Always check the title block first."],
+ ["ch-chart","On US tidal charts, soundings are measured from:",["Mean high water","Mean lower low water","Mean sea level","The bottom up"],1,"MLLW, so you usually have a bit more water than charted."],
+ ["ch-chart","Bridge vertical clearances on NOAA charts are measured from:",["Mean lower low water","Mean high water","Mean sea level","The bridge deck"],1,"Above mean high water, so you usually have a bit more room."],
+ ["ch-lights","\"Fl R 6s\" on a chart means:",["Fixed red light, 6 ft high","Flashing red every 6 seconds","Six red flashes","Red light visible 6 miles"],1,"Flashing red, period 6 seconds."],
+ ["ch-lights","A light labeled \"Mo (A)\" marks:",["An isolated danger","Safe water","A preferred channel","A wreck"],1,"Morse A, short-long, is the safe water mark's light."],
+ ["ch-lights","\"Q G\" means:",["Quiet green","Quick flashing green, about 60 per minute","Green every quarter hour","A green can"],1,"Quick flashing marks places needing extra caution, like sharp turns."],
+ ["ch-lights","\"R N 6\" on a chart is:",["A red nun buoy number 6","A radio beacon","Red light, 6 seconds","A range"],0,"Red, nun-shaped, numbered 6."],
+ ["ch-compass","The inner ring of a compass rose shows:",["True directions","Magnetic directions","Deviation","Latitude"],1,"Outer ring true, inner ring magnetic."],
+ ["ch-compass","Compass error caused by the boat's own engine and electronics is:",["Variation","Deviation","Leeway","Set"],1,"Deviation depends on the boat and its heading."],
+ ["ch-compass","True course 180°, variation 4° W. The magnetic course is:",["176°","180°","184°","094°"],2,"True to magnetic: add west. 180 + 4 = 184° M."],
+ ["ch-compass","True course 045°, variation 10° E. The magnetic course is:",["035°","045°","055°","135°"],0,"True to magnetic: subtract east. 045 − 10 = 035° M."],
+ ["ch-compass","Magnetic 095°, deviation 3° W. The compass course is:",["092°","095°","098°","265°"],2,"Magnetic to compass: add west. 095 + 3 = 098° C."],
+ ["ch-plot","For a two-bearing fix, the best angle between the objects is about:",["10°","45°","90°","180°"],2,"Lines crossing near 90° give the most accurate fix."],
+ ["ch-plot","Two charted objects lined up one behind the other give you:",["A fix","A range, a very accurate line of position","Deviation","Variation"],1,"A range needs no compass."],
+ ["ch-plot","You sail at 6 knots for 20 minutes. Distance covered:",["1 nm","2 nm","3 nm","6 nm"],1,"D = 6 × 20 ÷ 60 = 2 nm."],
+ ["ch-plot","How long to sail 9 nm at 4.5 knots?",["1 hour","2 hours","90 minutes","4 hours"],1,"T = 60 × 9 ÷ 4.5 = 120 minutes."],
+ ["ch-plot","A dead reckoning position doesn't account for:",["Course","Speed","Current and leeway","Time"],2,"That's why you take fixes whenever you can."],
+ ["ch-plot","Three bearings that form a small triangle are called:",["A range","A cocked hat","A DR","A danger bearing"],1,"Your position is probably inside it."],
+ ["ch-tides","\"Set\" describes:",["Current speed","The direction a current flows toward","Tide height","Wind direction"],1,"Set is the direction toward; drift is the speed."],
+ ["ch-tides","A flood current flows:",["Toward the sea","Toward land","Not at all","Along the shore only"],1,"Flood toward land; ebb toward the sea."],
+ ["ch-tides","By the rule of twelfths, the tide changes fastest:",["In the first hour","In the middle two hours","In the last hour","At slack water"],1,"3/12 of the range in each of hours 3 and 4."],
+ ["ch-tides","On a reservoir, \"red right returning\" means keeping red marks to starboard when heading:",["Downstream toward the dam","Upstream or toward the head of the lake","East","Away from the marina"],1,"Returning means coming from seaward, which on inland waters means heading upstream."],
+
+ ["sf-vhf","The VHF channel for distress, safety, and calling is:",["9","13","16","22A"],2,"Monitor 16 whenever the radio is on."],
+ ["sf-vhf","After calling a friend on channel 9, you should:",["Talk on 9","Switch to a working channel such as 68","Switch to 16","Switch to 70"],1,"Calling channels are for making contact only."],
+ ["sf-vhf","Channel 70 is used for:",["Coast Guard working","Digital Selective Calling only, never voice","Bridge-to-bridge","Weather"],1,"Never talk on 70."],
+ ["sf-vhf","The Coast Guard asks you to \"switch two-two alpha.\" That's their:",["Distress channel","Working channel","Weather channel","Bridge channel"],1,"22A is the Coast Guard liaison channel."],
+ ["sf-vhf","A DSC distress alert sends your position automatically only if:",["The radio is on channel 16","You've programmed an MMSI and connected a GPS","You hold the mic button","You're within 1 mile of shore"],1,"Without an MMSI and GPS input, the alert carries no useful ID or position."],
+ ["sf-vhf","Channel 13 is mainly for:",["Recreational chat","Bridge-to-bridge navigation safety between ships","Distress","Weather"],1,"Low power, ship-to-ship navigation talk; also used for many bridges and locks."],
+ ["sf-mayday","Your boat is dismasted but no one is hurt and you're not in immediate danger. Your call starts with:",["Mayday","Pan-pan","Sécurité","Nothing; just call a friend"],1,"Urgent but not life-threatening: pan-pan."],
+ ["sf-mayday","You spot a large floating log in the main channel. You'd broadcast:",["Mayday","Pan-pan","Sécurité","Nothing"],2,"Sécurité is for navigation safety information."],
+ ["sf-mayday","Which goes first in a Mayday call, after \"Mayday\" and your boat name?",["Number of people aboard","Your position","Boat description","Your phone number"],1,"Position first so rescuers can start toward you even if the call breaks up."],
+ ["sf-mayday","You hear a Mayday that nobody answers. You should:",["Ignore it","Write down the details and relay it","Change channels","Call on channel 70 by voice"],1,"Mayday relay."],
+ ["sf-mob","Using a Lifesling, after deploying it you:",["Sail straight away","Circle around the person until the line reaches them","Throw it directly at them","Drop all sails immediately"],1,"Circling drags the sling to the person."],
+ ["sf-mob","When recovering a person overboard under sail, stop with them:",["To windward of the boat","To leeward, alongside the cockpit","Directly ahead","Directly astern by the rudder"],1,"The boat drifts toward them and doesn't block their air or crush them."],
+ ["sf-mob","Approaching a person in the water under power, you should:",["Keep the engine in gear","Shift to neutral well before reaching them","Approach downwind fast","Back toward them"],1,"Never let a turning prop near someone in the water."],
+ ["sf-mob","To heave to, you tack and:",["Release the jib","Leave the jib backed, ease the main, and lash the tiller to leeward","Drop the main","Start the engine"],1,"The backed jib and leeward helm balance each other."],
+ ["sf-mob","A boat hove to:",["Is stopped dead","Moves slowly forward and drifts to leeward","Sails close-hauled at full speed","Is at anchor"],1,"So it needs room to leeward."],
+ ["sf-pre","A float plan is left with:",["The Coast Guard always","A responsible person ashore","Nobody; it stays aboard","The marina's fuel dock"],1,"They know when to call for help if you don't return."],
+ ["sf-pre","Before starting a gasoline inboard, run the blower for at least:",["30 seconds","1 minute","4 minutes","15 minutes"],2,"Gasoline vapor collects in the bilge and can explode."],
+ ["sf-pre","A Class B fire involves:",["Wood and paper","Flammable liquids","Electrical equipment","Metals"],1,"Fuel and oil fires are Class B."],
+ ["sf-pre","When using a fire extinguisher, aim at:",["The top of the flames","The base of the fire","The smoke","Above the fire"],1,"PASS: Pull, Aim at the base, Squeeze, Sweep."],
+ ["sf-pre","You run aground on a soft lake bottom. First:",["Gun the engine forward","Check for leaks and injuries","Abandon ship","Raise more sail"],1,"Then back off the way you came, heel the boat, or kedge off."],
+ ["sf-health","In the 1-10-1 rule, the first minute is about:",["Swimming to shore","Controlling your breathing through cold shock","Taking off your life jacket","Hypothermia"],1,"Cold shock causes gasping; a life jacket keeps your head up."],
+ ["sf-health","A crew member is confused, with hot skin, after hours in the sun. This is likely:",["Seasickness","Heat stroke, a medical emergency","Mild heat exhaustion","Hypothermia"],1,"Cool them immediately and get help."],
+ ["sf-health","In cold water waiting for rescue, you should:",["Swim hard to stay warm","Stay still in the HELP position or huddle","Remove heavy clothing","Take off your life jacket"],1,"Movement pumps warm blood to your skin and you lose heat faster."],
+
+ ["dk-power","With a right-hand propeller, reverse throttle tends to pull the stern:",["To starboard","To port","Straight back","Down"],1,"Plan to dock port side to and let prop walk help."],
+ ["dk-power","At very low speed, a sailboat's rudder:",["Steers perfectly","Has little effect because little water flows past it","Works only in reverse","Steers better than at high speed"],1,"Use short bursts of forward thrust (prop wash) to steer."],
+ ["dk-power","A burst of forward throttle with the tiller over will:",["Do nothing","Kick the stern sideways before the boat gains much speed","Stop the boat","Pull the stern to port"],1,"Prop wash across the rudder."],
+ ["dk-power","When a sailboat turns, it pivots near the keel, so:",["The stern swings the opposite way","The boat slides sideways evenly","Only the bow moves","The boat stops"],0,"Watch your stern near docks and other boats."],
+ ["dk-dock","The best direction to approach a dock is:",["Downwind","Into the stronger of wind or current","Across the current","At high speed"],1,"Wind or current then helps you stop."],
+ ["dk-dock","The wind is blowing you onto the dock. The easiest approach is to:",["Come in steeply bow first","Stop parallel a few feet off and let the wind push you in","Back in fast","Approach downwind"],1,"Let the wind do the work."],
+ ["dk-dock","To swing your stern away from the dock, you motor forward against:",["A stern line","A spring from the bow led aft","A breast line","The anchor"],1,"The bow spring holds the bow while the stern swings out."],
+ ["dk-dock","To swing your bow out from the dock, you back down against:",["A stern spring led forward","A bow line","A breast line","Nothing"],0,"The stern spring holds the stern; the bow swings out."],
+ ["dk-dock","A slip line is rigged:",["Around the dock cleat and back aboard","Tied to the dock with a bowline","Only at anchor","On the mooring"],0,"So you can release it without anyone on the dock."],
+ ["dk-dock","The approach to a slip is going wrong. You should:",["Push off with your feet","Abort early and try again","Speed up","Jump to the dock"],1,"Going around is always an option."],
+ ["dk-lines","A line from the bow led aft to the dock prevents the boat from moving:",["Aft","Forward","Toward the dock","Up"],1,"It's a spring line."],
+ ["dk-lines","Which lines run diagonally?",["Bow and stern lines","Spring lines","Breast lines","Halyards"],1,"Springs stop fore-and-aft movement."],
+ ["dk-moor","When picking up a mooring, approach:",["Downwind","Slowly into the wind or current, whichever is stronger","At full speed","Across the wind"],1,"So the boat stops with the buoy at the bow."],
+ ["dk-moor","Under sail, the final approach to a dock or mooring is usually on a:",["Run","Broad reach","Close reach","Beam reach on the opposite tack"],2,"You can control speed by easing and trimming, then head up to stop."],
+ ["dk-moor","Under sail, which side of a dock is usually safer to come alongside?",["Windward side (wind blows you onto it)","Leeward side (wind blows you off it)","Either","Neither"],1,"If you misjudge, the wind carries you off rather than slamming you in."],
+ ["dk-anchor","10 ft deep, bow 4 ft above the water, 7:1 scope. How much rode?",["70 ft","84 ft","98 ft","140 ft"],2,"(10 + 4) × 7 = 98 ft."],
+ ["dk-anchor","The anchor type most common on lake boats, strong in mud and sand:",["Mushroom","Fluke (Danforth style)","Grapnel","Claw"],1,"Light and holds well in soft bottoms."],
+ ["dk-anchor","To check that the anchor is holding, you:",["Look at the rode","Watch a range on shore while backing down","Check the depth sounder","Pull on the rode by hand"],1,"If the range doesn't move, you're set."],
+ ["dk-anchor","Why mix chain with nylon line in a rode?",["Chain resists chafe and adds weight; nylon stretches to absorb shock","Looks better","Nylon floats","Chain is lighter"],0,"Each part does a job."],
+ ["dk-anchor","To raise the anchor, you:",["Pull the boat forward by hand from the bow","Motor slowly toward it while taking in rode, then break it out from directly above","Back away hard","Cut the rode"],1,"Let the engine do the work."],
+ ["dk-anchor","Your swing circle at anchor has a radius about equal to:",["The boat's length","Your rode length","The water depth","Twice the depth"],1,"Leave that much room in every direction."],
+
+ ["st-wind","Sailing close-hauled, the apparent wind compared with the true wind is:",["Weaker and farther aft","Stronger and farther forward","The same","Weaker and farther forward"],1,"Your own speed adds to the wind upwind."],
+ ["st-wind","Running downwind, it feels gentle. When you turn upwind, the wind will feel:",["The same","Much stronger","Weaker","It will disappear"],1,"Downwind your speed subtracts from the wind. Reef before turning up if in doubt."],
+ ["st-wind","When the boat speeds up, the apparent wind:",["Moves aft","Moves forward","Stays put","Drops to zero"],1,"Trim in as you accelerate."],
+ ["st-shape","More twist in the mainsail:",["Adds power","Spills wind from the top and depowers","Has no effect","Makes the sail fuller"],1,"Open the leech to depower."],
+ ["st-shape","In light air and choppy water you want sails that are:",["Very flat","Fuller","Reefed","Luffing"],1,"More depth means more power to punch through chop."],
+ ["st-tell","The windward jib telltale is lifting. You should:",["Head up","Bear away or trim in","Ease the jib","Tack"],1,"You're too close to the wind for this trim."],
+ ["st-tell","The leeward jib telltale is fluttering. You should:",["Bear away","Head up or ease the jib","Trim in harder","Reef"],1,"The sail is stalled."],
+ ["st-tell","The top jib telltales luff before the bottom ones. Move the jib lead:",["Aft","Forward","Up the mast","Nowhere"],1,"Moving it forward tightens the leech and reduces twist."],
+ ["st-tell","The top leech telltale on the main keeps disappearing behind the sail. You should:",["Trim harder","Ease the mainsheet or vang, or drop the traveler","Tighten the outhaul","Raise the topping lift"],1,"The leech is too tight and stalling."],
+ ["st-controls","Which control moves the boom toward the centerline without tightening the leech?",["Mainsheet","Traveler","Outhaul","Topping lift"],1,"Traveler up in light air; down in gusts."],
+ ["st-controls","Tightening the outhaul:",["Makes the lower main fuller","Flattens the lower main","Raises the boom","Moves the draft forward"],1,"Flatter for more wind."],
+ ["st-controls","As the wind builds, the draft in the sail moves aft. To pull it forward, tighten the:",["Outhaul","Cunningham or halyard","Topping lift","Mainsheet"],1,"Luff tension controls draft position."],
+ ["st-controls","Horizontal wrinkles running back from the mainsail's luff mean:",["Too much luff tension","Too little luff tension","The outhaul is too tight","Perfect trim"],1,"Tighten the halyard or cunningham."],
+ ["st-controls","Off the wind with the mainsheet eased, the control that keeps the boom from lifting is the:",["Traveler","Vang","Outhaul","Backstay"],1,"The vang holds the boom down."],
+ ["st-power","As wind builds, the first step to depower is usually:",["Reef","Flatten the sails","Head downwind","Tighten the vang fully"],1,"Then drop the traveler, twist and ease in puffs, then reef."],
+ ["st-power","Most keelboats sail fastest at about:",["0° heel","15–20° heel","35° heel","Rail in the water"],1,"Beyond that, leeway and weather helm grow."],
+ ["st-power","Heavy weather helm usually means:",["Too little sail","Too much heel or too much main","The jib is too small","Perfect balance"],1,"Ease the main, drop the traveler, flatten, or reef."],
+ ["st-power","Lee helm usually shows up:",["In very light air or with too much jib","In strong wind","Only downwind","With a reef in"],0,"Trim the main in a bit or ease the jib."],
+ ["st-shifts","Sailing close-hauled, you're headed. Your jib luffs and you must bear away. Upwind, you should consider:",["Tacking","Easing the main","Reefing","Jibing"],0,"A header on this tack is a lift on the other."],
+ ["st-shifts","Feathering means:",["Easing all sails","Heading up slightly in a gust to reduce heel","Bearing away in a gust","Reefing"],1,"Keep the jib just on the edge of luffing."],
+ ["st-shifts","A preventer is used to:",["Stop the boat","Hold the boom out and prevent an accidental jibe","Raise the main","Flatten the jib"],1,"Rig it from the boom end forward on long downwind legs in waves."],
+ ["st-shifts","Wing-and-wing means:",["Both sails on the same side","Main on one side, jib on the other, on a run","Sailing close-hauled","Hove to"],1,"A whisker pole holds the jib out."],
+ ["st-shifts","Downwind, a broad reach is often better than a dead run because:",["It's slower","It's often faster and less likely to cause an accidental jibe","Telltales work better","It's required by the rules"],1,"Sailing by the lee is a risk on a dead run."]
+);
+
+/* ---------- arcs diagram ---------- */
+(function(){
+  const cx=170,cy=158,R=110;
+  function pt(deg,r){const a=(deg-90)*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]}
+  function sector(a1,a2,r,fill,op){const [x1,y1]=pt(a1,r),[x2,y2]=pt(a2,r);const large=((a2-a1+360)%360)>180?1:0;return `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${fill}" opacity="${op}"/>`}
+  let s=sector(247.5,112.5,R+20,"var(--muted)",.18);
+  s+=sector(0,112.5,R,"var(--stbd)",.55)+sector(247.5,360,R,"var(--port)",.55)+sector(112.5,247.5,R*.8,"var(--muted)",.45);
+  s+=`<path d="M${cx},${cy-40} C${cx+18},${cy-20} ${cx+18},${cy+20} ${cx+12},${cy+34} L${cx-12},${cy+34} C${cx-18},${cy+20} ${cx-18},${cy-20} ${cx},${cy-40} Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.5"/>`;
+  const [ax,ay]=pt(112.5,R+26),[bx,by]=pt(247.5,R+26);
+  s+=`<line x1="${cx}" y1="${cy}" x2="${ax}" y2="${ay}" stroke="var(--ink)" stroke-dasharray="3 3"/><line x1="${cx}" y1="${cy}" x2="${bx}" y2="${by}" stroke="var(--ink)" stroke-dasharray="3 3"/>`;
+  s+=`<text x="${cx}" y="18" text-anchor="middle" style="font-weight:700">Masthead light 225°</text>`;
+  s+=`<text x="${cx+62}" y="${cy-30}" style="font-weight:700;fill:var(--stbd)">Green 112.5°</text>`;
+  s+=`<text x="${cx-62}" y="${cy-30}" text-anchor="end" style="font-weight:700;fill:var(--port)">Red 112.5°</text>`;
+  s+=`<text x="${cx}" y="${cy+82}" text-anchor="middle" style="font-weight:700">Sternlight 135°</text>`;
+  s+=`<text x="${ax+4}" y="${ay+12}" class="small">22.5° abaft</text><text x="${bx-4}" y="${by+12}" class="small" text-anchor="end">the beam</text>`;
+  document.getElementById("svg-arcs").innerHTML=s;
+})();
+
+/* ---------- galleries and fog table ---------- */
+const lg=document.getElementById("lights-gallery");
+LIGHTS.forEach(l=>lg.appendChild(el("div",{class:"gcard"},night(l[0])+`<div class="gt"><b>${l[1]}</b><i>${l[2]}</i></div>`)));
+const sg=document.getElementById("shapes-gallery");
+SHAPES.forEach(l=>sg.appendChild(el("div",{class:"gcard"},day(l[0])+`<div class="gt"><b>${l[1]}</b><i>${l[2]}</i></div>`)));
+const fr=document.getElementById("fog-rows");
+FOG.forEach(f=>fr.appendChild(el("tr",{},`<td class="mono">${f[0]}</td><td class="num">${f[1]==="with its signal"?"—":"≤ "+f[1]}</td><td>${f[2]}</td>`)));
+
+/* flash to bang */
+const ftb=document.getElementById("ftb"),ftbo=document.getElementById("ftb-out");
+function ftbCalc(){const s=Math.max(0,+ftb.value||0);const mi=s/5;ftbo.textContent=`≈ ${mi.toFixed(1)} statute miles (${(mi*0.87).toFixed(1)} nm)`}
+ftb.addEventListener("input",ftbCalc);ftbCalc();
+
+/* ---------- module + tabs ---------- */
+let mod=load("b101-mod","wx"); if(!MODS[mod])mod="wx";
+let view=load("b101-view","guide");
+function show(){
+  document.querySelectorAll(".mod").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mod===mod?"true":"false"));
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.view===view?"true":"false"));
+  for(const m in MODS)document.getElementById("g-"+m).hidden=!(view==="guide"&&mod===m);
+  document.getElementById("v-cards").hidden=view!=="cards";
+  document.getElementById("v-quiz").hidden=view!=="quiz";
+  save("b101-mod",mod);save("b101-view",view);
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{view=t.dataset.view;show();window.scrollTo({top:0})}));
+document.querySelectorAll(".mod").forEach(b=>b.addEventListener("click",()=>{if(mod===b.dataset.mod)return;mod=b.dataset.mod;show();fillTopics(fcTopic,CARDS);fillTopics(qzTopic,Q);buildDeck();bestText();startQuiz()}));
+const h=location.hash.replace("#","");
+const HASH={weather:"wx",rules:"nr",charts:"ch",safety:"sf",docking:"dk",trim:"st"};if(HASH[h])mod=HASH[h];
+show();
+
+function fillTopics(sel,items){
+  sel.innerHTML="";sel.appendChild(el("option",{value:"all"},"All "+MODS[mod]));
+  const used=new Set(items.map(x=>x[0]));
+  for(const k in TOPICS) if(TOPICS[k][0]===mod&&used.has(k)) sel.appendChild(el("option",{value:k},TOPICS[k][1]));
+}
+function inScope(t,item){return t==="all"?TOPICS[item[0]][0]===mod:item[0]===t}
+
+/* ---------- flashcards ---------- */
+const fcTopic=document.getElementById("fc-topic");fillTopics(fcTopic,CARDS);
+let known=new Set(load("b101-known",[])), deck=[], idx=0, flipped=false;
+function cardId(c){return c[0]+"|"+c[1]}
+function buildDeck(){
+  const t=fcTopic.value;
+  deck=shuffle(CARDS.filter(c=>inScope(t,c)&&!known.has(cardId(c))));
+  idx=0;renderCard();
+}
+function renderCard(){
+  const t=fcTopic.value, pool=CARDS.filter(c=>inScope(t,c));
+  const done=pool.filter(c=>known.has(cardId(c))).length;
+  document.getElementById("fc-count").textContent=`${done} of ${pool.length} known · ${Math.max(deck.length-idx,0)} left in this round`;
+  document.getElementById("fc-prog").style.width=(pool.length?done/pool.length*100:0)+"%";
+  const term=document.getElementById("fc-term"),def=document.getElementById("fc-def"),hint=document.getElementById("fc-hint"),pic=document.getElementById("fc-pic");
+  flipped=false;def.hidden=true;pic.innerHTML="";
+  const good=document.getElementById("fc-good"),again=document.getElementById("fc-again");
+  if(idx>=deck.length){
+    if(done<pool.length){deck=shuffle(pool.filter(c=>!known.has(cardId(c))));idx=0;return renderCard()}
+    term.hidden=false;term.textContent="All known.";hint.textContent="Pick another topic or reset";
+    good.disabled=again.disabled=true;return;
+  }
+  good.disabled=again.disabled=false;
+  const c=deck[idx];
+  def.textContent=c[2];
+  if(c[3]){pic.innerHTML=`<div class="qpic">${c[3]}</div>`;term.textContent=c[1];term.hidden=true;hint.textContent=TOPICS[c[0]][1]+" · name it, then tap to flip"}
+  else{term.hidden=false;term.textContent=c[1];hint.textContent=TOPICS[c[0]][1]+" · tap to flip"}
+}
+function flip(){if(idx>=deck.length)return;flipped=!flipped;document.getElementById("fc-def").hidden=!flipped;if(deck[idx][3])document.getElementById("fc-term").hidden=!flipped}
+document.getElementById("fc").addEventListener("click",flip);
+document.getElementById("fc").addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();flip()}});
+document.getElementById("fc-good").addEventListener("click",()=>{known.add(cardId(deck[idx]));save("b101-known",[...known]);idx++;renderCard()});
+document.getElementById("fc-again").addEventListener("click",()=>{deck.push(deck[idx]);idx++;renderCard()});
+document.getElementById("fc-shuffle").addEventListener("click",buildDeck);
+document.getElementById("fc-reset").addEventListener("click",()=>{
+  const t=fcTopic.value;CARDS.forEach(c=>{if(inScope(t,c))known.delete(cardId(c))});save("b101-known",[...known]);buildDeck();
+});
+fcTopic.addEventListener("change",buildDeck);
+buildDeck();
+
+/* ---------- quiz ---------- */
+const qzTopic=document.getElementById("qz-topic");fillTopics(qzTopic,Q);
+const qz=document.getElementById("qz");
+let set=[],qi=0,correct=0,missed=[];
+function bestText(){const b=load("b101-best-"+mod,null);document.getElementById("qz-best").textContent=b?`Best: ${b.pct}% on ${b.n} questions`:""}
+function startQuiz(){
+  const t=qzTopic.value,n=+document.getElementById("qz-len").value;
+  set=shuffle(Q.filter(q=>inScope(t,q))).slice(0,n).map(q=>{
+    const order=shuffle(q[2].map((o,i)=>i));
+    return {topic:q[0],q:q[1],opts:order.map(i=>q[2][i]),ans:order.indexOf(q[3]),why:q[4],pic:q[5]};
+  });
+  qi=0;correct=0;missed=[];renderQ();
+}
+function renderQ(){
+  qz.innerHTML="";
+  if(qi>=set.length)return renderResult();
+  const q=set[qi];
+  const card=el("div",{class:"qcard"});
+  card.appendChild(el("div",{class:"meta"},`Question ${qi+1} of ${set.length} · ${correct} correct`));
+  card.appendChild(el("span",{class:"chip"},TOPICS[q.topic][1]));
+  card.appendChild(el("div",{class:"qtext"},q.q));
+  if(q.pic)card.appendChild(el("div",{class:"qpic"},q.pic));
+  const opts=el("div",{class:"opts"});
+  q.opts.forEach((o,i)=>{
+    const b=el("button",{class:"opt",type:"button"});
+    b.appendChild(el("span",{class:"k"},"ABCD"[i]));b.appendChild(el("span",{},o));
+    b.addEventListener("click",()=>answer(i,opts,card));
+    opts.appendChild(b);
+  });
+  card.appendChild(opts);qz.appendChild(card);
+}
+function answer(i,opts,card){
+  const q=set[qi],btns=[...opts.children];
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add("right");
+  const ok=i===q.ans;
+  if(ok)correct++;else{btns[i].classList.add("wrong");missed.push(q)}
+  card.appendChild(el("div",{class:"explain"},`<b>${ok?"Correct.":"Not quite."}</b> ${q.why}`));
+  const foot=el("div",{class:"qfoot"});
+  foot.appendChild(el("span",{class:"meta"},`${correct} of ${qi+1} correct`));
+  const nx=el("button",{class:"btn primary",type:"button"},qi+1<set.length?"Next question":"See results");
+  nx.addEventListener("click",()=>{qi++;renderQ();qz.scrollIntoView({block:"start",behavior:"smooth"})});
+  foot.appendChild(nx);card.appendChild(foot);nx.focus({preventScroll:true});
+}
+function renderResult(){
+  const pct=set.length?Math.round(correct/set.length*100):0;
+  const b=load("b101-best-"+mod,null);
+  if(set.length>=10&&(!b||pct>b.pct))save("b101-best-"+mod,{pct,n:set.length});
+  bestText();
+  const card=el("div",{class:"qcard"});
+  card.appendChild(el("div",{class:"meta"},"Result"));
+  card.appendChild(el("div",{class:"score"},`${pct}%`));
+  card.appendChild(el("p",{},`${correct} of ${set.length} correct. ${pct>=90?"You know this set well.":pct>=80?"Solid. Review what you missed and try again.":"Reread the guide sections and retake."}`));
+  const again=el("button",{class:"btn primary",type:"button"},"New quiz");again.addEventListener("click",startQuiz);
+  card.appendChild(again);
+  if(missed.length){
+    const m=el("div",{class:"missed"});
+    missed.forEach(q=>m.appendChild(el("div",{},`<b>${q.q}</b><br>Answer: ${q.opts[q.ans]}. ${q.why}`)));
+    card.appendChild(el("h3",{style:"margin-top:20px;font-size:22px"},"Review these"));card.appendChild(m);
+  }
+  qz.appendChild(card);
+}
+document.getElementById("qz-start").addEventListener("click",startQuiz);
+qzTopic.addEventListener("change",startQuiz);
+bestText();startQuiz();
+</script>
+
+</body></html>

@@ -1,0 +1,1188 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ASA 101 Study Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: chart-room notebook. Sticky tab bar, guide with side index, port/starboard red-green as semantic accents. */
+:root{
+  --bg:#f3f6f9; --paper:#ffffff; --ink:#10212f; --muted:#566878; --line:#d4dde6;
+  --accent:#1d5a86; --accent-soft:#e3eef6;
+  --port:#c3322b; --port-soft:#fbe9e7; --stbd:#1c7f48; --stbd-soft:#e4f4ea;
+  --warn:#9a6a00; --warn-soft:#fbf1d8;
+  --hull:#e6edf4; --sail:#ffffff; --water:#d6e8f5;
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b1520; --paper:#122130; --ink:#e3ebf2; --muted:#92a4b4; --line:#253a4c;
+  --accent:#74b4e2; --accent-soft:#17324a;
+  --port:#ff7067; --port-soft:#3a1d1d; --stbd:#56cf8b; --stbd-soft:#163323;
+  --warn:#e9b949; --warn-soft:#352a12; --hull:#2a3f53; --sail:#1c3247; --water:#12304a; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0b1520; --paper:#122130; --ink:#e3ebf2; --muted:#92a4b4; --line:#253a4c;
+  --accent:#74b4e2; --accent-soft:#17324a;
+  --port:#ff7067; --port-soft:#3a1d1d; --stbd:#56cf8b; --stbd-soft:#163323;
+  --warn:#e9b949; --warn-soft:#352a12; --hull:#2a3f53; --sail:#1c3247; --water:#12304a; color-scheme:dark;}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.1;text-wrap:balance;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px}
+header.top{padding-block:28px 12px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(34px,6vw,52px);letter-spacing:.01em;margin-top:6px}
+.lede{color:var(--muted);max-width:62ch;margin:8px 0 0}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+.tab{appearance:none;border:0;background:none;color:var(--muted);font:700 18px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;padding:14px 14px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-block:24px 64px}
+
+/* Guide */
+.guide{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px}
+.toc{position:sticky;top:64px;align-self:start;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.toc a{color:var(--muted);text-decoration:none;padding:4px 0}
+.toc a:hover{color:var(--accent)}
+.guide section{padding-block:8px 28px;border-bottom:1px solid var(--line)}
+.guide section:last-child{border-bottom:0}
+.guide h2{font-size:30px;margin-bottom:10px;scroll-margin-top:70px}
+.guide h3{font-size:20px;margin:18px 0 6px;letter-spacing:.02em}
+.guide p,.guide li{max-width:68ch}
+.guide ul{padding-left:20px;margin:6px 0}
+.guide li{margin:3px 0}
+dl.terms{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 18px;margin:8px 0}
+dl.terms dt{font-weight:700}
+dl.terms dd{margin:0;color:var(--ink)}
+.tbl{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12px/1.2 var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.callout{background:var(--accent-soft);border-radius:6px;padding:12px 14px;margin:12px 0;max-width:68ch}
+.callout b{font-family:var(--f-display);font-size:18px;letter-spacing:.03em}
+.port{color:var(--port);font-weight:700}.stbd{color:var(--stbd);font-weight:700}
+.mono{font-family:var(--f-mono);font-size:.9em}
+figure{margin:14px 0}
+figure svg{width:100%;max-width:520px;height:auto;display:block}
+figure.wide svg{max-width:680px}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:14px 0}
+.pair figure{margin:0}
+.pair svg{max-width:100%}
+svg text{font-family:var(--f-body);font-size:14px;fill:var(--ink)}
+svg .small{font-size:12px;fill:var(--muted)}
+svg .cap{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em}
+.lab{cursor:default}
+.lab line{stroke:var(--muted);stroke-width:1}
+.lab circle{fill:var(--accent)}
+.quizmode .lab{cursor:pointer}
+.quizmode .lab text{opacity:0}
+.quizmode .lab.show text{opacity:1}
+.quizmode .lab circle{r:6}
+.figbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.btn.sm{font-size:14px;padding:8px 12px}
+figcaption{font-size:13px;color:var(--muted)}
+.chip{display:inline-block;font:500 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+
+/* Shared controls */
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+select{font:15px var(--f-body);padding:8px 10px;border-radius:6px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.btn{font:700 16px/1 var(--f-display);letter-spacing:.05em;text-transform:uppercase;padding:11px 16px;border-radius:6px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+.btn.good{background:var(--stbd);border-color:var(--stbd);color:var(--paper)}
+.btn.again{background:var(--port-soft);border-color:var(--port);color:var(--port)}
+.btn:disabled{opacity:.45;cursor:default}
+.meta{font:500 13px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Flashcards */
+.cardstage{max-width:640px}
+.fc{background:var(--paper);border:1px solid var(--line);border-radius:10px;min-height:240px;padding:28px 24px;display:flex;flex-direction:column;justify-content:center;gap:12px;cursor:pointer;user-select:none}
+.fc .term{font:700 clamp(30px,6vw,42px)/1.05 var(--f-display);letter-spacing:.01em}
+.fc .def{font-size:18px;max-width:52ch}
+.fc .hint{font:500 12px var(--f-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.fcbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin:10px 0 16px;max-width:640px}
+.progress i{display:block;height:100%;background:var(--stbd);width:0;transition:width .3s}
+
+/* Quiz */
+.qwrap{max-width:720px}
+.qcard{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px}
+.qtext{font-size:20px;font-weight:700;margin:8px 0 16px;line-height:1.4}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;font:16px/1.4 var(--f-body);padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;display:flex;gap:10px}
+.opt .k{font:500 13px/1.6 var(--f-mono);color:var(--muted)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--stbd);background:var(--stbd-soft)}
+.opt.wrong{border-color:var(--port);background:var(--port-soft)}
+.opt:disabled{cursor:default}
+.explain{margin-top:14px;padding:12px 14px;border-radius:8px;background:var(--accent-soft)}
+.explain b{font-family:var(--f-display);font-size:18px;letter-spacing:.03em}
+.qfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.score{font:700 64px/1 var(--f-display)}
+.missed{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+.missed div{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--port);border-radius:6px;padding:10px 12px;font-size:15px}
+
+
+/* Exam */
+.exintro{max-width:680px}
+.exintro h2{font-size:34px;margin-bottom:8px}
+.exintro ul{padding-left:20px}
+.exhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:4px;margin-top:16px;max-width:720px}
+.grid button{font:500 12px var(--f-mono);padding:7px 0;border-radius:4px;border:1px solid var(--line);background:var(--paper);color:var(--muted);cursor:pointer;font-variant-numeric:tabular-nums}
+.grid button.done{background:var(--accent-soft);color:var(--ink);border-color:var(--accent-soft)}
+.grid button.flag{border-color:var(--warn);box-shadow:inset 0 -3px 0 var(--warn)}
+.grid button.cur{outline:2px solid var(--accent);outline-offset:1px}
+.grid button.right{background:var(--stbd-soft);border-color:var(--stbd);color:var(--ink)}
+.grid button.wrong{background:var(--port-soft);border-color:var(--port);color:var(--ink)}
+.opt.picked{border-color:var(--accent);background:var(--accent-soft)}
+.qfig{margin:4px 0 14px}
+.qfig svg{width:100%;max-width:520px;height:auto;display:block}
+.pf{display:inline-block;font:700 20px/1 var(--f-display);letter-spacing:.06em;padding:8px 12px;border-radius:6px}
+.pf.pass{background:var(--stbd-soft);color:var(--stbd)}.pf.fail{background:var(--port-soft);color:var(--port)}
+.warnbox{background:var(--warn-soft);border-radius:8px;padding:12px 14px;margin-top:14px}
+
+@media (max-width:760px){
+  .guide{grid-template-columns:minmax(0,1fr)}
+  .toc{position:static;flex-direction:row;flex-wrap:wrap;gap:6px 14px}
+  dl.terms{grid-template-columns:minmax(0,1fr)}
+  dl.terms dd{margin-bottom:8px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="eyebrow">Basic Keelboat Sailing · Written exam prep</div>
+  <h1>ASA 101 Study Kit</h1>
+  <p class="lede">Read the guide, drill the vocabulary with flashcards, then take practice quizzes until you're scoring well above passing. These are practice questions written to the ASA 101 topics, not the official exam.</p>
+</div></header>
+
+<nav class="tabs" aria-label="Sections"><div class="wrap" role="tablist">
+  <button class="tab" role="tab" id="t-guide" data-view="guide" aria-selected="true">Study guide</button>
+  <button class="tab" role="tab" id="t-cards" data-view="cards" aria-selected="false">Flashcards</button>
+  <button class="tab" role="tab" id="t-quiz" data-view="quiz" aria-selected="false">Practice quiz</button>
+  <button class="tab" role="tab" id="t-exam" data-view="exam" aria-selected="false">Mock exam</button>
+</div></nav>
+
+<main class="wrap">
+
+<!-- ================= GUIDE ================= -->
+<div id="v-guide" class="guide">
+  <nav class="toc" aria-label="Guide contents">
+    <a href="#s-parts">Parts of the boat</a>
+    <a href="#s-sail">Points of sail</a>
+    <a href="#s-maneuver">Tacking &amp; jibing</a>
+    <a href="#s-trim">Sail trim</a>
+    <a href="#s-rules">Rules of the road</a>
+    <a href="#s-lights">Lights &amp; sounds</a>
+    <a href="#s-aton">Aids to navigation</a>
+    <a href="#s-nav">Charts &amp; units</a>
+    <a href="#s-knots">Knots</a>
+    <a href="#s-safety">Safety gear</a>
+    <a href="#s-mob">Crew overboard</a>
+    <a href="#s-weather">Weather</a>
+    <a href="#s-dock">Docking &amp; anchoring</a>
+  </nav>
+  <div>
+
+  <section id="s-parts">
+    <h2>Parts of the boat</h2>
+    <figure class="wide quizable" id="fig-boat">
+      <svg viewBox="-130 0 860 470" role="img" aria-label="Side view of a sloop with its parts labeled">
+        <rect x="-130" y="355" width="860" height="115" fill="var(--water)"/>
+        <line x1="-130" y1="355" x2="730" y2="355" stroke="var(--accent)" stroke-width="1" stroke-dasharray="6 4"/>
+        <path d="M328,48 Q262,150 176,267 L328,267 Z" fill="var(--sail)" stroke="var(--ink)" stroke-width="1.5"/>
+        <path d="M367,89 L521,293 L420,290 Z" fill="var(--sail)" stroke="var(--ink)" stroke-width="1.5"/>
+        <g stroke="var(--port)" stroke-width="2"><line x1="392" y1="140" x2="404" y2="138"/><line x1="420" y1="180" x2="432" y2="178"/><line x1="448" y1="218" x2="460" y2="216"/></g>
+        <line x1="331" y1="40" x2="536" y2="312" stroke="var(--muted)" stroke-width="1.5"/>
+        <line x1="331" y1="40" x2="124" y2="320" stroke="var(--muted)" stroke-width="1.5"/>
+        <line x1="331" y1="72" x2="352" y2="312" stroke="var(--muted)" stroke-width="1.5"/>
+        <path d="M122,322 L540,312 Q505,352 450,366 L180,368 Q140,362 122,322 Z" fill="var(--hull)" stroke="var(--ink)" stroke-width="2"/>
+        <path d="M305,366 L318,432 L372,432 L362,366 Z" fill="var(--ink)"/>
+        <line x1="178" y1="322" x2="178" y2="364" stroke="var(--ink)" stroke-width="3"/>
+        <path d="M165,364 L170,412 L188,412 L192,362 Z" fill="var(--ink)"/>
+        <line x1="178" y1="322" x2="232" y2="304" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="331" y1="314" x2="331" y2="40" stroke="var(--ink)" stroke-width="5"/>
+        <line x1="331" y1="269" x2="172" y2="269" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+        <line x1="200" y1="271" x2="202" y2="318" stroke="var(--accent)" stroke-width="1.5"/>
+        <line x1="300" y1="271" x2="329" y2="302" stroke="var(--accent)" stroke-width="2"/>
+        <line x1="420" y1="290" x2="290" y2="314" stroke="var(--accent)" stroke-width="1.5"/>
+        <g id="boat-labels"></g>
+      </svg>
+      <div class="figbar">
+        <button class="btn sm" type="button" data-quiz="fig-boat">Hide labels to quiz yourself</button>
+        <figcaption>Side view of a sloop (one mast, a mainsail and a jib). In quiz mode, tap a blue dot to reveal its name.</figcaption>
+      </div>
+    </figure>
+    <figure id="fig-top">
+      <svg viewBox="0 0 460 380" role="img" aria-label="Top view of a boat showing bow, stern, port, starboard, windward and leeward">
+        <g stroke="var(--accent)" stroke-width="3" stroke-linecap="round">
+          <line x1="14" y1="130" x2="70" y2="130" marker-end="url(#ah)"/><line x1="14" y1="190" x2="70" y2="190" marker-end="url(#ah)"/><line x1="14" y1="250" x2="70" y2="250" marker-end="url(#ah)"/>
+        </g>
+        <text x="16" y="116" class="cap" style="fill:var(--accent)">WIND</text>
+        <path d="M230,40 C285,100 295,220 278,330 L182,330 C165,220 175,100 230,40 Z" fill="var(--hull)" stroke="var(--ink)" stroke-width="2"/>
+        <circle cx="230" cy="140" r="6" fill="var(--ink)"/>
+        <line x1="230" y1="140" x2="250" y2="300" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="168" y1="210" x2="292" y2="210" stroke="var(--muted)" stroke-dasharray="4 3"/>
+        <text x="230" y="28" text-anchor="middle" style="font-weight:700">BOW (forward)</text>
+        <text x="230" y="356" text-anchor="middle" style="font-weight:700">STERN (aft)</text>
+        <text x="230" y="372" text-anchor="middle" class="small">transom across the back</text>
+        <text x="160" y="160" text-anchor="end" style="fill:var(--port);font-weight:700">PORT</text>
+        <text x="160" y="178" text-anchor="end" class="small">left · red</text>
+        <text x="300" y="160" style="fill:var(--stbd);font-weight:700">STARBOARD</text>
+        <text x="300" y="178" class="small">right · green</text>
+        <text x="300" y="214" class="small">← beam (widest part)</text>
+        <text x="96" y="290" text-anchor="middle" style="font-weight:700">Windward side</text>
+        <text x="96" y="306" text-anchor="middle" class="small">wind hits this side</text>
+        <text x="372" y="290" text-anchor="middle" style="font-weight:700">Leeward side</text>
+        <text x="372" y="306" text-anchor="middle" class="small">boom swings out here</text>
+      </svg>
+      <figcaption>Seen from above. With the wind coming over port, port is the windward side and this boat is on <b>port tack</b>; the boom is out to leeward.</figcaption>
+    </figure>
+    <h3>Directions and hull</h3>
+    <dl class="terms">
+      <dt>Bow / Stern</dt><dd>Front / back of the boat. <em>Forward</em> and <em>aft</em> are the directions toward each.</dd>
+      <dt>Port / Starboard</dt><dd>Left / right side when facing forward. <span class="port">Port is red</span>, <span class="stbd">starboard is green</span>. (Port and red both have fewer letters.)</dd>
+      <dt>Windward / Leeward</dt><dd>The side toward the wind / the side away from it. Leeward is said "LOO-ard."</dd>
+      <dt>Hull, Deck, Cockpit</dt><dd>The body of the boat, its top surface, and the recessed area where the crew sits and steers.</dd>
+      <dt>Transom</dt><dd>The flat back surface of the stern.</dd>
+      <dt>Beam</dt><dd>The widest part of the boat. "Abeam" means directly off the side.</dd>
+      <dt>Keel</dt><dd>The weighted fin under the hull. It keeps the boat upright (counteracts heeling) and resists sliding sideways (leeway).</dd>
+      <dt>Rudder, Tiller, Helm</dt><dd>The rudder is the underwater blade that steers. The tiller (or wheel) turns it. The helm is the steering station; the helmsman steers.</dd>
+      <dt>Lifelines, Stanchions</dt><dd>Wire railings around the deck and the posts that hold them.</dd>
+    </dl>
+    <h3>Rigging</h3>
+    <dl class="terms">
+      <dt>Standing rigging</dt><dd>Fixed wires that hold the mast up. <b>Forestay</b> (to the bow), <b>backstay</b> (to the stern), <b>shrouds</b> (to the sides). <b>Spreaders</b> are struts that hold the shrouds out.</dd>
+      <dt>Running rigging</dt><dd>Lines you adjust while sailing.</dd>
+      <dt>Halyard</dt><dd>Raises (hoists) a sail.</dd>
+      <dt>Sheet</dt><dd>Controls a sail's angle to the wind. Mainsheet, jib sheet.</dd>
+      <dt>Boom</dt><dd>The horizontal spar along the bottom of the mainsail. Attached to the mast at the <b>gooseneck</b>.</dd>
+      <dt>Boom vang</dt><dd>Pulls the boom down and keeps it from lifting.</dd>
+      <dt>Outhaul</dt><dd>Pulls the clew of the mainsail aft along the boom to flatten the foot.</dd>
+      <dt>Topping lift</dt><dd>Holds the boom up when the mainsail is lowered.</dd>
+      <dt>Cleat, Winch</dt><dd>A fitting to secure a line; a drum that gives mechanical advantage when trimming.</dd>
+      <dt>Traveler</dt><dd>A track that moves the mainsheet's attachment point side to side.</dd>
+    </dl>
+    <h3>Parts of a sail</h3>
+    <figure class="quizable" id="fig-sail">
+      <svg viewBox="0 0 460 400" role="img" aria-label="Mainsail with head, tack, clew, luff, leech, foot, battens and telltales labeled">
+        <path d="M150,30 Q290,170 360,340 L150,340 Z" fill="var(--sail)"/>
+        <line x1="150" y1="30" x2="150" y2="340" stroke="var(--port)" stroke-width="4"/>
+        <path d="M150,30 Q290,170 360,340" fill="none" stroke="var(--accent)" stroke-width="4"/>
+        <line x1="150" y1="340" x2="360" y2="340" stroke="var(--stbd)" stroke-width="4"/>
+        <g stroke="var(--muted)" stroke-width="3" stroke-linecap="round"><line x1="183" y1="117" x2="225" y2="117"/><line x1="228" y1="178" x2="270" y2="178"/><line x1="267" y1="241" x2="309" y2="241"/></g>
+        <g stroke="var(--port)" stroke-width="2"><path d="M166,130 q5,-3 10,0 t10,0" fill="none"/><path d="M166,200 q5,-3 10,0 t10,0" fill="none"/><path d="M166,270 q5,-3 10,0 t10,0" fill="none"/></g>
+        <line x1="150" y1="344" x2="360" y2="344" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/>
+        <g id="sail-labels"></g>
+      </svg>
+      <div class="figbar">
+        <button class="btn sm" type="button" data-quiz="fig-sail">Hide labels to quiz yourself</button>
+        <figcaption>Mainsail. Corners: head, tack, clew. Edges: <span class="port">luff</span>, <span style="color:var(--accent);font-weight:700">leech</span>, <span class="stbd">foot</span>. A jib uses the same names.</figcaption>
+      </div>
+    </figure>
+    <dl class="terms">
+      <dt>Head</dt><dd>Top corner.</dd>
+      <dt>Tack</dt><dd>Lower forward corner.</dd>
+      <dt>Clew</dt><dd>Lower aft corner (where the sheet attaches on a jib, the outhaul on a main).</dd>
+      <dt>Luff</dt><dd>Forward edge. Also a verb: a sail is <em>luffing</em> when it flaps along this edge.</dd>
+      <dt>Leech</dt><dd>Aft edge.</dd>
+      <dt>Foot</dt><dd>Bottom edge.</dd>
+      <dt>Battens</dt><dd>Stiffeners in pockets along the leech of the main.</dd>
+      <dt>Telltales</dt><dd>Yarn or ribbon on the sail (and shrouds) that show airflow.</dd>
+      <dt>Jib / Genoa / Main</dt><dd>The headsail forward of the mast (a genoa is a large jib that overlaps the mast); the mainsail is behind the mast on the boom.</dd>
+    </dl>
+  </section>
+
+  <section id="s-sail">
+    <h2>Points of sail</h2>
+    <p>A point of sail is the boat's direction relative to the wind. Wind is named for where it comes <em>from</em>: a north wind blows from the north.</p>
+    <figure class="wide">
+      <svg viewBox="0 0 640 530" role="img" aria-label="Points of sail: boats around a circle with the wind from the top, showing boom position at each point of sail" id="svg-pos"></svg>
+      <figcaption>Wind from the top. The thick line on each boat is the boom: it goes out farther the farther you turn away from the wind. Boats on the right have the wind over their port side (<span class="port">port tack</span>); boats on the left have it over starboard (<span class="stbd">starboard tack</span>).</figcaption>
+    </figure>
+    <h3>Port tack vs. starboard tack</h3>
+    <figure>
+      <svg viewBox="0 0 460 250" role="img" aria-label="Two boats: one on starboard tack with boom to port, one on port tack with boom to starboard" id="svg-tacks"></svg>
+      <figcaption>Ask "which side is the wind coming over?" That's your tack. The boom is always on the other side.</figcaption>
+    </figure>
+    <div class="tbl"><table>
+      <thead><tr><th>Point of sail</th><th>Angle off the wind</th><th>Sails</th></tr></thead>
+      <tbody>
+        <tr><td>In irons / no-go zone</td><td>0°–45°</td><td>Luffing; boat can't sail here</td></tr>
+        <tr><td>Close-hauled</td><td>~45°</td><td>Trimmed all the way in</td></tr>
+        <tr><td>Close reach</td><td>~60°</td><td>Eased slightly</td></tr>
+        <tr><td>Beam reach</td><td>90° (wind across the beam)</td><td>Eased about halfway</td></tr>
+        <tr><td>Broad reach</td><td>~135°</td><td>Eased well out</td></tr>
+        <tr><td>Run</td><td>180° (wind from behind)</td><td>All the way out; jib may go wing-and-wing</td></tr>
+      </tbody>
+    </table></div>
+    <dl class="terms">
+      <dt>Head up</dt><dd>Turn toward the wind (trim sails in).</dd>
+      <dt>Bear away / bear off / fall off</dt><dd>Turn away from the wind (ease sails out).</dd>
+      <dt>Port tack / starboard tack</dt><dd>Named for the side the wind comes over. The boom is on the <em>opposite</em> side. Boom on starboard means you're on port tack.</dd>
+      <dt>By the lee</dt><dd>Running with the wind slightly on the same side as the boom. Risk of an accidental jibe.</dd>
+    </dl>
+  </section>
+
+  <section id="s-maneuver">
+    <h2>Tacking and jibing</h2>
+    <p><b>Tacking</b> (coming about) turns the <b>bow</b> through the wind. <b>Jibing</b> turns the <b>stern</b> through the wind.</p>
+    <div class="pair">
+      <figure><svg viewBox="0 0 300 260" role="img" aria-label="Tacking: the bow turns through the wind and the boom crosses over" id="svg-tackman"></svg><figcaption><b>Tack.</b> Close-hauled on port tack, bow through the wind, close-hauled on starboard tack. The boat slows as it passes through the no-go zone.</figcaption></figure>
+      <figure><svg viewBox="0 0 300 260" role="img" aria-label="Jibing: the stern turns through the wind and the boom swings across" id="svg-jibeman"></svg><figcaption><b>Jibe.</b> Running on port tack, stern through the wind, running on starboard tack. The boom swings across fast, so control the mainsheet.</figcaption></figure>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Step</th><th>Tack</th><th>Jibe</th></tr></thead>
+      <tbody>
+        <tr><td>Helm warns</td><td>"Ready about"</td><td>"Prepare to jibe"</td></tr>
+        <tr><td>Crew confirms</td><td>"Ready"</td><td>"Ready"</td></tr>
+        <tr><td>Helm turns</td><td>"Helm's a-lee" (or "Hard a-lee," "Tacking"), push tiller to leeward</td><td>"Jibe-ho," pull tiller to windward</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout"><b>Jibe safely.</b> The boom swings across with force. Trim the mainsheet in before the stern passes through the wind, keep heads low, then ease out on the new side. An <em>accidental</em> jibe happens when running by the lee.</div>
+    <p><b>In irons:</b> stopped head-to-wind with sails luffing. To get out, <b>back the jib</b>: hold it out to one side, and the wind pushes the bow toward the other side. Once you're turned onto a close reach, release the jib to the normal side, trim both sails, and sail off. If the boat starts drifting backward, the steering reverses, so steer the stern the way you want it to go.</p>
+  </section>
+
+  <section id="s-trim">
+    <h2>Sail trim</h2>
+    <ul>
+      <li><b>Basic rule:</b> ease the sail out until the luff just starts to flutter, then trim in until it stops. "When in doubt, let it out."</li>
+      <li>Head up → trim in. Bear away → ease out.</li>
+      <li><b>Jib telltales:</b> both should stream straight back.
+        <ul>
+          <li>Windward telltale flutters → sail is too loose for your course. Trim in or bear away.</li>
+          <li>Leeward telltale flutters → sail is overtrimmed. Ease out or head up.</li>
+          <li>Tiller tip: push the tiller toward the misbehaving telltale.</li>
+        </ul></li>
+      <li><b>Too much heel</b> in a gust: ease the mainsheet, or head up slightly to depower. In strong wind, <b>reef</b> (reduce sail area).</li>
+      <li><b>Weather helm</b>: the boat wants to turn toward the wind, often from too much heel or mainsail. <b>Lee helm</b> is the opposite.</li>
+    </ul>
+  </section>
+
+  <section id="s-rules">
+    <h2>Rules of the road</h2>
+    <p>The Navigation Rules (COLREGS internationally, Inland Rules in US inland waters) use two roles. The <b>give-way vessel</b> must take <em>early and substantial</em> action to keep clear. The <b>stand-on vessel</b> must <em>hold course and speed</em>, but must act if collision can't be avoided by the give-way vessel alone. Every vessel must avoid a collision (General Prudential Rule).</p>
+    <h3>Two sailboats</h3>
+    <div class="pair">
+      <figure><svg viewBox="0 0 300 250" role="img" aria-label="Port tack boat gives way to starboard tack boat" id="svg-row1"></svg><figcaption><b>Opposite tacks:</b> port tack gives way.</figcaption></figure>
+      <figure><svg viewBox="0 0 300 250" role="img" aria-label="Windward boat gives way to leeward boat on the same tack" id="svg-row2"></svg><figcaption><b>Same tack:</b> the windward boat (closer to the wind) gives way.</figcaption></figure>
+    </div>
+    <ol>
+      <li><b>Opposite tacks:</b> the <span class="port">port-tack</span> boat gives way to the <span class="stbd">starboard-tack</span> boat.</li>
+      <li><b>Same tack:</b> the <b>windward</b> boat gives way to the leeward boat.</li>
+      <li>If you're on port tack and can't tell which tack a boat to windward is on, keep clear.</li>
+    </ol>
+    <h3>Rules that apply to everyone</h3>
+    <ul>
+      <li><b>Overtaking:</b> the boat overtaking keeps clear, no matter what kind of boat. A sailboat overtaking a powerboat must give way.</li>
+      <li><b>Narrow channels:</b> a sailboat (or any boat under 20 m) must not impede a vessel that can only navigate safely within the channel. Same in traffic separation schemes.</li>
+      <li><b>Under engine = power:</b> a sailboat motoring, even with sails up, is a power-driven vessel.</li>
+      <li><b>Risk of collision:</b> if the other boat's compass bearing stays steady while the distance closes, you're on a collision course.</li>
+    </ul>
+    <h3>Pecking order (who gives way to whom)</h3>
+    <p>Each vessel gives way to the ones above it, except when overtaking.</p>
+    <ol>
+      <li>Not under command (NUC: breakdown, can't maneuver)</li>
+      <li>Restricted in ability to maneuver (RAM: dredging, towing, laying cable)</li>
+      <li>Constrained by draft (CBD, international rules)</li>
+      <li>Engaged in fishing (nets, trawls; <em>not</em> trolling a line)</li>
+      <li>Sailing vessel</li>
+      <li>Power-driven vessel</li>
+    </ol>
+    <h3>Two power-driven vessels</h3>
+    <ul>
+      <li><b>Head-on:</b> both turn to starboard and pass port to port.</li>
+      <li><b>Crossing:</b> the vessel that has the other on its <b>starboard</b> side gives way.</li>
+    </ul>
+  </section>
+
+  <section id="s-lights">
+    <h2>Lights and sound signals</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Situation</th><th>Lights</th></tr></thead>
+      <tbody>
+        <tr><td>Sailboat under sail</td><td><span class="port">Red</span> (port) and <span class="stbd">green</span> (starboard) sidelights, white sternlight. Under 20 m may combine them in one masthead tricolor.</td></tr>
+        <tr><td>Power vessel (incl. sailboat motoring)</td><td>Sidelights + sternlight + white masthead (steaming) light shining forward. Never use the tricolor under power.</td></tr>
+        <tr><td>Anchored</td><td>One all-round white light.</td></tr>
+        <tr><td>Sailboat under 7 m</td><td>Should show sidelights and sternlight if practicable; if not, must have a white flashlight or lantern ready to show in time to prevent a collision.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Sidelights shine 112.5° (dead ahead to just aft of the beam), the sternlight 135° astern. If you see a <span class="port">red</span> light you're looking at a vessel's port side; <span class="stbd">green</span>, its starboard side; red and green together, it's coming straight at you; only white, you're probably seeing its stern (or a boat at anchor).</p>
+    <p><b>Day shapes:</b> a cone, point down, means a sailboat motorsailing. A black ball means anchored.</p>
+    <h3>Sound signals</h3>
+    <p>A <b>short blast</b> is about 1 second; a <b>prolonged blast</b> is 4–6 seconds.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Signal</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">•</td><td>Altering course to starboard (Inland: "I intend to pass you port to port")</td></tr>
+        <tr><td class="mono">• •</td><td>Altering course to port (Inland: "pass starboard to starboard")</td></tr>
+        <tr><td class="mono">• • •</td><td>Operating astern propulsion (backing up)</td></tr>
+        <tr><td class="mono">• • • • •</td><td>Danger / doubt: "I don't understand your intentions"</td></tr>
+        <tr><td class="mono">— (every 2 min)</td><td>Restricted visibility: power vessel making way</td></tr>
+        <tr><td class="mono">— • • (every 2 min)</td><td>Restricted visibility: sailing vessel (also NUC, RAM, fishing, towing). Boats under 12 m may instead make any efficient sound signal at least every 2 minutes.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section id="s-aton">
+    <h2>Aids to navigation (US system)</h2>
+    <div class="callout"><b>Red, right, returning.</b> When returning from sea (heading upstream or into harbor), keep <span class="port">red</span> marks on your starboard (right) side and <span class="stbd">green</span> on your port side. Heading out to sea, it's the reverse.</div>
+    <div class="tbl"><table>
+      <thead><tr><th>Mark</th><th>Looks like</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Nun</td><td>Red, cone-shaped top, <b>even</b> numbers</td><td>Keep to starboard when returning</td></tr>
+        <tr><td>Can</td><td>Green, cylinder, <b>odd</b> numbers</td><td>Keep to port when returning</td></tr>
+        <tr><td>Daybeacons</td><td>Red triangle (even) / green square (odd), on a post</td><td>Same lateral meaning as nuns and cans</td></tr>
+        <tr><td>Preferred channel</td><td>Red and green horizontal bands</td><td>Junction. The <b>top</b> color tells you how to treat it for the main channel</td></tr>
+        <tr><td>Safe water</td><td>Red and white vertical stripes, Morse "A" light</td><td>Open water all around; pass on either side, often marks a channel entrance</td></tr>
+        <tr><td>Isolated danger</td><td>Black with red bands, two black balls on top</td><td>Danger right at the mark with navigable water around it</td></tr>
+        <tr><td>Regulatory</td><td>White with orange shapes</td><td>Diamond = danger; diamond with cross = boats keep out; circle = controlled area (speed, no wake); square = information</td></tr>
+      </tbody>
+    </table></div>
+    <p>Numbers on lateral marks increase as you head in from sea. Lights match the mark color: red lights on red marks, green on green.</p>
+  </section>
+
+  <section id="s-nav">
+    <h2>Charts and units</h2>
+    <ul>
+      <li><b>Nautical mile</b> = 1 minute of latitude ≈ 6,076 ft (about 1.15 statute miles).</li>
+      <li><b>Knot</b> = one nautical mile per hour. (Never "knots per hour.")</li>
+      <li>Measure distance on the <b>latitude scale</b> along the side of the chart, never the longitude scale along the top.</li>
+      <li>The chart title block says whether soundings (depths) are in feet, fathoms (6 ft) or meters.</li>
+      <li>The <b>compass rose</b> shows true north (outer ring) and magnetic north (inner ring); the difference is <b>variation</b>.</li>
+      <li>A <b>lee shore</b> is a shore downwind of you. It's dangerous because the wind pushes you toward it.</li>
+    </ul>
+  </section>
+
+  <section id="s-knots">
+    <h2>Knots</h2>
+    <dl class="terms">
+      <dt>Bowline</dt><dd>A fixed loop at the end of a line that won't slip and is easy to untie. Used to attach jib sheets to the clew.</dd>
+      <dt>Cleat hitch</dt><dd>Secures a line to a horn cleat: a turn around the base, a figure-eight over the horns, a locking hitch.</dd>
+      <dt>Figure-eight</dt><dd>A stopper knot at the end of a sheet so it can't run out through a block.</dd>
+      <dt>Square (reef) knot</dt><dd>Joins two ends of the same line, as when tying reef points. Not for critical loads.</dd>
+      <dt>Clove hitch</dt><dd>Quick hitch around a post or rail, often for fenders. Can slip if not under steady load.</dd>
+      <dt>Round turn &amp; two half hitches</dt><dd>Secures a line to a post, ring or piling; holds under load.</dd>
+      <dt>Sheet bend</dt><dd>Joins two lines, especially of different diameters.</dd>
+    </dl>
+  </section>
+
+  <section id="s-safety">
+    <h2>Safety equipment (US Coast Guard)</h2>
+    <ul>
+      <li><b>Life jackets (PFDs):</b> one USCG-approved wearable PFD of the right size for each person aboard, in good condition and readily accessible. Boats 16 ft and longer also need a throwable device (Type IV: ring or cushion). Newer labels show a performance level instead of a "Type," but older Type-labeled PFDs are still legal.</li>
+      <li><b>Children:</b> under federal rules, children under 13 must wear a life jacket on a moving recreational boat unless they're below deck or in an enclosed cabin. Your state may set a different age.</li>
+      <li><b>Visual distress signals</b> (flares, orange flag, distress light): required on coastal waters for boats 16 ft and up; boats under 16 ft on coastal waters need night signals when out between sunset and sunrise. On most inland lakes and rivers federal rules don't require them, though some states do.</li>
+      <li><b>Sound-producing device:</b> boats under 12 m need some way to make an efficient sound signal (a whistle or air horn). At 12 m and up a whistle is required; at 20 m and up, a bell as well.</li>
+      <li><b>Fire extinguisher:</b> required on boats with inboard engines, enclosed engine or fuel spaces, closed living spaces, or permanent fuel tanks. Since 2022, disposable (non-rechargeable) extinguishers must be replaced 12 years after the date of manufacture.</li>
+      <li><b>Ventilation and backfire flame arrester:</b> required on boats with gasoline inboard engines.</li>
+      <li><b>Navigation lights</b> between sunset and sunrise and in restricted visibility.</li>
+      <li><b>Registration</b> and numbers as your state requires.</li>
+    </ul>
+    <h3>VHF radio (channel 16 for distress and calling)</h3>
+    <ul>
+      <li><b>Mayday</b>: grave and imminent danger to life or vessel.</li>
+      <li><b>Pan-pan</b> ("pahn-pahn"): urgent, but no immediate danger to life.</li>
+      <li><b>Sécurité</b> ("say-curitay"): safety or navigation information.</li>
+    </ul>
+    <h3>Health</h3>
+    <ul>
+      <li><b>Hypothermia:</b> get the person out of the water and wind, remove wet clothes, insulate, warm gradually. Wear a PFD; cold water exhausts you fast.</li>
+      <li><b>Heat and sun:</b> hydrate, shade, sunscreen.</li>
+      <li><b>Seasickness:</b> stay on deck, look at the horizon, take the helm, stay hydrated.</li>
+    </ul>
+  </section>
+
+  <section id="s-mob">
+    <h2>Crew overboard</h2>
+    <ol>
+      <li>Shout <b>"Crew overboard!"</b></li>
+      <li><b>Throw flotation</b> immediately (throwable cushion or ring).</li>
+      <li>Assign a <b>spotter</b> who points at the person and never looks away.</li>
+      <li>Press the GPS MOB button if you have one.</li>
+      <li>Return using a recovery maneuver and stop alongside the person.</li>
+    </ol>
+    <h3>Two recovery methods</h3>
+    <ul>
+      <li><b>Quick-stop:</b> head up into the wind right away, tack and leave the jib backed, then circle around and come back to the person. Keeps the boat close to them.</li>
+      <li><b>Figure-eight:</b> sail away on a beam reach a few boat lengths, tack, bear away below the person, then come back on a <b>close reach</b>, luffing sails to slow and stop beside them.</li>
+    </ul>
+    <p>Why the final approach is on a close reach: you can speed up or slow down just by trimming or easing the sails.</p>
+  </section>
+
+  <section id="s-weather">
+    <h2>Weather</h2>
+    <ul>
+      <li>Check the forecast before you go: NOAA Weather Radio (VHF WX channels), apps, local reports. Know your limits for wind strength.</li>
+      <li><b>Small craft advisory</b>: conditions hazardous to small boats.</li>
+      <li><b>Thunderstorm signs:</b> tall, dark, anvil-topped cumulonimbus clouds, sudden temperature drop, sudden wind shift or gusts, a falling barometer. Head in early.</li>
+      <li><b>Sea breeze:</b> on sunny days, land heats up and the breeze off the water builds in the afternoon.</li>
+      <li><b>Fog:</b> slow down, sound fog signals, show lights, keep a lookout.</li>
+      <li>Gusts show as dark patches ("cat's paws") moving across the water toward you.</li>
+    </ul>
+  </section>
+
+  <section id="s-dock">
+    <h2>Docking and anchoring</h2>
+    <h3>Docking</h3>
+    <ul>
+      <li>Rig <b>fenders</b> and <b>dock lines</b> before you arrive.</li>
+      <li>Approach slowly, ideally into the wind or current so they help you stop. "Never approach a dock faster than you're willing to hit it."</li>
+      <li><b>Bow line</b> and <b>stern line</b> hold the ends; <b>spring lines</b> run diagonally and keep the boat from moving forward and aft along the dock.</li>
+      <li>Crew step off (never jump) and never use hands or feet to fend off between the boat and dock.</li>
+    </ul>
+    <h3>Anchoring</h3>
+    <ul>
+      <li>Pick a spot with good holding (sand, mud), enough room to swing, and protection from the wind.</li>
+      <li>Approach head to wind, stop, lower the anchor (don't throw it), let the boat drift back as you pay out rode.</li>
+      <li><b>Scope</b> = length of rode ÷ (water depth + height of bow above water). Use about <b>7:1</b> for normal conditions (5:1 minimum with chain).</li>
+      <li>Example: 10 ft deep, bow 5 ft high, 7:1 scope → 15 × 7 = <b>105 ft</b> of rode.</li>
+      <li><b>Set</b> the anchor by gently backing down (or letting the wind push you back) until it holds. Check landmarks to make sure you're not dragging.</li>
+      <li>Common anchors: Danforth (fluke), plow, claw (Bruce), mushroom (for moorings).</li>
+    </ul>
+  </section>
+  </div>
+</div>
+
+<!-- ================= FLASHCARDS ================= -->
+<div id="v-cards" hidden>
+  <div class="bar">
+    <label class="meta" for="fc-topic">Topic</label>
+    <select id="fc-topic"></select>
+    <button class="btn" id="fc-shuffle" type="button">Shuffle</button>
+    <button class="btn" id="fc-reset" type="button">Reset progress</button>
+  </div>
+  <div class="meta" id="fc-count"></div>
+  <div class="progress"><i id="fc-prog"></i></div>
+  <div class="cardstage">
+    <div class="fc" id="fc" tabindex="0" role="button" aria-label="Flip card">
+      <div class="hint" id="fc-hint">Term · tap to flip</div>
+      <div class="term" id="fc-term"></div>
+      <div class="def" id="fc-def" hidden></div>
+    </div>
+    <div class="fcbtns">
+      <button class="btn again" id="fc-again" type="button">Still learning</button>
+      <button class="btn good" id="fc-good" type="button">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= QUIZ ================= -->
+<div id="v-quiz" hidden>
+  <div class="bar">
+    <label class="meta" for="qz-topic">Topic</label>
+    <select id="qz-topic"></select>
+    <label class="meta" for="qz-len">Questions</label>
+    <select id="qz-len"><option value="10">10</option><option value="20" selected>20</option><option value="40">40</option><option value="999">All</option></select>
+    <button class="btn primary" id="qz-start" type="button">New quiz</button>
+    <span class="meta" id="qz-best"></span>
+  </div>
+  <div class="qwrap" id="qz"></div>
+</div>
+
+<!-- ================= EXAM ================= -->
+<div id="v-exam" hidden>
+  <div class="qwrap" id="ex"></div>
+</div>
+
+</main>
+
+<script>
+const TOPICS = {parts:"Boat & sail parts", sail:"Points of sail & maneuvers", trim:"Sail trim", rules:"Rules of the road", lights:"Lights & sound signals", aton:"Aids to navigation", nav:"Charts & units", knots:"Knots", safety:"Safety & crew overboard", weather:"Weather", dock:"Docking & anchoring"};
+
+const CARDS = [
+ ["parts","Bow","The front of the boat."],["parts","Stern","The back of the boat."],
+ ["parts","Port","Left side facing forward. Red sidelight."],["parts","Starboard","Right side facing forward. Green sidelight."],
+ ["parts","Windward","The side toward the wind."],["parts","Leeward","The side away from the wind (\"LOO-ard\")."],
+ ["parts","Transom","The flat surface across the back of the stern."],["parts","Beam","The widest part of the hull."],
+ ["parts","Keel","Weighted fin under the hull: keeps the boat upright and resists sideways slip."],
+ ["parts","Rudder","Underwater blade that steers the boat."],["parts","Tiller","Lever attached to the rudder used to steer."],
+ ["parts","Forestay","Wire from the masthead to the bow; holds the mast forward."],["parts","Backstay","Wire from the masthead to the stern."],
+ ["parts","Shrouds","Wires holding the mast up from the sides."],["parts","Spreaders","Struts that hold the shrouds away from the mast."],
+ ["parts","Standing rigging","Fixed wires that support the mast."],["parts","Running rigging","Adjustable lines: halyards, sheets, etc."],
+ ["parts","Halyard","Line used to raise a sail."],["parts","Sheet","Line used to trim a sail's angle to the wind."],
+ ["parts","Boom","Spar along the foot of the mainsail."],["parts","Gooseneck","Fitting joining the boom to the mast."],
+ ["parts","Boom vang","Holds the boom down."],["parts","Outhaul","Pulls the mainsail's clew aft along the boom."],
+ ["parts","Topping lift","Holds the boom up when the main is down."],["parts","Traveler","Track that moves the mainsheet attachment side to side."],
+ ["parts","Head","Top corner of a sail."],["parts","Tack (sail corner)","Lower forward corner of a sail."],["parts","Clew","Lower aft corner of a sail."],
+ ["parts","Luff","Forward edge of a sail; also the flutter along that edge."],["parts","Leech","Aft edge of a sail."],["parts","Foot","Bottom edge of a sail."],
+ ["parts","Battens","Stiffeners along the mainsail's leech."],["parts","Telltales","Yarns showing airflow over a sail."],
+ ["parts","Stanchions","Posts that support the lifelines."],["parts","Cockpit","Recessed area where the crew sits and steers."],
+ ["sail","No-go zone","About 45° either side of the wind where a sailboat can't sail."],["sail","In irons","Stuck head-to-wind, sails luffing, no steerage."],
+ ["sail","Close-hauled","Sailing as close to the wind as possible, sails trimmed in tight."],["sail","Close reach","Between close-hauled and beam reach."],
+ ["sail","Beam reach","Wind coming straight across the side, 90°."],["sail","Broad reach","Wind coming over the rear quarter."],
+ ["sail","Run","Sailing with the wind directly behind."],["sail","Head up","Turn toward the wind."],["sail","Bear away","Turn away from the wind (also bear off, fall off)."],
+ ["sail","Tacking","Turning the bow through the wind (coming about)."],["sail","Jibing","Turning the stern through the wind."],
+ ["sail","Port tack","Wind coming over the port side; boom on starboard."],["sail","Starboard tack","Wind coming over the starboard side; boom on port."],
+ ["sail","By the lee","Running with the wind on the same side as the boom; accidental jibe risk."],
+ ["sail","Ready about","Helm's warning that a tack is coming."],["sail","Helm's a-lee","Called as the helm turns the boat into the tack."],
+ ["sail","Jibe-ho","Called as the helm turns the stern through the wind."],["sail","Wing-and-wing","Running with the main on one side and the jib on the other."],
+ ["trim","Luffing","Sail flapping along its forward edge: undertrimmed or too close to the wind."],
+ ["trim","Weather helm","Boat's tendency to turn toward the wind."],["trim","Lee helm","Boat's tendency to turn away from the wind."],
+ ["trim","Reefing","Reducing sail area in strong wind."],["trim","Heeling","The boat leaning over from wind pressure."],
+ ["trim","Leeway","Sideways drift of the boat caused by wind."],
+ ["rules","Stand-on vessel","Has right of way; must hold course and speed."],["rules","Give-way vessel","Must take early, substantial action to keep clear."],
+ ["rules","Port vs starboard tack","Port-tack boat gives way."],["rules","Same tack","Windward boat gives way."],
+ ["rules","Overtaking","Overtaking vessel keeps clear, whatever type it is."],["rules","NUC","Not under command: can't maneuver (e.g., breakdown)."],
+ ["rules","RAM","Restricted in ability to maneuver (e.g., dredging, towing)."],["rules","Constant bearing, decreasing range","Risk of collision."],
+ ["lights","Sidelights","Red (port) and green (starboard), each 112.5°."],["lights","Sternlight","White, shining 135° aft."],
+ ["lights","Masthead (steaming) light","White light forward shown by power vessels; means a sailboat is motoring."],
+ ["lights","Anchor light","All-round white light."],["lights","Tricolor","Red/green/white combined at the masthead; sailboats under 20 m under sail only."],
+ ["lights","Cone, point down","Day shape: sailboat motorsailing."],["lights","Short blast","About 1 second."],["lights","Prolonged blast","4 to 6 seconds."],
+ ["lights","Five short blasts","Danger / doubt signal."],
+ ["aton","Red Right Returning","Keep red marks on your right when coming in from sea."],["aton","Nun","Red, cone-topped buoy with even numbers."],
+ ["aton","Can","Green cylindrical buoy with odd numbers."],["aton","Safe water mark","Red/white vertical stripes; pass either side."],
+ ["aton","Preferred channel mark","Red/green horizontal bands; top band shows the main channel."],
+ ["aton","Isolated danger mark","Black with red bands, two black balls on top."],
+ ["aton","Orange diamond with cross","Boats keep out."],["aton","Orange circle","Controlled area (speed limit, no wake)."],
+ ["aton","Daybeacon","Fixed mark on a post: red triangle or green square."],
+ ["nav","Nautical mile","One minute of latitude, about 6,076 ft."],["nav","Knot","One nautical mile per hour."],
+ ["nav","Fathom","6 feet of depth."],["nav","Variation","Difference between true and magnetic north."],["nav","Lee shore","Shore downwind of you; dangerous."],
+ ["knots","Bowline","Fixed loop that won't slip."],["knots","Cleat hitch","Secures a line to a horn cleat."],["knots","Figure-eight","Stopper knot at the end of a line."],
+ ["knots","Square knot","Joins two ends of the same line; reef points."],["knots","Clove hitch","Quick hitch to a post or rail."],
+ ["knots","Sheet bend","Joins two lines of different size."],["knots","Round turn & two half hitches","Secure hitch to a post or ring under load."],
+ ["safety","Type IV PFD","Throwable device (cushion or ring)."],["safety","Mayday","Distress: grave and imminent danger."],
+ ["safety","Pan-pan","Urgent, no immediate danger to life."],["safety","Sécurité","Safety or navigation information."],
+ ["safety","VHF channel 16","Distress, safety, and calling channel."],["safety","Spotter","Crew who points at the person overboard and never looks away."],
+ ["safety","Quick-stop","MOB method: head up right away, tack, circle back."],["safety","Hypothermia","Dangerous loss of body heat."],
+ ["weather","Cumulonimbus","Tall thunderstorm cloud, often anvil-topped."],["weather","Sea breeze","Onshore breeze that builds on sunny afternoons."],
+ ["weather","Cat's paw","Dark ripple patch on the water signaling a gust."],["weather","Small craft advisory","Conditions hazardous to small boats."],
+ ["dock","Spring line","Diagonal dock line that stops fore-and-aft movement."],["dock","Fender","Cushion hung over the side to protect the hull."],
+ ["dock","Scope","Rode length ÷ (depth + bow height). 7:1 is typical."],["dock","Rode","The anchor line and/or chain."],
+ ["dock","Danforth","Lightweight fluke anchor; good in sand and mud."],
+];
+
+const Q = [
+ ["parts","Facing forward, the left side of the boat is called:",["Starboard","Port","Leeward","Abeam"],1,"Port is left; starboard is right. Port's sidelight is red."],
+ ["parts","Which line is used to raise a sail?",["Sheet","Halyard","Vang","Outhaul"],1,"Halyards hoist sails. Sheets trim them."],
+ ["parts","Which line controls a sail's angle to the wind?",["Halyard","Topping lift","Sheet","Painter"],2,"Sheets trim the sail in and out."],
+ ["parts","The wires that support the mast from the sides are the:",["Shrouds","Forestay and backstay","Halyards","Lifelines"],0,"Shrouds hold the mast up side to side. Forestay and backstay support it fore and aft."],
+ ["parts","The lower aft corner of a sail is the:",["Tack","Head","Clew","Luff"],2,"Clew is the lower aft corner. Tack is the lower forward corner, head is the top."],
+ ["parts","The forward edge of a sail is the:",["Leech","Foot","Luff","Batten"],2,"Luff is the forward edge, leech the aft edge, foot the bottom."],
+ ["parts","The fitting that connects the boom to the mast is the:",["Gooseneck","Traveler","Clew","Spreader"],0,"The gooseneck is a universal joint at the mast."],
+ ["parts","What does the boom vang do?",["Raises the boom","Pulls the boom down","Moves the boom side to side","Holds the boom up when the sail is down"],1,"The vang keeps the boom from lifting. The topping lift holds it up when the sail is down."],
+ ["parts","Two main jobs of a keelboat's keel are:",["Steering and speed","Keeping the boat upright and resisting sideways slip","Holding fuel and ballast water","Supporting the mast and the rudder"],1,"The weighted keel counteracts heeling and resists leeway."],
+ ["parts","Which of these is running rigging?",["Forestay","Shrouds","Jib sheet","Backstay"],2,"Running rigging is adjusted while sailing. Stays and shrouds are standing rigging."],
+ ["parts","The side of the boat the wind is blowing onto is the:",["Leeward side","Windward side","Lee side","Aft side"],1,"Windward is toward the wind."],
+ ["sail","Sailing as close to the wind as possible with sails trimmed tight is:",["Beam reach","Close-hauled","Broad reach","Running"],1,"Close-hauled is about 45° off the wind."],
+ ["sail","Wind blowing directly across the side of the boat (90°) is a:",["Close reach","Beam reach","Broad reach","Run"],1,"A beam reach puts the wind across the beam."],
+ ["sail","A boat stopped head-to-wind with its sails luffing is:",["Hove to","In irons","Running","By the lee"],1,"In irons: pointed into the no-go zone with no drive."],
+ ["sail","About how close to the wind can a typical sailboat sail?",["10°","25°","45°","90°"],2,"The no-go zone is about 45° either side of the wind."],
+ ["sail","Heading up means:",["Turning away from the wind","Turning toward the wind","Raising the sails","Moving forward on deck"],1,"Head up toward the wind. Bear away from it."],
+ ["sail","When you bear away from close-hauled to a broad reach, you should:",["Trim the sails in","Ease the sails out","Lower the jib","Tighten the outhaul fully"],1,"The farther off the wind you sail, the more you ease."],
+ ["sail","Tacking means turning the:",["Stern through the wind","Bow through the wind","Boat in a full circle","Boat downwind"],1,"Tack: bow through the wind. Jibe: stern through the wind."],
+ ["sail","The correct order of commands for a tack is:",["Ready about, Ready, Helm's a-lee","Prepare to jibe, Ready, Jibe-ho","Helm's a-lee, Ready, Ready about","Ready, Ready about, Tacking"],0,"Helm warns, crew confirms, helm executes."],
+ ["sail","Why is a jibe potentially dangerous?",["The boat stops suddenly","The boom swings across the cockpit with force","The jib can't be trimmed","The boat heels to windward"],1,"Control the mainsheet and keep heads down."],
+ ["sail","Your boom is on the starboard side. You are on:",["Starboard tack","Port tack","A run only","It depends on boat speed"],1,"The tack is named for the side the wind comes over, which is opposite the boom."],
+ ["sail","Running with the wind on the same side as the boom is called:",["Close-hauled","Wing-and-wing","By the lee","In irons"],2,"By the lee risks an accidental jibe."],
+ ["trim","The basic way to trim a sail is:",["Pull it all the way in","Ease until it luffs, then trim until the luffing stops","Let it out all the way","Trim until the boat heels 30°"],1,"\"When in doubt, let it out.\""],
+ ["trim","The leeward telltale on your jib is fluttering. You should:",["Trim in or bear away","Ease the sheet or head up","Lower the jib","Tighten the halyard"],1,"Leeward telltales flutter when the sail is overtrimmed for the course."],
+ ["trim","The windward telltale on your jib is fluttering. You should:",["Trim in or bear away","Ease out or head up","Tack immediately","Raise the centerboard"],0,"Windward telltales flutter when you're too close to the wind for your trim."],
+ ["trim","A gust makes the boat heel too far. A good first response is:",["Trim the mainsheet in","Ease the mainsheet","Bear away sharply","Move the crew to leeward"],1,"Easing the main spills wind and reduces heel."],
+ ["trim","A boat's tendency to turn toward the wind is called:",["Lee helm","Weather helm","Leeway","Pointing"],1,"Weather helm usually increases with heel."],
+ ["trim","Reefing a sail means:",["Raising it higher","Reducing its area","Tightening its luff","Folding it for storage"],1,"Reef when the wind is too strong for full sail."],
+ ["rules","Two sailboats approach on opposite tacks. Which gives way?",["Starboard tack","Port tack","The faster boat","The larger boat"],1,"Port tack gives way to starboard tack."],
+ ["rules","Two sailboats on the same tack are converging. Which gives way?",["Leeward boat","Windward boat","The boat on the left","The slower boat"],1,"Same tack: windward gives way to leeward."],
+ ["rules","A sailboat overtakes a slower powerboat. Who gives way?",["The powerboat","The sailboat","Neither","Whoever is on port tack"],1,"The overtaking vessel always keeps clear."],
+ ["rules","A sailboat motoring with sails down is considered:",["A sailing vessel","A power-driven vessel","Restricted in ability to maneuver","Not under command"],1,"Under engine, a sailboat follows power-vessel rules."],
+ ["rules","In a narrow channel, a small sailboat meets a large ship that can only navigate in the channel. The sailboat must:",["Hold course as stand-on","Not impede the ship","Sound five blasts and continue","Anchor immediately"],1,"Boats under 20 m and sailboats must not impede vessels limited to the channel."],
+ ["rules","What should the stand-on vessel do?",["Speed up to clear quickly","Maintain course and speed","Turn to starboard immediately","Stop"],1,"The stand-on vessel stays predictable, but must act if collision becomes unavoidable otherwise."],
+ ["rules","The give-way vessel's action should be:",["Small and late","Early and substantial","Signaled with five blasts","A turn to port"],1,"Make your action obvious to the other boat."],
+ ["rules","Which shows a risk of collision?",["The other boat's bearing changes quickly","Steady bearing and decreasing range","The other boat is to leeward","The other boat is on starboard tack"],1,"Steady bearing, closing distance means a collision course."],
+ ["rules","A sailboat under sail meets a vessel trawling with nets. Who gives way?",["The trawler","The sailboat","Whoever is to port","Neither"],1,"A vessel engaged in fishing is higher in the pecking order than a sailboat."],
+ ["rules","Two powerboats are crossing. Which gives way?",["The one with the other on its port side","The one with the other on its starboard side","The larger one","The faster one"],1,"The vessel with the other on its starboard side gives way."],
+ ["rules","Two powerboats meet head-on. They should:",["Both turn to port","Both turn to starboard","The smaller one stops","Both hold course"],1,"Both alter to starboard and pass port to port."],
+ ["rules","Which vessel is highest in the pecking order (others give way to it)?",["Sailing vessel","Vessel engaged in fishing","Vessel not under command","Power-driven vessel"],2,"NUC, RAM, CBD, fishing, sail, power."],
+ ["lights","A sailboat under sail at night (no engine) shows:",["White masthead light only","Red and green sidelights and a white sternlight","An all-round white light","Red over green all-round lights only"],1,"A masthead steaming light would indicate she's under power."],
+ ["lights","At night you see only a red light on another vessel. You're looking at its:",["Starboard side","Port side","Stern","Bow, head-on"],1,"Port sidelight is red."],
+ ["lights","At night you see red and green lights together. The vessel is:",["Moving away from you","Heading straight toward you","Anchored","Showing its stern"],1,"Seeing both sidelights means you're nearly dead ahead of it."],
+ ["lights","An anchored boat at night shows:",["Sidelights","An all-round white light","A flashing yellow light","A red all-round light"],1,"One all-round white light where it can best be seen."],
+ ["lights","The day shape for a sailboat motorsailing is:",["A black ball","A cone, point down","A diamond","Two balls"],1,"Shown forward, where it can best be seen."],
+ ["lights","Five or more short blasts mean:",["I am turning to starboard","Danger / I doubt your intentions","I am backing up","I am anchored"],1,"The danger or doubt signal."],
+ ["lights","One short blast from a power vessel in sight of another means (international rules):",["Altering course to starboard","Altering course to port","Operating astern","Danger"],0,"One short: starboard. Two: port. Three: astern."],
+ ["lights","In fog, a sailboat under sail sounds every 2 minutes:",["One prolonged blast","One prolonged and two short blasts","Two prolonged blasts","Five short blasts"],1,"A power vessel making way sounds one prolonged blast."],
+ ["lights","How long is a prolonged blast?",["About 1 second","2 to 3 seconds","4 to 6 seconds","10 seconds"],2,"A short blast is about 1 second."],
+ ["aton","\"Red, right, returning\" means when returning from sea you keep red marks:",["On your port side","On your starboard side","Behind you","Either side"],1,"Red on your right (starboard) heading in."],
+ ["aton","Red lateral buoys (nuns) carry:",["Odd numbers","Even numbers","Letters only","No numbers"],1,"Red, even, right, returning."],
+ ["aton","A green cylindrical buoy is a:",["Nun","Can","Safe water mark","Isolated danger mark"],1,"Cans are green with odd numbers."],
+ ["aton","A buoy with red and white vertical stripes marks:",["Danger, keep out","Safe water; pass on either side","A preferred channel","A wreck"],1,"Safe water marks are often at channel entrances."],
+ ["aton","Returning from sea, you meet a buoy with horizontal red and green bands, green on top. To follow the preferred channel, keep it on your:",["Port side","Starboard side","Either side","Stern"],0,"Treat it like its top color. A green mark is kept to port when returning."],
+ ["aton","A white buoy with an orange diamond containing a cross means:",["Danger","Boats keep out","Speed limit","Information"],1,"Diamond alone is danger; circle is a controlled area; square is information."],
+ ["aton","A white buoy with an orange circle means:",["Controlled area, such as no wake","Rocks","Swim area, keep out","Fuel dock"],0,"The rule (e.g., \"5 MPH\") is written inside the circle."],
+ ["aton","A black buoy with red bands and two black balls on top marks:",["Safe water","An isolated danger with navigable water around it","A channel junction","A mooring area"],1,"Don't pass close to it."],
+ ["aton","The numbers on lateral marks increase as you:",["Head out to sea","Return from sea / go upstream","Go north","Go east"],1,"Count up as you come in."],
+ ["aton","A red triangular sign on a post is a:",["Can","Daybeacon","Range marker","Regulatory sign"],1,"Red triangle daybeacons are like nuns; green squares are like cans."],
+ ["nav","One minute of latitude equals:",["One statute mile","One nautical mile","One kilometer","One fathom"],1,"That's why you measure distance on the latitude scale."],
+ ["nav","A knot is:",["One statute mile per hour","One nautical mile per hour","One nautical mile","1,000 feet per minute"],1,"Say \"5 knots,\" never \"5 knots per hour.\""],
+ ["nav","To measure distance on a chart, use the:",["Longitude scale at the top","Latitude scale at the side","Compass rose","Depth soundings"],1,"Longitude minutes shrink away from the equator; latitude minutes don't."],
+ ["nav","A \"north wind\" blows:",["Toward the north","From the north","From the south","Along the shore"],1,"Winds are named for where they come from."],
+ ["nav","A lee shore is dangerous because:",["It has shallow water","The wind blows you toward it","It has no marks","Currents flow away from it"],1,"Give lee shores plenty of room."],
+ ["nav","A nautical mile is about:",["5,280 ft","6,076 ft","3,000 ft","10,000 ft"],1,"About 1.15 statute miles (1,852 meters)."],
+ ["knots","Which knot makes a fixed loop that won't slip?",["Clove hitch","Bowline","Square knot","Figure-eight"],1,"Bowlines tie jib sheets to the clew and make loops for dock lines."],
+ ["knots","Which knot is a stopper at the end of a sheet?",["Figure-eight","Bowline","Sheet bend","Cleat hitch"],0,"It keeps the line from pulling out through a block."],
+ ["knots","Which knot joins two lines of different diameters?",["Square knot","Sheet bend","Clove hitch","Bowline"],1,"A square knot can slip when the lines differ."],
+ ["knots","The knot used to tie reef points is the:",["Square (reef) knot","Bowline","Cleat hitch","Round turn and two half hitches"],0,"It's easy to untie and lies flat."],
+ ["knots","Which knot is often used to hang a fender from a rail?",["Figure-eight","Clove hitch","Sheet bend","Square knot"],1,"Quick to tie and adjust."],
+ ["safety","USCG rules require, at minimum:",["One PFD per boat","One wearable PFD per person aboard","PFDs for children only","PFDs only when underway at night"],1,"Plus a throwable for boats 16 ft and longer."],
+ ["safety","A Type IV PFD is:",["An offshore life jacket","A throwable cushion or ring","An inflatable vest","A survival suit"],1,"Throwables are for someone already in the water."],
+ ["safety","First action when someone falls overboard:",["Start the engine","Shout \"Crew overboard!\" and throw flotation","Lower all sails","Call Mayday"],1,"Then assign a spotter who keeps pointing."],
+ ["safety","The spotter's job during a crew overboard recovery is to:",["Steer the boat","Keep pointing at the person and never look away","Prepare the anchor","Call the Coast Guard"],1,"A head in the water disappears quickly."],
+ ["safety","Why approach a person in the water on a close reach?",["It's the fastest point of sail","You can control speed by trimming or easing","It keeps the boom away","Required by law"],1,"Ease to slow and stop alongside."],
+ ["safety","Which VHF call is for grave and imminent danger to life?",["Sécurité","Pan-pan","Mayday","Channel check"],2,"Pan-pan is urgent but not life-threatening; Sécurité is safety info."],
+ ["safety","The VHF distress and calling channel is:",["Channel 9","Channel 16","Channel 22A","Channel 68"],1,"Monitor 16 while underway."],
+ ["safety","Treatment for hypothermia includes:",["Rubbing the arms and legs hard","Giving alcohol","Removing wet clothes and warming gradually","Having them swim to warm up"],2,"Get them out of the wind and insulate."],
+ ["weather","A sign of an approaching thunderstorm is:",["Rising barometer","Towering dark cumulonimbus clouds","Steady light wind","High thin clouds only"],1,"Also sudden temperature drops and wind shifts."],
+ ["weather","On a sunny day near the coast, the sea breeze typically:",["Is strongest at dawn","Builds in the afternoon","Blows from land to sea","Doesn't change"],1,"Land heats up and draws air in off the water."],
+ ["weather","Dark patches moving across the water toward you usually mean:",["Shallow water","Gusts approaching","Current","Rain only"],1,"Get ready to ease the main."],
+ ["dock","When docking, you should ideally approach:",["Downwind at speed","Slowly, into the wind or current","Stern first at all times","With sails fully trimmed"],1,"Wind or current against you helps you stop."],
+ ["dock","Spring lines prevent the boat from:",["Heeling","Moving forward and aft along the dock","Drifting away from the dock only","Swinging at anchor"],1,"They run diagonally from the boat to the dock."],
+ ["dock","Scope is the ratio of:",["Boat length to depth","Anchor rode length to (depth + bow height)","Chain to rope","Anchor weight to boat weight"],1,"7:1 is a good rule for normal conditions."],
+ ["dock","Water is 10 ft deep and your bow is 5 ft above the water. For 7:1 scope you need:",["70 ft","105 ft","35 ft","150 ft"],1,"(10 + 5) × 7 = 105 ft."],
+ ["dock","How do you set an anchor?",["Throw it as far as possible","Lower it, pay out rode as you drift back, then back down gently","Drop it while moving fast","Tie it off at 1:1 scope"],1,"Then check landmarks to be sure it holds."],
+ ["dock","A crew member should fend off the dock by:",["Putting a foot between boat and dock","Using fenders, not hands or feet between hull and dock","Jumping to the dock early","Grabbing the dock with both hands"],1,"Never put a body part between the boat and a dock."],
+];
+
+
+/* ---------- diagrams ---------- */
+const NS="http://www.w3.org/2000/svg";
+const DEFS='<defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker></defs>';
+function boat(x,y,hdg,side,boomDeg,color,sc){
+  sc=sc||1;const b=boomDeg*Math.PI/180,L=24;
+  const bx=(side*Math.sin(b)*L).toFixed(1),by=(-6+Math.cos(b)*L).toFixed(1);
+  return `<g transform="translate(${x} ${y}) rotate(${hdg}) scale(${sc})"><path d="M0,-22 C9,-12 9,10 6,22 L-6,22 C-9,10 -9,-12 0,-22 Z" fill="var(--hull)" stroke="${color}" stroke-width="2.2"/><line x1="0" y1="-6" x2="${bx}" y2="${by}" stroke="var(--ink)" stroke-width="3.2" stroke-linecap="round"/><circle cx="0" cy="-6" r="2.6" fill="var(--ink)"/></g>`;
+}
+function wind(x,y1,y2){return `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="var(--accent)" stroke-width="3" marker-end="url(#ah)"/><text x="${x+10}" y="${y1+14}" class="cap" style="fill:var(--accent)">WIND</text>`}
+function txt(x,y,t,anchor,cls,style){return `<text x="${x}" y="${y}" text-anchor="${anchor||"middle"}"${cls?` class="${cls}"`:""}${style?` style="${style}"`:""}>${t}</text>`}
+const P="var(--port)",S="var(--stbd)",N="var(--muted)";
+
+(function(){ // points of sail
+  const cx=320,cy=255,r=150,rl=196;let g=DEFS;
+  const a1=-45*Math.PI/180,a2=45*Math.PI/180;
+  g+=`<path d="M${cx},${cy} L${cx+r*Math.sin(a1)},${cy-r*Math.cos(a1)} A${r},${r} 0 0 1 ${cx+r*Math.sin(a2)},${cy-r*Math.cos(a2)} Z" fill="var(--port-soft)" stroke="var(--port)" stroke-dasharray="4 3"/>`;
+  g+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+  g+=txt(cx,cy-62,"NO-GO ZONE","middle","cap","fill:var(--port)")+txt(cx,cy-46,"about 45° each side","middle","small");
+  g+=wind(cx,8,58);
+  g+=boat(cx,cy-r,0,1,0,N,1.35)+txt(cx+30,cy-r+5,"In irons","start","small");
+  const pts=[[45,12,"Close-hauled"],[67,28,"Close reach"],[90,45,"Beam reach"],[135,68,"Broad reach"]];
+  for(const [d,bd,name] of pts){for(const s of [1,-1]){
+    const rad=d*Math.PI/180,x=cx+s*r*Math.sin(rad),y=cy-r*Math.cos(rad);
+    const lx=cx+s*rl*Math.sin(rad),ly=cy-rl*Math.cos(rad)+5;
+    g+=boat(x.toFixed(1),y.toFixed(1),s*d,s,bd,s>0?P:S,1.35);
+    g+=txt(lx.toFixed(1),ly.toFixed(1),name,s>0?"start":"end","",d===45?"font-weight:700":"");
+  }}
+  g+=boat(cx,cy+r,180,1,85,N,1.35)+txt(cx,cy+r+46,"Run (wind from behind)","middle");
+    g+=txt(18,522,"STARBOARD TACK ←","start","cap","fill:var(--stbd)")+txt(622,522,"→ PORT TACK","end","cap","fill:var(--port)");
+  document.getElementById("svg-pos").innerHTML=g;
+})();
+
+(function(){ // port vs starboard tack
+  let g=DEFS+wind(230,6,56);
+  g+=boat(120,140,-60,-1,20,S,1.9)+boat(340,140,60,1,20,P,1.9);
+  g+=txt(120,212,"STARBOARD TACK","middle","cap","fill:var(--stbd);font-size:13px")+txt(120,230,"wind over starboard, boom to port","middle","small");
+  g+=txt(340,212,"PORT TACK","middle","cap","fill:var(--port);font-size:13px")+txt(340,230,"wind over port, boom to starboard","middle","small");
+  document.getElementById("svg-tacks").innerHTML=g;
+})();
+
+(function(){ // tacking
+  let g=DEFS+wind(262,8,58);
+  g+=`<path d="M70,245 L170,145 Q180,135 170,125 L90,45" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  g+=boat(100,215,45,1,12,P,1.3)+boat(180,135,0,1,0,N,1.3)+boat(115,70,-45,-1,12,S,1.3);
+  g+=txt(132,240,"1 · port tack","start","small")+txt(196,140,"2 · bow through","start","small")+txt(196,155,"the wind","start","small")+txt(140,40,"3 · starboard tack","start","small");
+  document.getElementById("svg-tackman").innerHTML=g;
+})();
+
+(function(){ // jibing
+  let g=DEFS+wind(262,8,58);
+  g+=`<path d="M80,20 L170,110 Q180,120 170,130 L80,220" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  g+=boat(110,50,135,1,75,P,1.3)+boat(180,120,180,0,0,N,1.3)+boat(110,190,-135,-1,75,S,1.3);
+  g+=txt(150,30,"1 · port tack","start","small")+txt(196,112,"2 · stern through","start","small")+txt(196,127,"the wind; boom","start","small")+txt(196,142,"swings across","start","small")+txt(140,238,"3 · starboard tack","start","small");
+  document.getElementById("svg-jibeman").innerHTML=g;
+})();
+
+(function(){ // right of way
+  let g=DEFS+wind(150,6,46);
+  g+=`<g stroke="var(--muted)" stroke-dasharray="5 4"><line x1="80" y1="190" x2="150" y2="120"/><line x1="220" y1="190" x2="150" y2="120"/></g>`;
+  g+=`<circle cx="150" cy="120" r="5" fill="none" stroke="var(--warn)" stroke-width="2"/>`;
+  g+=boat(80,190,45,1,15,P,1.4)+boat(220,190,-45,-1,15,S,1.4);
+  g+=txt(76,232,"Port tack: GIVE WAY","middle","","fill:var(--port);font-weight:700;font-size:12px")+txt(224,232,"Starboard: STAND ON","middle","","fill:var(--stbd);font-weight:700;font-size:12px");
+  document.getElementById("svg-row1").innerHTML=g;
+  let h=DEFS+wind(260,6,46);
+  h+=boat(120,80,90,1,45,P,1.4)+boat(160,175,90,1,45,P,1.4);
+  h+=txt(120,135,"Windward boat: GIVE WAY","middle","","fill:var(--port);font-weight:700;font-size:13px");
+  h+=txt(160,232,"Leeward boat: STAND ON","middle","","fill:var(--stbd);font-weight:700;font-size:13px");
+  document.getElementById("svg-row2").innerHTML=h;
+})();
+
+function labels(id,list){
+  let g="";
+  for(const [t,tx,ty,px,py,anc,inline] of list){
+    if(inline){g+=`<g class="lab" tabindex="0"><circle cx="${tx}" cy="${ty+14}" r="4"/><text x="${tx}" y="${ty}" text-anchor="middle" style="font-weight:700">${t}</text></g>`;continue}
+    const lx=anc==="end"?tx+6:tx-6;
+    g+=`<g class="lab" tabindex="0"><line x1="${lx}" y1="${ty-5}" x2="${px}" y2="${py}"/><circle cx="${px}" cy="${py}" r="4"/><text x="${tx}" y="${ty}" text-anchor="${anc}">${t}</text></g>`;
+  }
+  document.getElementById(id).innerHTML=g;
+}
+labels("boat-labels",[
+ ["Mast",590,64,333,72,"start"],["Forestay",590,150,414,152,"start"],["Shrouds",590,215,343,215,"start"],
+ ["Boom vang",590,262,316,288,"start"],["Bow",590,305,537,313,"start"],["Hull",590,352,470,350,"start"],["Keel",590,430,368,420,"start"],
+ ["Backstay",-20,118,271,121,"end"],["Boom",-20,250,215,269,"end"],["Mainsheet",-20,285,201,294,"end"],["Tiller",-20,318,205,313,"end"],
+ ["Stern / transom",-20,350,125,336,"end"],["Rudder",-20,410,176,398,"end"],
+ ["Mainsail",268,200,0,0,"",1],["Jib",432,232,0,0,"",1],
+]);
+labels("sail-labels",[
+ ["Head",132,35,150,30,"end"],["Tack",132,345,150,340,"end"],["Luff",132,195,150,190,"end"],["Telltales",132,275,170,270,"end"],
+ ["Clew",376,345,360,340,"start"],["Leech",320,195,281,190,"start"],["Battens",330,112,225,117,"start"],["Foot",255,384,255,344,"middle"],
+]);
+document.querySelectorAll("[data-quiz]").forEach(btn=>btn.addEventListener("click",()=>{
+  const f=document.getElementById(btn.dataset.quiz),on=f.classList.toggle("quizmode");
+  f.querySelectorAll(".lab").forEach(l=>l.classList.remove("show"));
+  btn.textContent=on?"Show all labels":"Hide labels to quiz yourself";
+}));
+document.querySelectorAll(".quizable").forEach(f=>{
+  f.addEventListener("click",e=>{const l=e.target.closest(".lab");if(l&&f.classList.contains("quizmode"))l.classList.toggle("show")});
+  f.addEventListener("keydown",e=>{const l=e.target.closest(".lab");if(l&&(e.key==="Enter"||e.key===" ")&&f.classList.contains("quizmode")){e.preventDefault();l.classList.toggle("show")}});
+});
+
+/* ---------- storage helpers ---------- */
+function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function el(tag,attrs,html){const e=document.createElement(tag);for(const k in attrs||{})e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e}
+
+/* ---------- tabs ---------- */
+const views={guide:"v-guide",cards:"v-cards",quiz:"v-quiz",exam:"v-exam"};
+function show(v){
+  for(const k in views){document.getElementById(views[k]).hidden=(k!==v)}
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.view===v?"true":"false"));
+  save("asa-view",v);
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{show(t.dataset.view);window.scrollTo({top:0})}));
+const h=location.hash.replace("#","");
+show(views[h]?h:load("asa-view","guide"));
+
+function fillTopics(sel,items){
+  sel.innerHTML="";sel.appendChild(el("option",{value:"all"},"All topics"));
+  const used=new Set(items.map(x=>x[0]));
+  for(const k in TOPICS) if(used.has(k)) sel.appendChild(el("option",{value:k},TOPICS[k]));
+}
+
+/* ---------- flashcards ---------- */
+const fcTopic=document.getElementById("fc-topic");fillTopics(fcTopic,CARDS);
+let known=new Set(load("asa-known",[])), deck=[], idx=0, flipped=false;
+function cardId(c){return c[1]}
+function buildDeck(){
+  const t=fcTopic.value;
+  deck=shuffle(CARDS.filter(c=>(t==="all"||c[0]===t)&&!known.has(cardId(c))));
+  idx=0;renderCard();
+}
+function renderCard(){
+  const t=fcTopic.value, pool=CARDS.filter(c=>t==="all"||c[0]===t);
+  const done=pool.filter(c=>known.has(cardId(c))).length;
+  document.getElementById("fc-count").textContent=`${done} of ${pool.length} known · ${Math.max(deck.length-idx,0)} left in this round`;
+  document.getElementById("fc-prog").style.width=(pool.length?done/pool.length*100:0)+"%";
+  const term=document.getElementById("fc-term"),def=document.getElementById("fc-def"),hint=document.getElementById("fc-hint");
+  flipped=false;def.hidden=true;
+  const good=document.getElementById("fc-good"),again=document.getElementById("fc-again");
+  if(idx>=deck.length){
+    term.textContent=done===pool.length?"All known.":"Round complete.";
+    hint.textContent=done===pool.length?"Pick another topic or reset":"Shuffle to go again";
+    good.disabled=again.disabled=true;
+    if(done<pool.length){deck=shuffle(pool.filter(c=>!known.has(cardId(c))));idx=0;good.disabled=again.disabled=false;renderCard()}
+    return;
+  }
+  good.disabled=again.disabled=false;
+  const c=deck[idx];term.textContent=c[1];def.textContent=c[2];hint.textContent=TOPICS[c[0]]+" · tap to flip";
+}
+function flip(){if(idx>=deck.length)return;flipped=!flipped;document.getElementById("fc-def").hidden=!flipped}
+document.getElementById("fc").addEventListener("click",flip);
+document.getElementById("fc").addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();flip()}});
+document.getElementById("fc-good").addEventListener("click",()=>{known.add(cardId(deck[idx]));save("asa-known",[...known]);idx++;renderCard()});
+document.getElementById("fc-again").addEventListener("click",()=>{deck.push(deck[idx]);idx++;renderCard()});
+document.getElementById("fc-shuffle").addEventListener("click",buildDeck);
+document.getElementById("fc-reset").addEventListener("click",()=>{
+  const t=fcTopic.value;CARDS.forEach(c=>{if(t==="all"||c[0]===t)known.delete(cardId(c))});save("asa-known",[...known]);buildDeck();
+});
+fcTopic.addEventListener("change",buildDeck);
+buildDeck();
+
+/* ---------- quiz ---------- */
+const qzTopic=document.getElementById("qz-topic");fillTopics(qzTopic,Q);
+const qz=document.getElementById("qz");
+let set=[],qi=0,correct=0,missed=[];
+function bestText(){const b=load("asa-best",null);document.getElementById("qz-best").textContent=b?`Best: ${b.pct}% on ${b.n} questions`:""}
+function startQuiz(){
+  const t=qzTopic.value,n=+document.getElementById("qz-len").value;
+  set=shuffle(Q.filter(q=>t==="all"||q[0]===t)).slice(0,n).map(q=>{
+    const order=shuffle(q[2].map((o,i)=>i));
+    return {topic:q[0],q:q[1],opts:order.map(i=>q[2][i]),ans:order.indexOf(q[3]),why:q[4]};
+  });
+  qi=0;correct=0;missed=[];renderQ();
+}
+function renderQ(){
+  qz.innerHTML="";
+  if(qi>=set.length)return renderResult();
+  const q=set[qi];
+  const card=el("div",{class:"qcard"});
+  card.appendChild(el("div",{class:"meta"},`Question ${qi+1} of ${set.length} · ${correct} correct`));
+  card.appendChild(el("span",{class:"chip"},TOPICS[q.topic]));
+  card.appendChild(el("div",{class:"qtext"},q.q));
+  const opts=el("div",{class:"opts"});
+  q.opts.forEach((o,i)=>{
+    const b=el("button",{class:"opt",type:"button"});
+    b.appendChild(el("span",{class:"k"},"ABCD"[i]));b.appendChild(el("span",{},o));
+    b.addEventListener("click",()=>answer(i,opts,card));
+    opts.appendChild(b);
+  });
+  card.appendChild(opts);qz.appendChild(card);
+}
+function answer(i,opts,card){
+  const q=set[qi],btns=[...opts.children];
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add("right");
+  const ok=i===q.ans;
+  if(ok)correct++;else{btns[i].classList.add("wrong");missed.push(q)}
+  card.appendChild(el("div",{class:"explain"},`<b>${ok?"Correct.":"Not quite."}</b> ${q.why}`));
+  const foot=el("div",{class:"qfoot"});
+  foot.appendChild(el("span",{class:"meta"},`${correct} of ${qi+1} correct`));
+  const nx=el("button",{class:"btn primary",type:"button"},qi+1<set.length?"Next question":"See results");
+  nx.addEventListener("click",()=>{qi++;renderQ();qz.scrollIntoView({block:"start",behavior:"smooth"})});
+  foot.appendChild(nx);card.appendChild(foot);nx.focus({preventScroll:true});
+}
+function renderResult(){
+  const pct=Math.round(correct/set.length*100);
+  const b=load("asa-best",null);
+  if(set.length>=10&&(!b||pct>b.pct))save("asa-best",{pct,n:set.length});
+  bestText();
+  const card=el("div",{class:"qcard"});
+  card.appendChild(el("div",{class:"meta"},"Result"));
+  card.appendChild(el("div",{class:"score"},`${pct}%`));
+  card.appendChild(el("p",{},`${correct} of ${set.length} correct. ${pct>=90?"Exam-ready on this set.":pct>=80?"Solid. Review what you missed and try again.":"Reread the guide sections below and retake."}`));
+  const again=el("button",{class:"btn primary",type:"button"},"New quiz");again.addEventListener("click",startQuiz);
+  card.appendChild(again);
+  if(missed.length){
+    const m=el("div",{class:"missed"});
+    missed.forEach(q=>m.appendChild(el("div",{},`<b>${q.q}</b><br>Answer: ${q.opts[q.ans]}. ${q.why}`)));
+    card.appendChild(el("h3",{style:"margin-top:20px;font-size:22px"},"Review these"));card.appendChild(m);
+  }
+  qz.appendChild(card);
+}
+document.getElementById("qz-start").addEventListener("click",startQuiz);
+bestText();startQuiz();
+
+/* ---------- mock exam ---------- */
+const BOATPTS={Mast:[333,72],Forestay:[414,152],Shrouds:[343,215],"Boom vang":[316,288],Bow:[537,313],Keel:[368,420],Backstay:[271,121],Boom:[215,269],Mainsheet:[201,294],Tiller:[205,313],"Stern / transom":[125,336],Rudder:[176,398],Jib:[432,240],Mainsail:[268,205]};
+const SAILPTS={Head:[150,30],Tack:[150,340],Clew:[360,340],Luff:[150,190],Leech:[281,190],Foot:[255,344],Battens:[248,178]};
+function marker(x,y){return `<g><circle cx="${x}" cy="${y}" r="16" fill="var(--warn)" opacity=".3"/><circle cx="${x}" cy="${y}" r="9" fill="var(--warn)" stroke="var(--paper)" stroke-width="2"/><text x="${x}" y="${y+4}" text-anchor="middle" style="font-size:12px;font-weight:700;fill:var(--paper)">?</text></g>`}
+function cloneFig(id,lab,pt){
+  const src=document.querySelector(`#${id} svg`).cloneNode(true);
+  src.querySelector(`#${lab}`).remove();src.removeAttribute("id");
+  src.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"));
+  src.insertAdjacentHTML("beforeend",marker(pt[0],pt[1]));return src.outerHTML;
+}
+function small(svg){return svg.replace("<svg ",'<svg style="max-width:340px" ').replace('id="ah"','id="ahx"').replace(/#ah\)/g,"#ahx)")}
+const figBoat=n=>()=>cloneFig("fig-boat","boat-labels",BOATPTS[n]);
+const figSail=n=>()=>cloneFig("fig-sail","sail-labels",SAILPTS[n]);
+function figPos(d,side){return ()=>{
+  const cx=150,cy=165,r=100,rad=d*Math.PI/180,bd={45:12,67:28,90:45,135:68,180:85}[d];
+  let g=DEFS+wind(150,6,52)+`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--line)" stroke-dasharray="4 4"/>`;
+  g+=boat((cx+side*r*Math.sin(rad)).toFixed(1),(cy-r*Math.cos(rad)).toFixed(1),side*d,side,bd,N,1.6);
+  return small(`<svg viewBox="0 0 300 300" role="img" aria-label="A boat on an unnamed point of sail">${g}</svg>`);
+}}
+function figTack(h,side){return ()=>small(`<svg viewBox="0 0 300 220" role="img" aria-label="A boat with the wind from the top">${DEFS+wind(150,6,52)+boat(150,140,h,side,30,N,2)}</svg>`)}
+function figRow(kind){return ()=>{
+  let g=DEFS+wind(150,6,46);
+  if(kind==="opp"){g+=boat(220,190,-45,-1,15,N,1.4)+boat(80,190,45,1,15,N,1.4)+txt(220,234,"Boat A","middle","","font-weight:700")+txt(80,234,"Boat B","middle","","font-weight:700")}
+  else{g+=boat(130,80,-110,-1,45,N,1.4)+boat(100,175,-90,-1,45,N,1.4)+txt(175,80,"Boat A","start","","font-weight:700")+txt(145,180,"Boat B","start","","font-weight:700")}
+  return small(`<svg viewBox="0 0 300 250" role="img" aria-label="Two sailboats converging, wind from the top">${g}</svg>`);
+}}
+function partQ(fig,name,others,why,topic){return [topic||"parts","What is the part marked <b>?</b> in this diagram?",shuffle([name,...others]).slice(0,4),null,why,fig,name]}
+const EXTRA=[
+ partQ(figBoat("Forestay"),"Forestay",["Backstay","Halyard","Shroud"],"The forestay runs from the masthead to the bow."),
+ partQ(figBoat("Backstay"),"Backstay",["Forestay","Leech","Topping lift"],"The backstay runs from the masthead to the stern."),
+ partQ(figBoat("Boom"),"Boom",["Spreader","Tiller","Mast"],"The boom runs along the foot of the mainsail."),
+ partQ(figBoat("Keel"),"Keel",["Rudder","Transom","Centerline"],"The keel is the weighted fin under the middle of the hull."),
+ partQ(figBoat("Rudder"),"Rudder",["Keel","Tiller","Transom"],"The rudder is the steering blade at the stern."),
+ partQ(figBoat("Tiller"),"Tiller",["Boom","Mainsheet","Winch"],"The tiller turns the rudder."),
+ partQ(figBoat("Mainsheet"),"Mainsheet",["Halyard","Boom vang","Topping lift"],"The mainsheet runs from the boom down to the cockpit and trims the main."),
+ partQ(figBoat("Boom vang"),"Boom vang",["Mainsheet","Gooseneck","Outhaul"],"The vang runs from the boom down to the base of the mast."),
+ partQ(figBoat("Shrouds"),"Shrouds",["Forestay","Backstay","Halyard"],"Shrouds support the mast from the sides."),
+ partQ(figBoat("Jib"),"Jib",["Mainsail","Spinnaker","Mizzen"],"The jib is the headsail forward of the mast."),
+ partQ(figBoat("Stern / transom"),"Transom",["Bow","Keel","Beam"],"The transom is the flat back surface of the stern."),
+ partQ(figSail("Head"),"Head",["Tack","Clew","Luff"],"The head is the top corner of the sail."),
+ partQ(figSail("Tack"),"Tack",["Clew","Head","Foot"],"The tack is the lower forward corner."),
+ partQ(figSail("Clew"),"Clew",["Tack","Head","Leech"],"The clew is the lower aft corner."),
+ partQ(figSail("Luff"),"Luff",["Leech","Foot","Batten"],"The luff is the forward edge."),
+ partQ(figSail("Leech"),"Leech",["Luff","Foot","Head"],"The leech is the aft edge."),
+ partQ(figSail("Foot"),"Foot",["Luff","Leech","Clew"],"The foot is the bottom edge."),
+ ["sail","Wind is from the top. What point of sail is this boat on?",["Close-hauled","Beam reach","Broad reach","Run"],null,"About 45° off the wind with the boom in tight.",figPos(45,1),"Close-hauled"],
+ ["sail","Wind is from the top. What point of sail is this boat on?",["Close reach","Beam reach","Broad reach","Close-hauled"],null,"Wind straight across the side, 90°.",figPos(90,-1),"Beam reach"],
+ ["sail","Wind is from the top. What point of sail is this boat on?",["Broad reach","Beam reach","Run","Close reach"],null,"Wind over the stern quarter, about 135°.",figPos(135,1),"Broad reach"],
+ ["sail","Wind is from the top. What point of sail is this boat on?",["Run","Broad reach","Beam reach","In irons"],null,"Wind directly behind.",figPos(180,1),"Run"],
+ ["sail","Wind is from the top. Which tack is this boat on?",["Port tack","Starboard tack","Neither; it's in irons","Can't tell without the boom"],null,"Heading right with the wind from the top, the wind comes over its port side. The boom is out to starboard.",figTack(70,1),"Port tack"],
+ ["sail","Wind is from the top. Which tack is this boat on?",["Starboard tack","Port tack","Neither; it's in irons","Can't tell without the boom"],null,"Heading left with the wind from the top, the wind comes over its starboard side. The boom is out to port.",figTack(-70,-1),"Starboard tack"],
+ ["rules","Wind is from the top and the two boats are converging. Which must keep clear?",["Boat A","Boat B","Neither","Whichever is faster"],null,"Boat A (heading up-left) has the wind over starboard; Boat B has it over port. Port tack (B) gives way.",figRow("opp"),"Boat B"],
+ ["rules","Wind is from the top. Both boats are on the same tack and converging. Which must keep clear?",["Boat A","Boat B","Neither","The one on the right"],null,"Boat A is closer to the wind, so it is the windward boat and gives way.",figRow("same"),"Boat A"],
+ ["parts","A genoa is:",["A large jib that overlaps the mast","A small storm jib","The mainsail's top section","A type of anchor"],0,"Genoas are big headsails whose clew reaches aft of the mast."],
+ ["sail","To turn the bow of a tiller-steered boat to port, push the tiller:",["To port","To starboard","Forward","Down"],1,"The bow always turns opposite to the tiller."],
+ ["sail","When raising the mainsail, the boat should be pointed:",["Downwind","Into the wind","On a beam reach","Any direction"],1,"Head to wind, the sail luffs freely and won't fill while going up."],
+ ["sail","The wind you feel on a moving boat is called:",["True wind","Apparent wind","Gradient wind","Sea breeze"],1,"Apparent wind combines the true wind and the wind made by the boat's own motion."],
+ ["sail","A quick way to stop a boat temporarily without tacking is to:",["Trim both sails tight","Head to a close reach and let the sails out until they luff","Turn dead downwind","Drop the anchor while sailing"],1,"With sails luffing on a close reach (the safety position) the boat slows and drifts."],
+ ["sail","During a tack, the crew releases the old jib sheet and:",["Trims the new leeward jib sheet","Trims the old windward sheet","Lowers the jib","Eases the mainsheet fully"],0,"The jib crosses over and is trimmed on the new leeward side."],
+ ["sail","The jib sheet that is not in use is called the:",["Working sheet","Lazy sheet","Bitter end","Preventer"],1,"The working sheet is on the leeward side."],
+ ["sail","Before a jibe, the mainsheet should be:",["Eased all the way","Trimmed in","Released from the cleat and dropped","Tied to the windward rail"],1,"A short mainsheet keeps the boom's swing small and controlled."],
+ ["trim","When the boat heels, the high side is the:",["Leeward side","Windward side","Bow","Stern"],1,"Crew sit on the high (windward) side to reduce heel."],
+ ["parts","The free end of a line is called the:",["Standing part","Bitter end","Bight","Lazy end"],1,"The standing part is the long, unused part; a bight is a loop."],
+ ["safety","A float plan is:",["A diagram of the boat's buoyancy","Trip details left with a responsible person ashore","A tide chart","A list of PFDs aboard"],1,"It tells someone where you're going and when to raise the alarm."],
+ ["weather","If you are caught near a lightning storm, you should:",["Hold onto the shrouds","Stay low in the cockpit away from metal rigging","Climb below the boom","Raise more sail to get home"],1,"Keep away from the mast, shrouds and other metal fittings."],
+ ["lights","In US inland waters, one short blast in a meeting situation means:",["I intend to leave you on my port side","I intend to leave you on my starboard side","I am backing up","Danger"],0,"Two short blasts mean leave you on my starboard side."],
+ ["dock","\"Anchor's aweigh\" means the anchor is:",["Set firmly","Just off the bottom","Being cleaned","Stowed below"],1,"The boat is now free and underway."],
+ ["nav","A sailboat drifts sideways a little while sailing upwind. This is called:",["Leeway","Heading","Set","Variation"],0,"The keel reduces leeway but can't stop it entirely."],
+];
+function examPool(){
+  const base=Q.map(q=>({topic:q[0],q:q[1],opts:q[2],ans:q[3],why:q[4]}));
+  const ex=EXTRA.map(q=>({topic:q[0],q:q[1],opts:q[2],ans:q[3]==null?q[2].indexOf(q[6]):q[3],why:q[4],fig:q[5]}));
+  return base.concat(ex);
+}
+const ex=document.getElementById("ex");
+let E=null,timer=null;
+function fmt(sec){const m=Math.floor(sec/60),s2=sec%60;return `${m}:${String(s2).padStart(2,"0")}`}
+function examIntro(){
+  clearInterval(timer);E=null;
+  ex.innerHTML=`<div class="exintro">
+    <div class="eyebrow">Full-length simulation</div>
+    <h2>ASA 101 Mock Exam</h2>
+    <p>Students and schools describe the real written test as about <b>100 multiple-choice questions</b> with <b>80% needed to pass</b>, so this one works the same way, with no feedback until you submit. It mixes rules of the road, terminology, points of sail, and diagram questions where you identify parts of the boat and sail. Every attempt draws a new mix and order.</p>
+    <ul>
+      <li>Answer in any order. Flag questions to come back to.</li>
+      <li>The clock just counts up so you can see your pace. Ask your school whether the real test is timed.</li>
+      <li>After you submit, you'll see your score, a breakdown by topic, and explanations for everything you missed.</li>
+    </ul>
+    <p class="meta">These are questions written for practice that cover the same material. ASA doesn't publish its actual exams.</p>
+    <button class="btn primary" id="ex-go" type="button">Start the exam</button>
+    <span class="meta" id="ex-last"></span>
+  </div>`;
+  const last=load("asa-exam-last",null);
+  if(last)document.getElementById("ex-last").textContent=`  Last attempt: ${last.pct}% (${last.pct>=80?"pass":"not yet"})`;
+  document.getElementById("ex-go").addEventListener("click",startExam);
+}
+function startExam(){
+  const pool=shuffle(examPool()).slice(0,100).map(q=>{
+    const order=shuffle(q.opts.map((o,i)=>i));
+    return {...q,opts:order.map(i=>q.opts[i]),ans:order.indexOf(q.ans)};
+  });
+  E={qs:pool,picks:Array(pool.length).fill(null),flags:new Set(),i:0,t0:Date.now(),done:false};
+  timer=setInterval(()=>{const c=document.getElementById("ex-clock");if(c)c.textContent=fmt(Math.floor((Date.now()-E.t0)/1000))},1000);
+  renderExam();
+}
+function renderExam(){
+  const q=E.qs[E.i],answered=E.picks.filter(p=>p!=null).length;
+  ex.innerHTML="";
+  const head=el("div",{class:"exhead"});
+  head.appendChild(el("span",{class:"meta"},`Question ${E.i+1} of ${E.qs.length} · ${answered} answered`));
+  head.appendChild(el("span",{class:"meta",id:"ex-clock"},fmt(Math.floor((Date.now()-E.t0)/1000))));
+  ex.appendChild(head);
+  const card=el("div",{class:"qcard"});
+  card.appendChild(el("span",{class:"chip"},TOPICS[q.topic]));
+  card.appendChild(el("div",{class:"qtext"},q.q));
+  if(q.fig)card.appendChild(el("div",{class:"qfig"},q.fig()));
+  const opts=el("div",{class:"opts"});
+  q.opts.forEach((o,i)=>{
+    const b=el("button",{class:"opt"+(E.picks[E.i]===i?" picked":""),type:"button"});
+    b.appendChild(el("span",{class:"k"},"ABCD"[i]));b.appendChild(el("span",{},o));
+    b.addEventListener("click",()=>{E.picks[E.i]=i;renderExam()});
+    opts.appendChild(b);
+  });
+  card.appendChild(opts);
+  const foot=el("div",{class:"qfoot"});
+  const left=el("div",{style:"display:flex;gap:8px;flex-wrap:wrap"});
+  const prev=el("button",{class:"btn",type:"button"},"Back");prev.disabled=E.i===0;prev.addEventListener("click",()=>{E.i--;renderExam()});
+  const flag=el("button",{class:"btn",type:"button"},E.flags.has(E.i)?"Unflag":"Flag");flag.addEventListener("click",()=>{E.flags.has(E.i)?E.flags.delete(E.i):E.flags.add(E.i);renderExam()});
+  left.appendChild(prev);left.appendChild(flag);
+  const next=el("button",{class:"btn primary",type:"button"},E.i+1<E.qs.length?"Next":"Review &amp; submit");
+  next.addEventListener("click",()=>{if(E.i+1<E.qs.length){E.i++;renderExam()}else submitPrompt()});
+  foot.appendChild(left);foot.appendChild(next);card.appendChild(foot);
+  ex.appendChild(card);
+  ex.appendChild(navGrid(false));
+  const sub=el("div",{style:"margin-top:14px"});const sb=el("button",{class:"btn",type:"button"},"Submit exam");sb.addEventListener("click",submitPrompt);sub.appendChild(sb);ex.appendChild(sub);
+}
+function navGrid(review){
+  const g=el("div",{class:"grid"});
+  E.qs.forEach((q,i)=>{
+    let c="";
+    if(review)c=E.picks[i]===q.ans?"right":"wrong";
+    else{if(E.picks[i]!=null)c+=" done";if(E.flags.has(i))c+=" flag";if(i===E.i)c+=" cur"}
+    const b=el("button",{class:c.trim(),type:"button","aria-label":`Question ${i+1}`},String(i+1));
+    b.addEventListener("click",()=>{E.i=i;review?renderReview(i):renderExam()});
+    g.appendChild(b);
+  });
+  return g;
+}
+function submitPrompt(){
+  const left=E.picks.filter(p=>p==null).length,fl=E.flags.size;
+  if(document.getElementById("ex-confirm"))return;
+  const box=el("div",{class:"warnbox",id:"ex-confirm"});
+  box.innerHTML=`<b>Submit now?</b> ${left?`${left} question${left>1?"s are":" is"} unanswered and will count as wrong. `:""}${fl?`${fl} flagged for review. `:""}`;
+  const yes=el("button",{class:"btn primary",type:"button",style:"margin:10px 8px 0 0"},"Submit");yes.addEventListener("click",finishExam);
+  const no=el("button",{class:"btn",type:"button",style:"margin-top:10px"},"Keep working");no.addEventListener("click",()=>box.remove());
+  box.appendChild(yes);box.appendChild(no);ex.appendChild(box);box.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+function finishExam(){
+  clearInterval(timer);E.done=true;E.secs=Math.floor((Date.now()-E.t0)/1000);
+  const right=E.qs.filter((q,i)=>E.picks[i]===q.ans).length,pct=Math.round(right/E.qs.length*100);
+  save("asa-exam-last",{pct});E.right=right;E.pct=pct;renderResults();
+}
+function renderResults(){
+  ex.innerHTML="";
+  const card=el("div",{class:"qcard"});
+  card.appendChild(el("div",{class:"meta"},`Finished in ${fmt(E.secs)}`));
+  const row=el("div",{style:"display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:6px 0"});
+  row.appendChild(el("div",{class:"score"},`${E.pct}%`));
+  row.appendChild(el("span",{class:"pf "+(E.pct>=80?"pass":"fail")},E.pct>=80?"PASS":"BELOW 80%"));
+  card.appendChild(row);
+  card.appendChild(el("p",{},`${E.right} of ${E.qs.length} correct. ${E.pct>=90?"You're ready.":E.pct>=80?"Passing. Tighten up your weakest topics below.":"Study the weak topics below, then try another attempt."}`));
+  const by={};E.qs.forEach((q,i)=>{by[q.topic]=by[q.topic]||[0,0];by[q.topic][1]++;if(E.picks[i]===q.ans)by[q.topic][0]++});
+  let rows="";Object.keys(TOPICS).filter(k=>by[k]).sort((a,b)=>by[a][0]/by[a][1]-by[b][0]/by[b][1]).forEach(k=>{
+    const [r,n]=by[k],p=Math.round(r/n*100);
+    rows+=`<tr><td>${TOPICS[k]}</td><td class="mono">${r}/${n}</td><td class="mono" style="color:var(${p>=80?"--stbd":"--port"})">${p}%</td></tr>`;
+  });
+  card.insertAdjacentHTML("beforeend",`<h3 style="font-size:22px;margin-top:18px">By topic</h3><div class="tbl"><table><thead><tr><th>Topic</th><th>Correct</th><th>Score</th></tr></thead><tbody>${rows}</tbody></table></div>`);
+  const btns=el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"});
+  const rv=el("button",{class:"btn primary",type:"button"},"Review answers");rv.addEventListener("click",()=>{const w=E.qs.findIndex((q,i)=>E.picks[i]!==q.ans);renderReview(w<0?0:w)});
+  const again=el("button",{class:"btn",type:"button"},"New attempt");again.addEventListener("click",examIntro);
+  btns.appendChild(rv);btns.appendChild(again);card.appendChild(btns);
+  ex.appendChild(card);
+  ex.appendChild(el("p",{class:"meta",style:"margin-top:16px"},"Tap any number to review that question. Red ones were wrong."));
+  ex.appendChild(navGrid(true));
+}
+function renderReview(i){
+  E.i=i;const q=E.qs[i],pick=E.picks[i];
+  ex.innerHTML="";
+  const head=el("div",{class:"exhead"});
+  head.appendChild(el("span",{class:"meta"},`Review · question ${i+1} of ${E.qs.length} · score ${E.pct}%`));
+  const back=el("button",{class:"btn sm",type:"button"},"Back to results");back.addEventListener("click",renderResults);head.appendChild(back);
+  ex.appendChild(head);
+  const card=el("div",{class:"qcard"});
+  card.appendChild(el("span",{class:"chip"},TOPICS[q.topic]));
+  card.appendChild(el("div",{class:"qtext"},q.q));
+  if(q.fig)card.appendChild(el("div",{class:"qfig"},q.fig()));
+  const opts=el("div",{class:"opts"});
+  q.opts.forEach((o,j)=>{
+    const b=el("button",{class:"opt"+(j===q.ans?" right":j===pick?" wrong":""),type:"button"});b.disabled=true;
+    b.appendChild(el("span",{class:"k"},"ABCD"[j]));b.appendChild(el("span",{},o));opts.appendChild(b);
+  });
+  card.appendChild(opts);
+  card.appendChild(el("div",{class:"explain"},`<b>${pick===q.ans?"Correct.":pick==null?"Not answered.":"Missed."}</b> ${q.why}`));
+  const foot=el("div",{class:"qfoot"});
+  const prev=el("button",{class:"btn",type:"button"},"Previous");prev.disabled=i===0;prev.addEventListener("click",()=>renderReview(i-1));
+  const nx=el("button",{class:"btn primary",type:"button"},"Next");nx.disabled=i+1>=E.qs.length;nx.addEventListener("click",()=>renderReview(i+1));
+  foot.appendChild(prev);foot.appendChild(nx);card.appendChild(foot);
+  ex.appendChild(card);ex.appendChild(navGrid(true));
+}
+examIntro();
+
+</script>
+
+</body></html>

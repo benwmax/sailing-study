@@ -1,0 +1,601 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Keelboat Parts Explorer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Nunito+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: the 3D scene is the page; UI floats on it in two docks (parts list left, part card bottom-right),
+   collapsing on phones to a top chip bar and a bottom sheet (right-side sheet in landscape). */
+:root{
+  --bg:#0b1622; --panel:rgba(14,26,40,.86); --panel-solid:#101d2c; --line:rgba(170,200,230,.16);
+  --fg:#eef4fa; --muted:#9fb3c8; --accent:#ffb347; --accent-ink:#1a1200; --sel:#ffd27a;
+  --good:#5fd38d; --bad:#ff6b6b; --chip:rgba(255,255,255,.08); --chip-on:#ffb347;
+  --display:"Oswald","Arial Narrow",Impact,sans-serif; --body:"Nunito Sans","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  --bg:#dfe9f2; --panel:rgba(248,251,254,.9); --panel-solid:#f7fafd; --line:rgba(20,50,80,.14);
+  --fg:#10202f; --muted:#52677c; --accent:#c8641a; --accent-ink:#fff; --sel:#d97b2b;
+  --good:#1f8f4e; --bad:#c43c3c; --chip:rgba(10,40,70,.07); --chip-on:#c8641a; color-scheme:light;
+}}
+:root[data-theme="light"]{
+  --bg:#dfe9f2; --panel:rgba(248,251,254,.9); --panel-solid:#f7fafd; --line:rgba(20,50,80,.14);
+  --fg:#10202f; --muted:#52677c; --accent:#c8641a; --accent-ink:#fff; --sel:#d97b2b;
+  --good:#1f8f4e; --bad:#c43c3c; --chip:rgba(10,40,70,.07); --chip-on:#c8641a; color-scheme:light;
+}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;overflow:hidden;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box}
+#stage{position:fixed;inset:0;touch-action:none}
+#stage canvas{display:block;width:100%;height:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* top bar */
+#top{position:fixed;left:0;right:0;top:0;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:10px;pointer-events:none;z-index:5}
+#top>*{pointer-events:auto}
+.brand{display:flex;flex-direction:column;line-height:1.05;margin-right:6px}
+.brand b{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:.02em;text-transform:uppercase}
+.brand small{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.chips{display:flex;gap:6px;background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px;padding:4px}
+.chip{padding:6px 14px;border-radius:999px;font-family:var(--display);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--chip-on);color:var(--accent-ink)}
+.ibtn{width:38px;height:38px;border-radius:50%;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(10px);display:grid;place-items:center;font-family:var(--display);font-size:13px;letter-spacing:.05em}
+.ibtn[aria-pressed="true"]{background:var(--chip-on);color:var(--accent-ink)}
+.spacer{flex:1}
+#hint{position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top,0px));font-size:12.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);padding:5px 12px;border-radius:999px;z-index:4;pointer-events:none;transition:opacity .5s;white-space:nowrap}
+
+/* parts list dock */
+#list{position:fixed;left:16px;top:calc(72px + env(safe-area-inset-top,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:250px;background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;z-index:4;overflow:hidden}
+#list header{padding:12px 14px 8px;font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+#list .scroll{overflow-y:auto;flex:1;padding:6px 8px 10px}
+.grp{margin:8px 0 2px;padding:0 6px;font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.pbtn{display:flex;width:100%;text-align:left;padding:6px 8px;border-radius:8px;gap:8px;align-items:center;font-size:14px}
+.pbtn:hover{background:var(--chip)}
+.pbtn[aria-current="true"]{background:var(--chip-on);color:var(--accent-ink);font-weight:700}
+.pbtn .n{font-variant-numeric:tabular-nums;color:var(--muted);font-size:11px;width:18px}
+.pbtn[aria-current="true"] .n{color:inherit}
+.pbtn.done .n::after{content:"✓"}
+
+/* part card */
+#card{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(400px,calc(100vw - 32px));background:var(--panel);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;padding:16px 18px 14px;z-index:4;display:flex;flex-direction:column;gap:8px;max-height:min(62vh,520px);overflow:auto}
+#card .eyebrow{font-family:var(--display);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+#card h2{font-family:var(--display);font-weight:500;font-size:27px;line-height:1.05;margin:0;text-wrap:balance}
+#card h2 small{font-size:14px;color:var(--muted);font-family:var(--body);font-weight:400;display:block;margin-top:3px}
+#card p{margin:0;font-size:14.5px}
+#card .lbl{font-family:var(--display);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+#card .tip{border-left:3px solid var(--accent);padding:4px 10px;font-size:13.5px;color:var(--muted);font-style:italic}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.btn{padding:8px 14px;border-radius:10px;background:var(--chip);border:1px solid var(--line);font-family:var(--display);font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn:disabled{opacity:.4;cursor:default}
+.prog{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px;margin-left:auto}
+
+/* quiz */
+.opts{display:grid;gap:6px;margin-top:4px}
+.opt{text-align:left;padding:9px 12px;border-radius:10px;background:var(--chip);border:1px solid var(--line);font-size:14px}
+.opt:hover{border-color:var(--accent)}
+.opt.ok{background:color-mix(in srgb,var(--good) 25%,transparent);border-color:var(--good)}
+.opt.no{background:color-mix(in srgb,var(--bad) 25%,transparent);border-color:var(--bad)}
+.feed{font-weight:700}
+.feed.ok{color:var(--good)} .feed.no{color:var(--bad)}
+.score{font-family:var(--display);font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+
+/* mobile */
+#listToggle{display:none}
+@media (max-width:900px), (pointer:coarse) and (max-height:600px){
+  body{font-size:14px}
+  #top{padding:8px 10px;padding-top:calc(8px + env(safe-area-inset-top,0px));gap:6px}
+  .brand small{display:none}.brand b{font-size:16px}
+  .chip{padding:5px 10px;font-size:12.5px}
+  #hint{top:calc(56px + env(safe-area-inset-top,0px));font-size:11.5px;max-width:calc(100vw - 32px);white-space:normal;text-align:center}
+  #listToggle{display:grid}
+  #list{left:10px;top:calc(58px + env(safe-area-inset-top,0px));bottom:auto;max-height:min(60vh,420px);width:min(240px,calc(100vw - 20px));transform:translateX(-120%);opacity:0;transition:transform .25s,opacity .25s}
+  #list.open{transform:none;opacity:1}
+  #card{right:10px;left:10px;width:auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:12px 14px 10px;max-height:44vh;gap:5px}
+  #card h2{font-size:22px}
+  #card p{font-size:13.5px}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:600px){
+  #card{left:auto;right:calc(10px + env(safe-area-inset-right,0px));top:auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(46vw,380px);max-height:calc(100vh - 68px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+  #top{padding-left:calc(10px + env(safe-area-inset-left,0px))}
+  #list{left:calc(10px + env(safe-area-inset-left,0px));max-height:calc(100vh - 70px - env(safe-area-inset-top,0px))}
+  #hint{left:calc(10px + env(safe-area-inset-left,0px));transform:none;max-width:48vw}
+}
+@media (max-width:520px){ .brand{display:none} .chip{padding:5px 9px;font-size:12px} .ibtn{width:34px;height:34px;font-size:12px} }
+@media (pointer:coarse) and (orientation:landscape) and (max-height:600px){ #card h2{font-size:19px} #card p{font-size:12.5px} #card .tip{font-size:12px} .btn{padding:6px 11px;font-size:13px} }
+#card.collapsed .body{display:none}
+#card .grab{display:none}
+@media (pointer:coarse){
+  #card .grab{display:block;width:40px;height:4px;border-radius:2px;background:var(--line);margin:-4px auto 2px}
+}
+@media (prefers-reduced-motion:reduce){ #list,#hint{transition:none} }
+.sr{position:absolute;left:-9999px}
+</style>
+
+<div id="stage"></div>
+
+<div id="top">
+  <button class="ibtn" id="listToggle" aria-label="Parts list" aria-pressed="false">☰</button>
+  <div class="brand"><b>Keelboat Parts</b><small>22-ft sloop · ASA 101</small></div>
+  <div class="chips" role="tablist">
+    <button class="chip" data-mode="explore" aria-pressed="true">Explore</button>
+    <button class="chip" data-mode="tour" aria-pressed="false">Tour</button>
+    <button class="chip" data-mode="quiz" aria-pressed="false">Quiz</button>
+  </div>
+  <div class="spacer"></div>
+  <button class="ibtn" id="sailsBtn" aria-pressed="true" title="Show / hide sails">SAIL</button>
+  <button class="ibtn" id="qualBtn" aria-pressed="true" title="Graphics quality: high">HQ</button>
+</div>
+<div id="hint">Drag to orbit · scroll or pinch to zoom · tap any part of the boat</div>
+
+<aside id="list">
+  <header><span>Parts of the boat</span><span id="count"></span></header>
+  <div class="scroll" id="listScroll"></div>
+</aside>
+
+<section id="card" aria-live="polite">
+  <div class="grab"></div>
+  <div class="body" id="cardBody"></div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+if(!window.THREE){ document.getElementById('cardBody').innerHTML='<p>The 3D library did not load. Check your connection and reload.</p>'; return; }
+
+/* ───────────────────────── Part catalogue (ASA 101 vocabulary) ───────────────────────── */
+const GROUPS=[['hull','Hull & underwater'],['deck','Deck & cockpit'],['spars','Mast & spars'],['standing','Standing rigging'],['running','Running rigging'],['sails','Sails']];
+const PARTS=[
+ {id:'hull',g:'hull',name:'Hull',sub:'the body of the boat',what:'The watertight body that gives the boat buoyancy. The front is the bow, the back is the stern, the widest point is the beam, and the flat aft face is the transom. Left side facing forward is port, right is starboard.',use:'Everything else is attached to it. The boot stripe shows the designed waterline; the dark paint below it is antifouling bottom paint.',tip:'Port and left both have four letters. Red is port, green is starboard.',view:{d:13,th:0.9,ph:1.25}},
+ {id:'bow',g:'hull',name:'Bow & stem',sub:'forward end',what:'The pointed forward end of the hull. The stem is the leading edge where the two sides meet. The stemhead fitting here anchors the forestay and the jib tack.',use:'Cuts through the water. Direction words use it: forward, ahead and fore all point this way; "abaft" means toward the stern from something.',tip:'Jib tacks and anchor lines live here. The bow cleat is where a dock line or anchor rode is made fast.',view:{d:7,th:0.5,ph:1.3}},
+ {id:'stern',g:'hull',name:'Stern & transom',sub:'aft end',what:'The aft end of the boat. The transom is the flat vertical surface closing the stern; on this boat the rudder hangs on it and the backstay ends above it.',use:'Reference for all "aft" and "astern" directions. The stern pulpit (pushpit) and stern cleats are here.',tip:'Astern = behind the boat. Going astern = backing up.',view:{d:7,th:3.1,ph:1.3}},
+ {id:'keel',g:'hull',name:'Keel',sub:'fixed fin under the hull',what:'A heavy fin fixed under the hull, weighted with lead or iron. A 22-footer like this carries a fin keel or a swing keel of several hundred pounds.',use:'Two jobs: its weight (ballast) resists heeling and rights the boat, and its blade resists sideways slip (leeway) so the boat can sail upwind instead of skidding downwind.',tip:'ASA 101 boats are "keelboats" precisely because of this part; a dinghy uses a centerboard and crew weight instead.',view:{d:9,th:1.6,ph:2.0}},
+ {id:'rudder',g:'hull',name:'Rudder',sub:'steering blade',what:'A vertical blade hung on the transom (or under the stern) that pivots on its gudgeons and pintles.',use:'Deflecting water past the rudder turns the boat. It only works when water is flowing over it, so a boat with no way on cannot be steered.',tip:'Lose the rudder and you can still steer with the sails: ease the main to bear away, trim it to head up.',view:{d:6,th:3.5,ph:1.7}},
+ {id:'tiller',g:'deck',name:'Tiller',sub:'steering handle',what:'The lever attached to the top of the rudder that the helmsman holds. Many small keelboats add a hinged tiller extension so you can sit outboard.',use:'Push the tiller toward the sail (to leeward) and the bow turns up into the wind; pull it toward you (to windward) and the bow turns away.',tip:'"Tiller toward trouble": point the tiller at the thing you want to turn away from.',view:{d:5,th:2.6,ph:1.2}},
+ {id:'cockpit',g:'deck',name:'Cockpit',sub:'where the crew sits',what:'The recessed well aft of the cabin with seats on each side and the coamings, the raised lips that keep water out. On this boat the winches, cleats and tiller are all within reach of it.',use:'The working area for steering and sail trim. Sit on the high (windward) side when heeled.',tip:'When tacking, the helmsman and crew swap sides across the cockpit as the boom crosses.',view:{d:7,th:2.4,ph:1.1}},
+ {id:'cabin',g:'deck',name:'Cabin & companionway',sub:'the deckhouse',what:'The cabin trunk is the raised structure over the living space below. The companionway is the opening and ladder down into it, closed with a sliding hatch and drop boards (washboards).',use:'Shelter, storage and the step for the mast. Keep the drop boards in when it is rough so a wave cannot flood below.',tip:'Foredeck = deck forward of the mast. Side decks run along each side of the cabin.',view:{d:7,th:1.1,ph:1.15}},
+ {id:'deck',g:'deck',name:'Deck',sub:'the top of the hull',what:'The surface you walk on, sealed to the hull at the sheer line (the top edge of the hull). It carries the non-skid, the hardware and the lifelines.',use:'Working platform. The foredeck is where you handle the jib and anchor; the side decks are the path forward.',tip:'"One hand for yourself, one for the boat" whenever you move along the deck.',view:{d:10,th:0.8,ph:0.9}},
+ {id:'lifelines',g:'deck',name:'Lifelines, stanchions & pulpits',sub:'the fence around the deck',what:'Lifelines are wires running around the deck at knee height, held up by stanchions and ending at the bow pulpit and stern pulpit (pushpit), the stainless rails at each end.',use:'Keep crew aboard. Clip a harness tether to the boat, not the lifeline, in heavy weather.',tip:'Never stand on or lean hard against a lifeline; they are a last line of defense, not a handrail.',view:{d:8,th:0.7,ph:1.2}},
+ {id:'winches',g:'deck',name:'Winches',sub:'the drums that multiply your pull',what:'Geared drums on the cockpit coamings. A line is wrapped clockwise around the drum, then tensioned with a winch handle.',use:'Give the crew mechanical advantage to trim the jib sheets (and sometimes halyards) under load.',tip:'Always wrap clockwise, keep fingers clear of the drum, and remove the handle when done.',view:{d:4.5,th:2.3,ph:1.25}},
+ {id:'cleats',g:'deck',name:'Cleats',sub:'where lines are made fast',what:'Horn cleats (dock and anchor lines), cam and clutch cleats (sheets and halyards) spread across deck and cabin top.',use:'Secure a line so it holds without you. A horn cleat takes a full turn around the base, one or two figure-eights, then a locking half hitch.',tip:'A cleat hitch should be able to be released under load. Jam a line and you cannot ease it when a gust hits.',view:{d:5,th:0.5,ph:1.2}},
+ {id:'traveler',g:'running',name:'Traveler',sub:'mainsheet track',what:'A track running across the boat with a sliding car; the lower mainsheet block rides on it.',use:'Moves the boom sideways without changing sheet tension, so you can control sail twist and depower in gusts by dropping the car to leeward.',tip:'Easing the traveler is the quick way to reduce heel without losing sail shape.',view:{d:5,th:3.0,ph:1.3}},
+ {id:'mast',g:'spars',name:'Mast',sub:'the vertical spar',what:'The tall aluminum spar stepped on the cabin top (deck-stepped) or on the keel. Sails hoist up the luff groove on its aft face. The top is the masthead.',use:'Holds the sails up and carries the standing rigging. The mainsail luff slides up its track.',tip:'A "spar" is any pole that supports sail: mast, boom, spreaders.',view:{d:16,th:0.9,ph:1.0}},
+ {id:'boom',g:'spars',name:'Boom',sub:'the horizontal spar',what:'The spar along the foot of the mainsail, hinged to the mast at the gooseneck. The outhaul at its far end tensions the foot.',use:'Holds the foot of the mainsail out and lets the mainsheet control it. It swings across the boat in a tack or jibe.',tip:'Duck. An uncontrolled jibe sends the boom across fast; keep your head below boom height when turning downwind.',view:{d:6,th:2.0,ph:1.3}},
+ {id:'spreaders',g:'spars',name:'Spreaders',sub:'the struts on the mast',what:'Short struts projecting sideways from the mast, a little over halfway up on a single-spreader rig like this one.',use:'Push the upper shrouds outward so they meet the mast at a better angle, stiffening it sideways.',tip:'Spreader tips are protected with boots so they do not chafe the genoa.',view:{d:6,th:1.0,ph:0.9,y:5.6}},
+ {id:'shrouds',g:'standing',name:'Shrouds',sub:'side wires',what:'Wires from the mast down to the chainplates on each side of the hull. The upper shrouds run over the spreader tips to the masthead; the lowers go to the mast at spreader height.',use:'Hold the mast up sideways (athwartships). Standing rigging is fixed; you do not adjust it while sailing.',tip:'Standing rigging = shrouds, forestay, backstay. Running rigging = everything you pull on.',view:{d:9,th:1.4,ph:1.1,y:3.5}},
+ {id:'forestay',g:'standing',name:'Forestay (headstay)',sub:'forward wire',what:'The wire from the masthead to the stemhead at the bow. The jib hanks onto it or feeds into a roller-furling foil wrapped around it.',use:'Keeps the mast from falling aft and gives the jib its luff.',tip:'The jib sets on the forestay; the mainsail sets on the mast. That is how you tell them apart from a distance.',view:{d:9,th:0.5,ph:1.1,y:4.5}},
+ {id:'backstay',g:'standing',name:'Backstay',sub:'aft wire',what:'The wire from the masthead down to the stern.',use:'Keeps the mast from falling forward and balances the forestay. Adjustable backstays bend the mast to flatten the main.',tip:'On this boat it ends at the transom, clear of the tiller.',view:{d:9,th:3.0,ph:1.1,y:4.5}},
+ {id:'halyards',g:'running',name:'Halyards',sub:'lines that hoist',what:'The main halyard and jib halyard run from the head of each sail up over a sheave at the masthead and back down the mast to cleats at its base (or led aft to the cockpit).',use:'Raise and lower the sails. Tension the halyard until the small horizontal wrinkles along the luff just disappear.',tip:'Halyard hoists, sheet trims, outhaul stretches. Those are the three lines you touch most.',view:{d:9,th:1.3,ph:1.1,y:4.5}},
+ {id:'mainsheet',g:'running',name:'Mainsheet',sub:'trims the mainsail',what:'A multi-part tackle from the end of the boom down to the traveler car, giving purchase to control the boom under load.',use:'Trims the mainsail in and out. Ease in a gust to spill wind and reduce heel; trim in to point higher.',tip:'When in doubt, let it out. Easing the mainsheet is the first thing to do when overpowered.',view:{d:5,th:2.7,ph:1.3,y:1.5}},
+ {id:'jibsheets',g:'running',name:'Jib sheets',sub:'trim the jib',what:'Two lines tied to the clew of the jib, one led down each side deck through a fairlead to a winch in the cockpit.',use:'Trim the jib. Only the leeward sheet (the working sheet) is loaded; the windward one is the lazy sheet. In a tack you release one and haul in the other.',tip:'Fairlead position changes the sheet angle: forward for a fuller, more powerful sail, aft to flatten it.',view:{d:7,th:1.9,ph:1.2}},
+ {id:'vang',g:'running',name:'Boom vang',sub:'holds the boom down',what:'A tackle from the base of the mast to a point partway along the boom.',use:'Keeps the boom from lifting when the mainsheet is eased off the wind, controlling twist in the top of the sail.',tip:'Also called a kicker. Loosen it before hoisting the main.',view:{d:4.5,th:1.6,ph:1.3,y:1.8}},
+ {id:'toppinglift',g:'running',name:'Topping lift',sub:'supports the boom',what:'A line from the masthead to the end of the boom.',use:'Holds the boom up when the mainsail is down so it does not drop into the cockpit. Slacken it once the sail is set.',tip:'Forgot to ease it? The sail will have a hooked, overly loose leech.',view:{d:8,th:2.3,ph:1.1,y:5}},
+ {id:'mainsail',g:'sails',name:'Mainsail',sub:'the main',what:'The big triangular sail behind the mast. Its corners are the head (top), tack (forward lower, at the gooseneck) and clew (aft lower, at the boom end). Its edges are the luff (along the mast), leech (trailing edge) and foot (along the boom).',use:'The main driving sail. It is controlled by the mainsheet, traveler, outhaul, vang and halyard.',tip:'Luff forward, leech aft, foot bottom. Head high, tack forward, clew aft.',view:{d:12,th:2.2,ph:1.2,y:5}},
+ {id:'jib',g:'sails',name:'Jib',sub:'the headsail',what:'The triangular sail set forward of the mast on the forestay. A larger one that overlaps the mast is a genoa. Same corner and edge names as the main.',use:'Adds drive and bends the wind onto the back of the main (the slot effect), making both sails work better.',tip:'The jib is trimmed by its sheets; "backing the jib" (holding it to windward) helps push the bow through a slow tack.',view:{d:11,th:0.7,ph:1.2,y:4}},
+ {id:'battens',g:'sails',name:'Battens',sub:'stiffeners in the main',what:'Thin flexible strips slid into pockets along the leech of the mainsail.',use:'Support the roach (the curved extra area beyond a straight leech) and stop the leech from fluttering.',tip:'Fold the sail with the battens in, parallel to them, so they do not break.',view:{d:7,th:2.4,ph:1.3,y:5}},
+ {id:'telltales',g:'sails',name:'Telltales',sub:'yarn that reads the wind',what:'Short strands of yarn or ribbon stuck to both sides of the jib just behind the luff (and on the main leech).',use:'Show airflow. Both streaming aft = good trim. Windward one lifts = sheet in or bear away; leeward one stalls = ease or head up.',tip:'A sail is trimmed just right when the telltales on both sides stream straight back.',view:{d:4.5,th:0.4,ph:1.3,y:3.5}},
+ {id:'windex',g:'spars',name:'Masthead fly (Windex)',sub:'wind indicator',what:'A balanced arrow vane at the top of the mast with two reference tabs set at the close-hauled angles.',use:'Shows apparent wind direction at a glance so you know which tack you are on and how close to the wind you can point.',tip:'The vane points where the wind is coming from. Sails go on the opposite side.',view:{d:4,th:0.9,ph:1.0,y:9.3}},
+];
+const gOrder=GROUPS.map(g=>g[0]); PARTS.sort((a,b)=>gOrder.indexOf(a.g)-gOrder.indexOf(b.g));
+const byId={}; PARTS.forEach((p,i)=>{p.idx=i; byId[p.id]=p; p.meshes=[];});
+
+/* ───────────────────────── Renderer / scene ───────────────────────── */
+const stage=document.getElementById('stage');
+const isCoarse=matchMedia('(pointer:coarse)').matches;
+let quality = !(isCoarse || innerWidth<900) ;
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0xbfd6e6,0.012);
+const camera=new THREE.PerspectiveCamera(42,1,0.1,400);
+
+/* sky */
+const sky=new THREE.Mesh(new THREE.SphereGeometry(180,24,12),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
+ uniforms:{top:{value:new THREE.Color(0x3d7bbf)},mid:{value:new THREE.Color(0x9fc7e8)},hor:{value:new THREE.Color(0xe9eef2)},sun:{value:new THREE.Vector3(0.45,0.5,0.35).normalize()}},
+ vertexShader:'varying vec3 vP; void main(){ vP=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+ fragmentShader:'uniform vec3 top,mid,hor,sun; varying vec3 vP; void main(){ float h=clamp(vP.y,0.0,1.0); vec3 c=mix(hor,mid,smoothstep(0.0,0.18,h)); c=mix(c,top,smoothstep(0.18,0.8,h)); float s=max(dot(vP,sun),0.0); c+=vec3(1.0,0.9,0.7)*pow(s,180.0)*1.2+vec3(1.0,0.85,0.6)*pow(s,6.0)*0.12; gl_FragColor=vec4(c,1.0);} '}));
+scene.add(sky);
+
+/* lights */
+const hemi=new THREE.HemisphereLight(0xcfe4ff,0x244a6a,0.65); scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff2dc,1.6); sun.position.set(18,22,14); sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048); const sc=sun.shadow.camera; sc.near=5; sc.far=70; sc.left=-10; sc.right=10; sc.top=12; sc.bottom=-8; sun.shadow.bias=-0.0006; sun.shadow.normalBias=0.02;
+scene.add(sun); scene.add(sun.target);
+const fill=new THREE.DirectionalLight(0xbfd8ff,0.35); fill.position.set(-14,8,-10); scene.add(fill);
+
+/* water */
+const waterUniforms={t:{value:0},deep:{value:new THREE.Color(0x0d4a73)},shal:{value:new THREE.Color(0x2b8fb8)},sunDir:{value:sun.position.clone().normalize()},skyC:{value:new THREE.Color(0xbcd7ec)},fogColor:{value:scene.fog.color},fogDensity:{value:scene.fog.density}};
+const waterMat=new THREE.ShaderMaterial({uniforms:waterUniforms,transparent:false,
+ vertexShader:`uniform float t; varying vec3 vW; varying vec3 vN;
+  float h(vec2 p){ return 0.05*sin(p.x*0.9+t*1.1)+0.035*sin(p.y*1.3-t*0.9)+0.025*sin((p.x+p.y)*2.1+t*1.7)+0.012*sin((p.x*3.7-p.y*2.9)+t*2.6); }
+  void main(){ vec3 p=position; vec2 q=p.xy; float e=0.15; float hh=h(q); float hx=h(q+vec2(e,0.0)); float hy=h(q+vec2(0.0,e));
+   p.z+=hh; vN=normalize(vec3(-(hx-hh)/e,-(hy-hh)/e,1.0)); vec4 w=modelMatrix*vec4(p,1.0); vW=w.xyz; vN=normalize((modelMatrix*vec4(vN,0.0)).xyz);
+   gl_Position=projectionMatrix*viewMatrix*w; }`,
+ fragmentShader:`uniform vec3 deep,shal,sunDir,skyC,fogColor; uniform float fogDensity; varying vec3 vW; varying vec3 vN;
+  void main(){ vec3 V=normalize(cameraPosition-vW); vec3 N=normalize(vN); float fr=pow(1.0-max(dot(N,V),0.0),3.0);
+   vec3 base=mix(deep,shal,0.35+0.3*N.y); vec3 c=mix(base,skyC,fr*0.85);
+   vec3 H=normalize(sunDir+V); float sp=pow(max(dot(N,H),0.0),240.0); c+=vec3(1.0,0.95,0.85)*sp*1.6;
+   float d=length(cameraPosition-vW); float f=1.0-exp(-fogDensity*fogDensity*d*d); c=mix(c,fogColor,clamp(f,0.0,1.0));
+   gl_FragColor=vec4(c,1.0);} `});
+let water; function buildWater(){ if(water){scene.remove(water); water.geometry.dispose();}
+ const seg=quality?160:60; water=new THREE.Mesh(new THREE.PlaneGeometry(260,260,seg,seg),waterMat); water.rotation.x=-Math.PI/2; water.position.y=0; water.receiveShadow=true; scene.add(water); }
+buildWater();
+
+/* ───────────────────────── Geometry helpers ───────────────────────── */
+function surface(fn,nu,nv,opt){ // fn(u,v)->[x,y,z]; opt.skip(u,v) drops quads; opt.color(x,y,z)->[r,g,b]
+ opt=opt||{}; const pos=[],col=[],idx=[]; const useCol=!!opt.color;
+ for(let i=0;i<=nu;i++){ for(let j=0;j<=nv;j++){ const p=fn(i/nu,j/nv); pos.push(p[0],p[1],p[2]); if(useCol){const c=opt.color(p[0],p[1],p[2]); col.push(c[0],c[1],c[2]);} } }
+ for(let i=0;i<nu;i++){ for(let j=0;j<nv;j++){ if(opt.skip&&opt.skip((i+0.5)/nu,(j+0.5)/nv)) continue; const a=i*(nv+1)+j,b=a+nv+1; idx.push(a,b,a+1, b,b+1,a+1);} }
+ const g=new THREE.BufferGeometry(); g.setIndex(idx); g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3)); if(useCol) g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+ g.computeVertexNormals(); return g; }
+function rod(a,b,r,mat,part,seg){ const d=new THREE.Vector3().subVectors(b,a); const len=d.length(); const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,seg||8,1),mat);
+ m.position.copy(a).addScaledVector(d,0.5); m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize()); return add(m,part); }
+function box(w,h,d,mat,pos,part,rot){ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); m.position.set(pos[0],pos[1],pos[2]); if(rot) m.rotation.set(rot[0],rot[1],rot[2]); return add(m,part); }
+const boat=new THREE.Group(); scene.add(boat);
+const pickables=[];
+function add(m,part){ m.castShadow=true; m.receiveShadow=true; boat.add(m); if(part){ m.userData.part=part; byId[part].meshes.push(m); pickables.push(m);} return m; }
+function V(x,y,z){return new THREE.Vector3(x,y,z);}
+
+/* materials */
+const M={
+ gel:new THREE.MeshStandardMaterial({vertexColors:true,roughness:0.28,metalness:0.05}),
+ deck:new THREE.MeshStandardMaterial({color:0xf3f0e6,roughness:0.75,metalness:0}),
+ nonskid:new THREE.MeshStandardMaterial({color:0xe2ddd0,roughness:0.95}),
+ cabin:new THREE.MeshStandardMaterial({color:0xf5f2ea,roughness:0.55}),
+ teak:new THREE.MeshStandardMaterial({color:0x9a6a3a,roughness:0.7}),
+ dark:new THREE.MeshStandardMaterial({color:0x1b2730,roughness:0.6}),
+ alu:new THREE.MeshStandardMaterial({color:0xc9ced3,roughness:0.35,metalness:0.85}),
+ steel:new THREE.MeshStandardMaterial({color:0xe6eaee,roughness:0.25,metalness:0.95}),
+ wire:new THREE.MeshStandardMaterial({color:0xaab2ba,roughness:0.4,metalness:0.9}),
+ lineW:new THREE.MeshStandardMaterial({color:0xf0ece0,roughness:0.9}),
+ lineR:new THREE.MeshStandardMaterial({color:0xc9303a,roughness:0.9}),
+ lineB:new THREE.MeshStandardMaterial({color:0x2d5fb3,roughness:0.9}),
+ lineG:new THREE.MeshStandardMaterial({color:0x2e9e5b,roughness:0.9}),
+ sail:new THREE.MeshStandardMaterial({color:0xfaf8f0,roughness:0.85,side:THREE.DoubleSide,transparent:true,opacity:0.96}),
+ batten:new THREE.MeshStandardMaterial({color:0xd8d2c0,roughness:0.9,side:THREE.DoubleSide}),
+ keel:new THREE.MeshStandardMaterial({color:0x1d3f66,roughness:0.5}),
+ rudder:new THREE.MeshStandardMaterial({color:0xf3f0e6,roughness:0.45}),
+ red:new THREE.MeshStandardMaterial({color:0xd83030,roughness:0.6}),
+ green:new THREE.MeshStandardMaterial({color:0x2fa852,roughness:0.6}),
+ black:new THREE.MeshStandardMaterial({color:0x101418,roughness:0.5}),
+};
+for(const k of ['gel','deck','nonskid','cabin','teak','keel','rudder','sail','batten']) M[k].side=THREE.DoubleSide;
+
+/* hull form: x forward (bow +), y up, z starboard. LOA 6.7 m, beam 2.4 m, waterline y=0 */
+const L=6.7, XS=-3.35;
+function beam(u){ // half-breadth at sheer
+ if(u>=0.42){ const k=(u-0.42)/0.58; return 1.2*Math.pow(Math.max(0,1-k*k),0.58); }
+ const k=(0.42-u)/0.42; return 1.2*(0.74+0.26*Math.sqrt(Math.max(0,1-k*k))); }
+function sheer(u){ return 0.72+0.1*Math.pow(1-u,1.5)+0.42*Math.pow(u,3.2); }
+function depth(u){ return 0.52*Math.pow(Math.sin(Math.PI*Math.min(1,u*0.92+0.04)),0.75)*(u>0.9?Math.pow((1-u)/0.1,0.5)*0.9+0.1:1); }
+function hullPt(u,s){ // s: -1 port .. 1 stbd
+ const x=XS+L*u, b=beam(u), top=sheer(u), d=depth(u); const a=s*Math.PI/2;
+ const z=b*Math.sin(a)*(0.92+0.08*Math.abs(Math.sin(a))); const y=top-(top+d)*Math.pow(Math.cos(a),1.35);
+ return [x,y,z]; }
+const WL=0.0, STRIPE=0.12;
+const hullGeo=surface((u,v)=>hullPt(u,v*2-1),96,36,{color:(x,y,z)=>{ if(y<WL-0.01) return [0.07,0.17,0.3]; if(y<WL+STRIPE) return [0.08,0.3,0.6]; return [0.97,0.96,0.92]; }});
+add(new THREE.Mesh(hullGeo,M.gel),'hull');
+/* bow and stern zones as thin invisible pick shells */
+const bowShell=new THREE.Mesh(surface((u,v)=>hullPt(0.82+u*0.18,v*2-1),12,12),new THREE.MeshBasicMaterial({visible:false})); bowShell.userData.part='bow'; bowShell.scale.set(1.02,1.02,1.02); boat.add(bowShell); byId.bow.meshes.push(bowShell); pickables.push(bowShell);
+const transom=new THREE.Mesh(surface((u,v)=>{const s=u*2-1; const p=hullPt(0.0005,s); const ty=sheer(0)+0.04, tz=beam(0)*s; return [XS-0.001,p[1]*(1-v)+ty*v,p[2]*(1-v)+tz*v];},16,4),M.deck); add(transom,'stern');
+
+/* deck with cockpit cutout */
+const CK={u0:0.11,u1:0.42,s:0.56};
+const deckGeo=surface((u,v)=>{const s=v*2-1; const b=beam(u); return [XS+L*u,sheer(u)+0.05*(1-s*s)+0.012,b*s*0.985];},96,24,{skip:(u,v)=>{const s=Math.abs(v*2-1); return u>CK.u0&&u<CK.u1&&s<CK.s;}});
+add(new THREE.Mesh(deckGeo,M.nonskid),'deck');
+/* rubrail / toe rail */
+for(const side of [1,-1]) add(new THREE.Mesh(surface((u,v)=>[XS+L*u,sheer(u)+0.02+0.06*v,side*beam(u)*1.015],96,1),M.teak),'deck');
+/* cockpit well */
+(function(){ const x0=XS+L*CK.u0, x1=XS+L*CK.u1, w=beam(0.27)*CK.s*2, fy=0.32, ty=sheer(0.27)+0.06;
+ const len=x1-x0, cx=(x0+x1)/2;
+ box(len,0.03,w,M.nonskid,[cx,fy,0],'cockpit');                       // floor
+ box(len,ty-fy,0.03,M.cabin,[cx,(ty+fy)/2, w/2],'cockpit'); box(len,ty-fy,0.03,M.cabin,[cx,(ty+fy)/2,-w/2],'cockpit');
+ box(0.03,ty-fy,w,M.cabin,[x0,(ty+fy)/2,0],'cockpit'); box(0.03,ty-fy,w,M.cabin,[x1,(ty+fy)/2,0],'cockpit');
+ // seats
+ box(len*0.92,0.05,0.36,M.teak,[cx-0.05,fy+0.42,w/2-0.18],'cockpit'); box(len*0.92,0.05,0.36,M.teak,[cx-0.05,fy+0.42,-w/2+0.18],'cockpit');
+ box(0.36,0.05,w,M.teak,[x1-0.18,fy+0.42,0],'cockpit');
+ // coamings
+ box(len+0.1,0.12,0.05,M.cabin,[cx,ty+0.07,w/2+0.04],'cockpit'); box(len+0.1,0.12,0.05,M.cabin,[cx,ty+0.07,-w/2-0.04],'cockpit');
+ // traveler across aft end
+ const tx=x0+0.12; rod(V(tx,ty+0.05,-0.95),V(tx,ty+0.05,0.95),0.02,M.alu,'traveler');
+ box(0.1,0.07,0.12,M.black,[tx,ty+0.09,0],'traveler');
+})();
+
+/* cabin trunk */
+(function(){ const u0=0.44,u1=0.80, x0=XS+L*u0,x1=XS+L*u1;
+ const g=surface((u,v)=>{const uu=u0+u*(u1-u0); const s=v*2-1; const b=beam(uu)*0.72; const h=0.42*(1-0.25*Math.pow(u,2.2)); const bulge=Math.pow(Math.abs(s),1.6);
+  return [XS+L*uu, sheer(uu)+0.03+h*(1-0.18*bulge)+0.08*(1-s*s), b*s];},40,18);
+ add(new THREE.Mesh(g,M.cabin),'cabin');
+ // sides
+ const side=surface((u,v)=>{const uu=u0+u*(u1-u0); const b=beam(uu)*0.72; const h=0.42*(1-0.25*Math.pow(u,2.2)); return [XS+L*uu, sheer(uu)+0.03+v*h*0.82, b];},40,2);
+ add(new THREE.Mesh(side,M.cabin),'cabin'); const side2=side.clone(); side2.scale(1,1,-1); add(new THREE.Mesh(side2,M.cabin),'cabin');
+ // aft bulkhead + companionway
+ const b0=beam(u0)*0.72; box(0.04,0.44,b0*2,M.cabin,[x0,sheer(u0)+0.24,0],'cabin');
+ box(0.05,0.42,0.52,M.dark,[x0-0.005,sheer(u0)+0.26,0],'cabin');           // opening
+ box(0.06,0.22,0.5,M.teak,[x0-0.01,sheer(u0)+0.15,0],'cabin');             // drop boards
+ box(0.7,0.035,0.62,M.cabin,[x0+0.35,sheer(u0)+0.51,0],'cabin');           // sliding hatch
+ // forward face
+ box(0.04,0.3,beam(u1)*1.4,M.cabin,[x1,sheer(u1)+0.18,0],'cabin');
+ // windows
+ for(const z of [1,-1]){ box(0.9,0.14,0.02,M.dark,[x0+1.1,sheer(0.6)+0.25,z*beam(0.6)*0.72],'cabin'); box(0.6,0.13,0.02,M.dark,[x0+2.1,sheer(0.72)+0.25,z*beam(0.72)*0.72],'cabin'); }
+ // forehatch
+ box(0.5,0.04,0.5,M.cabin,[XS+L*0.86,sheer(0.86)+0.06,0],'deck');
+})();
+
+/* keel & rudder */
+(function(){ const foil=(chordAt,xcAt,thickAt,topY,depthK,part,mat,side)=>{ const g=surface((u,v)=>{ const c=chordAt(v), xc=xcAt(v); const x=xc-c/2+c*u; const th=thickAt(v)*Math.sin(Math.PI*Math.pow(u,0.65)); return [x, topY-depthK*v, side*th]; },24,10); add(new THREE.Mesh(g,mat),part); };
+ foil(v=>1.3-0.4*v, v=>-0.3-0.3*v, v=>0.12*(1-0.4*v), -0.22, 1.2, 'keel', M.keel, 1);
+ foil(v=>1.3-0.4*v, v=>-0.3-0.3*v, v=>0.12*(1-0.4*v), -0.22, 1.2, 'keel', M.keel, -1);
+ box(0.9,0.12,0.26,M.keel,[-0.6,-1.4,0],'keel'); // bulb-ish bottom
+ // rudder: transom hung
+ foil(v=>0.42-0.08*v, v=>XS-0.23-0.03*v, v=>0.035, 0.75, 1.65, 'rudder', M.rudder, 1);
+ foil(v=>0.42-0.08*v, v=>XS-0.23-0.03*v, v=>0.035, 0.75, 1.65, 'rudder', M.rudder, -1);
+ box(0.08,0.25,0.12,M.steel,[XS-0.04,0.55,0],'rudder'); box(0.08,0.25,0.12,M.steel,[XS-0.04,0.05,0],'rudder'); // gudgeons/pintles
+ // rudder head + tiller
+ box(0.16,0.14,0.1,M.teak,[XS-0.2,0.84,0],'rudder');
+ rod(V(XS-0.15,0.9,0),V(XS+1.35,1.02,0),0.025,M.teak,'tiller',10);
+ rod(V(XS+1.35,1.02,0),V(XS+1.7,1.05,0),0.016,M.black,'tiller',8);
+})();
+
+/* mast, boom, spreaders, hardware */
+const MX=0.9, MB=sheer(0.63)+0.47, MT=9.25, SPY=5.6, GN=MB+0.75, BE=-1.95;
+rod(V(MX,MB-0.02,0),V(MX,MT,0),0.062,M.alu,'mast',14);
+box(0.18,0.08,0.18,M.steel,[MX,MB,0],'mast');                     // mast step
+rod(V(MX-0.07,GN,0),V(BE,GN,0),0.05,M.alu,'boom',12);
+box(0.09,0.12,0.09,M.steel,[MX-0.08,GN,0],'boom');                 // gooseneck
+box(0.12,0.08,0.08,M.steel,[BE+0.04,GN,0],'boom');                 // outhaul fitting
+for(const z of [1,-1]){ rod(V(MX,SPY,0),V(MX-0.06,SPY+0.05,z*0.85),0.02,M.alu,'spreaders'); }
+// masthead: sheaves box + windex
+box(0.16,0.12,0.16,M.steel,[MX,MT+0.04,0],'mast');
+rod(V(MX,MT+0.1,0),V(MX,MT+0.5,0),0.008,M.steel,'windex');
+rod(V(MX+0.22,MT+0.5,0.02),V(MX-0.12,MT+0.5,-0.02),0.012,M.red,'windex');
+box(0.04,0.03,0.12,M.red,[MX+0.2,MT+0.5,0.03],'windex',[0,-0.6,0]);
+for(const z of [1,-1]){ rod(V(MX,MT+0.42,0),V(MX-0.12,MT+0.42,z*0.14),0.006,M.steel,'windex'); }
+
+/* chainplates and standing rigging */
+function sheerPt(u,side){ return V(XS+L*u, sheer(u)+0.06, beam(u)*side*0.99); }
+const uM=(MX-XS)/L;
+for(const side of [1,-1]){
+ const cpU=sheerPt(uM,side), cpF=sheerPt(uM+0.06,side), cpA=sheerPt(uM-0.06,side);
+ rod(V(MX,MT-0.05,side*0.05),V(MX-0.06,SPY+0.05,side*0.85),0.011,M.wire,'shrouds');   // upper, mast→spreader tip
+ rod(V(MX-0.06,SPY+0.05,side*0.85),cpU,0.011,M.wire,'shrouds');                     // upper, spreader→chainplate
+ rod(V(MX,SPY-0.15,side*0.06),cpF,0.01,M.wire,'shrouds'); rod(V(MX,SPY-0.15,side*0.06),cpA,0.01,M.wire,'shrouds'); // lowers
+ for(const cp of [cpU,cpF,cpA]){ box(0.05,0.3,0.03,M.steel,[cp.x,cp.y+0.12,cp.z],'shrouds'); }
+}
+const STEM=V(XS+L-0.08,sheer(1)+0.08,0);
+rod(V(MX+0.02,MT-0.02,0),STEM,0.011,M.wire,'forestay');
+rod(V(MX-0.02,MT-0.02,0),V(XS+0.1,sheer(0)+0.1,0),0.011,M.wire,'backstay');
+box(0.05,0.28,0.04,M.steel,[XS+0.1,sheer(0)+0.2,0],'backstay');
+
+/* deck hardware: cleats, winches, fairleads, pulpits, lifelines */
+function cleat(x,y,z,part,rot){ const g=new THREE.Group(); g.position.set(x,y,z); if(rot) g.rotation.y=rot;
+ const b=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.025,0.05),M.steel); b.position.y=0.035; const h=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.04,0.06),M.steel); h.position.y=0.015;
+ g.add(b,h); g.traverse(m=>{m.castShadow=true; m.userData.part=part; if(m.isMesh){pickables.push(m); byId[part].meshes.push(m);}}); boat.add(g); return g; }
+cleat(XS+L-0.45,sheer(0.93)+0.07,0,'cleats');
+cleat(XS+0.35,sheer(0.05)+0.07,0.78,'cleats'); cleat(XS+0.35,sheer(0.05)+0.07,-0.78,'cleats');
+cleat(MX-0.3,MB+0.01,0.22,'cleats',0.3); cleat(MX-0.3,MB+0.01,-0.22,'cleats',-0.3);
+cleat(XS+L*0.5,sheer(0.5)+0.07,1.05,'cleats'); cleat(XS+L*0.5,sheer(0.5)+0.07,-1.05,'cleats');
+const WX=XS+L*0.4-0.35, WY=sheer(0.4)+0.12;
+for(const z of [1,-1]){ const w=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.1,0.14,20),M.steel); w.position.set(WX,WY+0.05,z*1.02); add(w,'winches'); const top=new THREE.Mesh(new THREE.CylinderGeometry(0.11,0.11,0.03,20),M.black); top.position.set(WX,WY+0.13,z*1.02); add(top,'winches'); cleat(WX-0.35,WY-0.02,z*1.02,'cleats',0); }
+// jib fairlead tracks
+for(const z of [1,-1]){ rod(V(XS+L*0.5,sheer(0.5)+0.07,z*1.08),V(XS+L*0.68,sheer(0.68)+0.07,z*1.05),0.015,M.alu,'jibsheets'); box(0.1,0.06,0.06,M.black,[XS+L*0.58,sheer(0.58)+0.1,z*1.065],'jibsheets'); }
+// pulpits
+(function(){ const h=0.6; const bp=[[1,0],[0.965,0.7],[0.93,1]]; for(const side of [1,-1]){ let prev=null; for(const [u,f] of bp){ const p=sheerPt(u,side); p.z*=f; const q=p.clone(); q.y+=h; rod(p,q,0.014,M.steel,'lifelines'); if(prev) rod(prev,q,0.014,M.steel,'lifelines'); prev=q; } }
+ const a=sheerPt(0.93,1),b=sheerPt(0.93,-1); a.y+=h;b.y+=h; // bow rail front hoop
+ const tip=sheerPt(1,1); tip.z=0; tip.y+=h; rod(a,tip,0.014,M.steel,'lifelines'); rod(b,tip,0.014,M.steel,'lifelines');
+ // stern pulpit
+ for(const side of [1,-1]){ const p1=sheerPt(0.02,side); p1.z*=0.85; const p2=sheerPt(0.12,side); const q1=p1.clone(),q2=p2.clone(); q1.y+=h; q2.y+=h; rod(p1,q1,0.014,M.steel,'lifelines'); rod(p2,q2,0.014,M.steel,'lifelines'); rod(q1,q2,0.014,M.steel,'lifelines'); }
+ const s1=sheerPt(0.02,1),s2=sheerPt(0.02,-1); s1.z*=0.85; s2.z*=0.85; s1.y+=h; s2.y+=h; rod(s1,s2,0.014,M.steel,'lifelines');
+ // stanchions + lifelines
+ for(const side of [1,-1]){ const us=[0.12,0.33,0.55,0.75,0.93]; let prev=null; for(const u of us){ const p=sheerPt(u,side); const q=p.clone(); q.y+=h; if(u!==0.12&&u!==0.93) rod(p,q,0.012,M.steel,'lifelines'); if(prev){ const a=prev.clone(), b=q.clone(); rod(a,b,0.006,M.wire,'lifelines'); const a2=a.clone(),b2=b.clone(); a2.y-=h*0.5; b2.y-=h*0.5; rod(a2,b2,0.006,M.wire,'lifelines'); } prev=q; } }
+})();
+
+/* sails */
+const sailsGroup=new THREE.Group(); boat.add(sailsGroup);
+function addSail(m,part){ m.castShadow=true; m.receiveShadow=true; sailsGroup.add(m); m.userData.part=part; byId[part].meshes.push(m); pickables.push(m); return m; }
+const TACK=V(MX+0.07,GN+0.05,0), HEAD=V(MX+0.07,MT-0.25,0), CLEW=V(BE+0.05,GN+0.06,0);
+const BELLY=0.42; // belly to starboard (port tack look)
+function mainPt(u,v){ // u along luff 0..1, v luff->leech
+ const luff=new THREE.Vector3().lerpVectors(TACK,HEAD,u); const leech=new THREE.Vector3().lerpVectors(CLEW,HEAD,u);
+ const roach=0.35*Math.sin(Math.PI*u); leech.x-=roach; const p=new THREE.Vector3().lerpVectors(luff,leech,v);
+ p.z+=BELLY*Math.sin(Math.PI*v)*Math.pow(1-u,0.5)*(0.5+0.5*Math.sin(Math.PI*Math.min(1,u+0.1)))+0.1*v*(1-u);
+ return [p.x,p.y,p.z]; }
+const mainGeo=surface(mainPt,36,24); addSail(new THREE.Mesh(mainGeo,M.sail),'mainsail');
+for(const u of [0.2,0.42,0.63,0.83]){ const g=surface((a,b)=>{const pts=mainPt(u+b*0.02,1-a*0.45); return [pts[0],pts[1],pts[2]+0.004];},12,1); addSail(new THREE.Mesh(g,M.batten),'battens'); }
+// bolt rope / luff slides
+rod(V(MX+0.065,GN+0.1,0),V(MX+0.065,MT-0.3,0),0.012,M.lineW,'mainsail');
+// jib
+const JT=V(STEM.x-0.02,STEM.y+0.12,0), JH=new THREE.Vector3().lerpVectors(STEM,V(MX+0.02,MT-0.02,0),0.86), JC=V(MX-0.55,GN-0.55,0.95);
+function jibPt(u,v){ const luff=new THREE.Vector3().lerpVectors(JT,JH,u); const leech=new THREE.Vector3().lerpVectors(JC,JH,u); const p=new THREE.Vector3().lerpVectors(luff,leech,v);
+ p.z+=0.5*Math.sin(Math.PI*v)*Math.pow(1-u,0.6); return [p.x,p.y,p.z]; }
+addSail(new THREE.Mesh(surface(jibPt,30,20),M.sail),'jib');
+// telltales on jib (red port / green starboard)
+for(const u of [0.25,0.45,0.65]){ const p=jibPt(u,0.14); const g=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.016,0.004),M.green); g.position.set(p[0]-0.1,p[1],p[2]+0.012); g.rotation.y=-0.15; addSail(g,'telltales');
+ const r=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.016,0.004),M.red); r.position.set(p[0]-0.1,p[1],p[2]-0.012); r.rotation.y=0.15; addSail(r,'telltales'); }
+// jib sheets: clew → fairlead → winch, both sides
+for(const z of [1,-1]){ const fl=V(XS+L*0.58,sheer(0.58)+0.12,z*1.065); if(z>0) rod(JC,fl,0.013,M.lineB,'jibsheets'); else { const mid=V(MX+0.7,1.5,-0.2); rod(JC,mid,0.013,M.lineB,'jibsheets'); rod(mid,fl,0.013,M.lineB,'jibsheets'); } rod(fl,V(WX,WY+0.08,z*1.02),0.013,M.lineB,'jibsheets'); }
+// halyards (main aft face, jib fwd face) + cleats at mast base
+rod(V(MX-0.07,MT-0.05,0.02),V(MX-0.07,MB+0.1,0.02),0.011,M.lineR,'halyards'); rod(V(MX+0.07,MT-0.05,-0.02),V(MX+0.07,MB+0.1,-0.02),0.011,M.lineG,'halyards');
+rod(V(MX-0.07,MB+0.1,0.02),V(MX-0.3,MB+0.03,0.22),0.011,M.lineR,'halyards'); rod(V(MX+0.07,MB+0.1,-0.02),V(MX-0.3,MB+0.03,-0.22),0.011,M.lineG,'halyards');
+// mainsheet tackle: boom end → traveler car
+const TRX=XS+L*CK.u0+0.12, TRY=sheer(0.27)+0.06+0.12;
+box(0.1,0.14,0.08,M.black,[BE+0.08,GN-0.1,0],'mainsheet');
+for(const dz of [-0.03,0.03]){ rod(V(BE+0.08,GN-0.15,dz),V(TRX,TRY,dz*2),0.013,M.lineW,'mainsheet'); }
+rod(V(TRX,TRY,0),V(TRX+0.9,sheer(0.3)+0.14,0.6),0.012,M.lineW,'mainsheet'); // tail to cockpit
+// vang
+box(0.08,0.08,0.08,M.black,[MX-1.0,GN-0.06,0],'vang'); rod(V(MX-1.0,GN-0.08,0),V(MX-0.08,MB+0.08,0),0.016,M.lineW,'vang');
+// topping lift
+rod(V(MX-0.03,MT-0.08,0.03),V(BE+0.02,GN+0.04,0.03),0.007,M.wire,'toppinglift');
+
+/* label sprite */
+const labelCanvas=document.createElement('canvas'); labelCanvas.width=512; labelCanvas.height=128;
+const labelTex=new THREE.CanvasTexture(labelCanvas); labelTex.minFilter=THREE.LinearFilter;
+const label=new THREE.Sprite(new THREE.SpriteMaterial({map:labelTex,depthTest:false,transparent:true})); label.scale.set(2.4,0.6,1); label.renderOrder=10; label.visible=false; scene.add(label);
+function drawLabel(text){ const c=labelCanvas.getContext('2d'); c.clearRect(0,0,512,128); c.font='500 44px Oswald, Arial Narrow, sans-serif'; const w=c.measureText(text).width+56; const x=(512-w)/2;
+ c.fillStyle='rgba(12,22,34,0.86)'; roundRect(c,x,24,w,80,16); c.fill(); c.strokeStyle='#ffb347'; c.lineWidth=3; roundRect(c,x,24,w,80,16); c.stroke(); c.fillStyle='#fff'; c.textAlign='center'; c.textBaseline='middle'; c.fillText(text,256,66); labelTex.needsUpdate=true; }
+function roundRect(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+
+/* ───────────────────────── Camera control ───────────────────────── */
+const cam={target:V(0,1.6,0),dist:14,theta:0.9,phi:1.2, tgt:{target:V(0,1.6,0),dist:14,theta:0.9,phi:1.2}, user:false};
+function setView(v,instant){ cam.tgt.target.copy(v.target); cam.tgt.dist=v.dist; cam.tgt.theta=v.theta; cam.tgt.phi=v.phi; if(instant){cam.target.copy(v.target);cam.dist=v.dist;cam.theta=v.theta;cam.phi=v.phi;} }
+function applyCam(){ const s=Math.sin(cam.phi); camera.position.set(cam.target.x+cam.dist*s*Math.cos(cam.theta), cam.target.y+cam.dist*Math.cos(cam.phi), cam.target.z+cam.dist*s*Math.sin(cam.theta)); camera.position.y=Math.max(camera.position.y,-1.6); camera.lookAt(cam.target); }
+const el=renderer.domElement; const ptrs=new Map(); let lastPinch=0, moved=0, downAt=0;
+el.addEventListener('pointerdown',e=>{ el.setPointerCapture(e.pointerId); ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); moved=0; downAt=performance.now(); });
+el.addEventListener('pointermove',e=>{ if(!ptrs.has(e.pointerId)) return; const p=ptrs.get(e.pointerId); const dx=e.clientX-p.x, dy=e.clientY-p.y; p.x=e.clientX; p.y=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);
+ if(ptrs.size===1){ if(e.buttons===2||e.shiftKey){ pan(dx,dy); } else { cam.tgt.theta+=dx*0.006; cam.tgt.phi=clamp(cam.tgt.phi-dy*0.006,0.15,2.6); } cam.user=true; }
+ else if(ptrs.size===2){ const a=[...ptrs.values()]; const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y); if(lastPinch){ cam.tgt.dist=clamp(cam.tgt.dist*(lastPinch/d),2.5,40); } lastPinch=d; cam.user=true; } });
+const endPtr=e=>{ ptrs.delete(e.pointerId); if(ptrs.size<2) lastPinch=0; };
+el.addEventListener('pointerup',e=>{ const quick=performance.now()-downAt<400 && moved<8; endPtr(e); if(quick) pick(e.clientX,e.clientY); });
+el.addEventListener('pointercancel',endPtr);
+el.addEventListener('wheel',e=>{ e.preventDefault(); cam.tgt.dist=clamp(cam.tgt.dist*Math.exp(e.deltaY*0.0012),2.5,40); cam.user=true; },{passive:false});
+el.addEventListener('contextmenu',e=>e.preventDefault());
+function pan(dx,dy){ const right=new THREE.Vector3(), up=new THREE.Vector3(0,1,0); camera.getWorldDirection(right); right.cross(up).normalize(); const k=cam.dist*0.0012; cam.tgt.target.addScaledVector(right,-dx*k).addScaledVector(up,dy*k); cam.tgt.target.y=clamp(cam.tgt.target.y,-1,9.5); }
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+/* picking */
+const ray=new THREE.Raycaster(); ray.params.Points={threshold:0.05};
+function pick(cx,cy){ const r=el.getBoundingClientRect(); const m=new THREE.Vector2(((cx-r.left)/r.width)*2-1,-((cy-r.top)/r.height)*2+1); ray.setFromCamera(m,camera); ray.far=200;
+ const hits=ray.intersectObjects(pickables.filter(o=>o.visible&&(o.parent!==sailsGroup||sailsGroup.visible)),false); if(!hits.length){ if(mode==='explore') select(null); return; }
+ // prefer thin parts: if a thin rod is within 0.08 of the first hit, take it
+ let h=hits[0]; for(const x of hits){ if(x.distance-hits[0].distance<0.12 && x.object.geometry.type==='CylinderGeometry'){h=x;break;} }
+ const id=h.object.userData.part; onPick(id); }
+
+/* ───────────────────────── Selection & highlight ───────────────────────── */
+let selected=null;
+/* precise anchor point (boat-local) for each part's label; others fall back to the bounding-box centre */
+const ANCHOR={
+ hull:[0.6,0.3,1.12], bow:[XS+L-0.15,sheer(0.98)-0.1,0.1], stern:[XS-0.01,0.45,0], keel:[-0.45,-0.95,0.14], rudder:[XS-0.25,0.05,0.05],
+ tiller:[XS+0.7,0.97,0], cockpit:[XS+L*0.27,0.55,0.3], cabin:[XS+L*0.44+0.3,sheer(0.5)+0.35,0.45], deck:[XS+L*0.88,sheer(0.88)+0.06,0.3],
+ lifelines:[XS+L*0.55,sheer(0.55)+0.5,beam(0.55)*0.99], winches:[WX,WY+0.12,1.02], cleats:[XS+L-0.45,sheer(0.93)+0.1,0], traveler:[TRX,TRY-0.07,0.5],
+ mast:[MX,5.0,0.07], boom:[MX-1.3,GN,0.05], spreaders:[MX-0.03,SPY+0.03,0.55], shrouds:[MX-0.03,3.3,1.02], forestay:[(MX+STEM.x)/2,(MT+STEM.y)/2,0], backstay:[(MX+XS+0.1)/2,(MT+sheer(0)+0.1)/2,0],
+ halyards:[MX-0.07,4.2,0.02], mainsheet:[(BE+0.08+TRX)/2,(GN-0.15+TRY)/2,0.03], jibsheets:[0.45,1.25,1.0], vang:[(MX-1.0+MX-0.08)/2,(GN-0.08+MB+0.08)/2,0], toppinglift:[(MX+BE)/2,(MT+GN)/2,0.03],
+ mainsail:[-0.3,4.6,0.3], jib:[1.9,3.9,0.32], battens:[-0.55,5.1,0.22], telltales:[2.0,4.35,0.2], windex:[MX,MT+0.5,0]
+};
+const glowMatX=new THREE.MeshBasicMaterial({color:0xff7a00,transparent:true,opacity:0.6,depthTest:false,depthWrite:false,side:THREE.DoubleSide});
+const glowMatS=new THREE.MeshBasicMaterial({color:0xff8a1f,transparent:true,opacity:0.28,depthWrite:false,side:THREE.DoubleSide});
+let ghosts=[], hlMats=[];
+const leader=new THREE.Mesh(new THREE.CylinderGeometry(1,1,1,8,1),new THREE.MeshBasicMaterial({color:0xff8a1f,depthTest:false,transparent:true,opacity:0.95})); leader.renderOrder=9; leader.visible=false; scene.add(leader);
+const anchorDot=new THREE.Mesh(new THREE.SphereGeometry(0.05,12,12),new THREE.MeshBasicMaterial({color:0xff8a1f,depthTest:false})); anchorDot.renderOrder=9; anchorDot.visible=false; scene.add(anchorDot);
+const anchorRing=new THREE.Mesh(new THREE.RingGeometry(0.08,0.115,32),new THREE.MeshBasicMaterial({color:0xff8a1f,depthTest:false,side:THREE.DoubleSide,transparent:true})); anchorRing.renderOrder=9; anchorRing.visible=false; scene.add(anchorRing);
+let anchorLocal=null;
+function highlight(id){
+ ghosts.forEach(g=>g.parent&&g.parent.remove(g)); ghosts=[]; hlMats=[];
+ PARTS.forEach(p=>p.meshes.forEach(m=>{ if(m.userData.origMat){ m.material=m.userData.origMat; delete m.userData.origMat; } }));
+ label.visible=leader.visible=anchorDot.visible=anchorRing.visible=false; anchorLocal=null; if(!id) return; const p=byId[id];
+ p.meshes.forEach(m=>{ if(!m.material||m.material.visible===false) return;
+  m.userData.origMat=m.material; const mat=m.material.clone(); mat.emissive=new THREE.Color(0xff8c1a); mat.emissiveIntensity=0.5; m.material=mat; hlMats.push(mat);
+  // glow ghost: thin parts get a fattened x-ray copy so lines and wires read clearly, surfaces get a soft tint
+  const thin=m.geometry.type==='CylinderGeometry'||m.geometry.type==='BoxGeometry'||m.geometry.type==='SphereGeometry';
+  const g=new THREE.Mesh(m.geometry,thin?glowMatX:glowMatS); g.position.copy(m.position); g.quaternion.copy(m.quaternion); g.scale.copy(m.scale);
+  if(m.geometry.type==='CylinderGeometry'){ const r=m.geometry.parameters.radiusTop; const f=Math.min(6,Math.max(1.6,0.045/r)); g.scale.x*=f; g.scale.z*=f; }
+  else if(thin){ const bs=new THREE.Box3().setFromObject(m).getSize(new THREE.Vector3()); const mx=Math.max(bs.x,bs.y,bs.z); g.scale.multiplyScalar(mx<0.3?2.2:1.2); }
+  g.renderOrder=thin?8:1; g.castShadow=false; g.receiveShadow=false; m.parent.add(g); ghosts.push(g); });
+ const bb=new THREE.Box3(); p.meshes.forEach(m=>{ if(m.material.visible!==false){ m.updateWorldMatrix(true,false); bb.expandByObject(m);} });
+ const c=bb.getCenter(new THREE.Vector3()); boat.worldToLocal(c);
+ anchorLocal=ANCHOR[id]?V(...ANCHOR[id]):c;
+ if(p.view.y!=null) c.y=p.view.y;
+ drawLabel(p.name); label.visible=leader.visible=anchorDot.visible=anchorRing.visible=true; p._center=c; }
+function updateLabel(now){ if(!anchorLocal) return; const a=boat.localToWorld(anchorLocal.clone()); anchorDot.position.copy(a); anchorRing.position.copy(a); anchorRing.lookAt(camera.position);
+ const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion), right=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion);
+ const d=cam.dist; const ls=Math.max(1.0,d*0.15); label.scale.set(ls,ls*0.25,1);
+ // keep the label on screen: put it on whichever side of the anchor has more room
+ const ndc=a.clone().project(camera); const side=ndc.x>0.15?-1:1; const asp=camera.aspect; const rx=d*(asp<1?0.05:0.085), uy=d*(asp<1?0.09:0.11);
+ const lp=a.clone().addScaledVector(up,uy).addScaledVector(right,side*rx); label.position.copy(lp);
+ const foot=lp.clone().addScaledVector(up,-ls*0.12); const dir=new THREE.Vector3().subVectors(foot,a); const len=dir.length();
+ leader.position.copy(a).addScaledVector(dir,0.5); leader.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize()); const r=Math.max(0.006,d*0.0022); leader.scale.set(r,len,r);
+ const pulse=reduce?0.5:0.4+0.25*Math.sin(now/220); hlMats.forEach(m=>m.emissiveIntensity=pulse); glowMatX.opacity=0.45+0.3*(pulse-0.15); anchorRing.scale.setScalar(1+0.35*(pulse-0.15)); anchorDot.scale.setScalar(Math.max(0.6,d*0.1)); anchorRing.scale.multiplyScalar(Math.max(0.6,d*0.1)); }
+function select(id,fly){ // highlight + card + camera
+ selected=id; highlight(id); renderList();
+ if(id&&fly!==false){ const p=byId[id], v=p.view; const t=p._center.clone(); if(camera.aspect<1) t.y-=v.d*0.16; /* portrait: keep the part above the card */ setView({target:t,dist:v.d,theta:v.th,phi:v.ph}); cam.user=false; }
+ if(mode==='explore') renderCard(); }
+
+/* ───────────────────────── UI: list, card, modes ───────────────────────── */
+const listEl=document.getElementById('listScroll'), cardBody=document.getElementById('cardBody'), card=document.getElementById('card'), hint=document.getElementById('hint');
+document.getElementById('count').textContent=PARTS.length+' parts';
+let mode='explore'; const tourDone=new Set();
+function renderList(){ let h=''; for(const [gid,gname] of GROUPS){ h+=`<div class="grp">${gname}</div>`; PARTS.filter(p=>p.g===gid).forEach(p=>{ h+=`<button class="pbtn${tourDone.has(p.id)?' done':''}" data-id="${p.id}" aria-current="${selected===p.id}"><span class="n">${p.idx+1}</span><span>${p.name}</span></button>`; }); } listEl.innerHTML=h; }
+listEl.addEventListener('click',e=>{ const b=e.target.closest('.pbtn'); if(!b) return; const id=b.dataset.id; if(mode==='tour'){ tourStep=byId[id].idx; showTour(); } else if(mode==='quiz'){ onPick(id); } else select(id); if(innerWidth<900) listToggle(false); });
+const listBox=document.getElementById('list'), listBtn=document.getElementById('listToggle');
+function listToggle(open){ listBox.classList.toggle('open',open); listBtn.setAttribute('aria-pressed',open); }
+listBtn.addEventListener('click',()=>listToggle(!listBox.classList.contains('open')));
+card.querySelector('.grab').addEventListener('click',()=>card.classList.toggle('collapsed'));
+
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function partHTML(p,eyebrow){ return `<div class="eyebrow">${eyebrow}</div><h2>${esc(p.name)}<small>${esc(p.sub)}</small></h2><div class="lbl">What it is</div><p>${esc(p.what)}</p><div class="lbl">What it's for</div><p>${esc(p.use)}</p><div class="tip">${esc(p.tip)}</div>`; }
+function renderCard(){ if(!selected){ cardBody.innerHTML=`<div class="eyebrow">Explore</div><h2>Tap any part of the boat<small>or pick one from the list</small></h2><p>This is a 22-foot sloop-rigged keelboat, the kind most ASA 101 courses teach on: one mast, a mainsail and a jib, a fixed fin keel, and a tiller. Orbit around it, zoom in close, and tap anything to learn its name and job.</p><div class="row"><button class="btn primary" data-act="tour">Start the tour</button><button class="btn" data-act="quiz">Quiz me</button></div>`; return; }
+ const p=byId[selected]; const grp=GROUPS.find(g=>g[0]===p.g)[1]; cardBody.innerHTML=partHTML(p,grp)+`<div class="row"><button class="btn" data-act="prev">◀ Prev</button><button class="btn" data-act="next">Next ▶</button><span class="prog">${p.idx+1} / ${PARTS.length}</span></div>`; }
+cardBody.addEventListener('click',e=>{ const b=e.target.closest('[data-act],[data-opt]'); if(!b) return;
+ if(b.dataset.act==='tour') setMode('tour'); else if(b.dataset.act==='quiz') setMode('quiz');
+ else if(b.dataset.act==='prev'){ if(mode==='tour'){ tourStep=Math.max(0,tourStep-1); showTour(); } else select(PARTS[(byId[selected].idx+PARTS.length-1)%PARTS.length].id); }
+ else if(b.dataset.act==='next'){ if(mode==='tour'){ tourStep++; if(tourStep>=PARTS.length){ finishTour(); } else showTour(); } else select(PARTS[(byId[selected].idx+1)%PARTS.length].id); }
+ else if(b.dataset.act==='explore') setMode('explore');
+ else if(b.dataset.act==='restartQuiz') startQuiz();
+ else if(b.dataset.act==='nextQ') nextQuestion();
+ else if(b.dataset.opt!=null) answerMC(+b.dataset.opt); });
+document.querySelectorAll('.chip[data-mode]').forEach(c=>c.addEventListener('click',()=>setMode(c.dataset.mode)));
+function setMode(m){ mode=m; document.querySelectorAll('.chip[data-mode]').forEach(c=>c.setAttribute('aria-pressed',c.dataset.mode===m)); card.classList.remove('collapsed');
+ if(m==='explore'){ hint.textContent='Drag to orbit · scroll or pinch to zoom · tap any part of the boat'; renderCard(); }
+ else if(m==='tour'){ tourStep=0; showTour(); } else startQuiz(); }
+
+/* tour */
+let tourStep=0;
+function showTour(){ const p=PARTS[tourStep]; select(p.id); tourDone.add(p.id); renderList(); hint.textContent=`Tour · ${tourStep+1} of ${PARTS.length} · the camera flies to each part`;
+ cardBody.innerHTML=partHTML(p,`Tour · ${GROUPS.find(g=>g[0]===p.g)[1]}`)+`<div class="row"><button class="btn" data-act="prev" ${tourStep===0?'disabled':''}>◀ Back</button><button class="btn primary" data-act="next">${tourStep===PARTS.length-1?'Finish':'Next ▶'}</button><span class="prog">${tourStep+1} / ${PARTS.length}</span></div>`; }
+function finishTour(){ select(null,false); cardBody.innerHTML=`<div class="eyebrow">Tour complete</div><h2>You've walked the whole boat<small>${PARTS.length} parts, bow to masthead</small></h2><p>Standing rigging holds the mast up; running rigging is what you pull on. Halyards hoist, sheets trim. Port is red and left, starboard is green and right. Ready to check it?</p><div class="row"><button class="btn primary" data-act="quiz">Take the quiz</button><button class="btn" data-act="explore">Keep exploring</button></div>`; setView({target:V(0,2.2,0),dist:15,theta:2.3,phi:1.2}); }
+
+/* quiz */
+const MCQ=[
+ {q:'Which line do you haul on to raise the mainsail?',a:'halyards',opts:['Main halyard','Mainsheet','Boom vang','Topping lift']},
+ {q:'Which part keeps the boat from sliding sideways and resists heeling?',a:'keel',opts:['Keel','Rudder','Boom','Backstay']},
+ {q:'The wire from the masthead to the bow is the',a:'forestay',opts:['Forestay','Backstay','Upper shroud','Jib halyard']},
+ {q:'Which of these is running rigging?',a:'jibsheets',opts:['Jib sheets','Shrouds','Spreaders','Forestay']},
+ {q:'Which part holds the boom down when sailing off the wind?',a:'vang',opts:['Boom vang','Topping lift','Outhaul','Traveler']},
+ {q:'Telltales streaming aft on both sides of the jib mean',a:'telltales',opts:['The sail is trimmed correctly','You should sheet in','You should bear away','The jib is backed']},
+ {q:'Push the tiller toward the sail and the bow',a:'tiller',opts:['Turns up toward the wind','Turns away from the wind','Stops turning','Backs up']},
+ {q:'The aft lower corner of a sail is the',a:'mainsail',opts:['Clew','Tack','Head','Leech']},
+ {q:'Which part lets you move the boom sideways without changing sheet tension?',a:'traveler',opts:['Traveler','Boom vang','Outhaul','Cunningham']},
+ {q:'The struts that push the upper shrouds outward are the',a:'spreaders',opts:['Spreaders','Chainplates','Stanchions','Gooseneck']},
+ {q:'The flat vertical surface at the back of the hull is the',a:'stern',opts:['Transom','Stem','Coaming','Sheer']},
+ {q:'A line is wrapped around a winch drum',a:'winches',opts:['Clockwise','Counter-clockwise','Either way','Twice, then reversed']},
+];
+const FINDQ=['keel','rudder','tiller','boom','spreaders','shrouds','forestay','backstay','winches','jib','mainsail','battens','telltales','traveler','vang','halyards','mainsheet','cleats','lifelines','cabin'];
+let quiz=null;
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function startQuiz(){ const finds=shuffle([...FINDQ]).slice(0,5).map(id=>({type:'find',a:id})); const mcs=shuffle([...MCQ]).slice(0,5).map(m=>({type:'mc',...m})); quiz={qs:shuffle([...finds,...mcs]),i:0,score:0,answered:false}; select(null,false); setView({target:V(0,2.5,0),dist:14,theta:0.9,phi:1.15}); showQuestion(); }
+function showQuestion(){ const q=quiz.qs[quiz.i]; quiz.answered=false; const head=`<div class="eyebrow">Quiz · question ${quiz.i+1} of ${quiz.qs.length} · score ${quiz.score}</div>`;
+ if(q.type==='find'){ const p=byId[q.a]; hint.textContent='Quiz: tap the part on the boat (or pick it from the list)'; cardBody.innerHTML=head+`<h2>Tap the ${esc(p.name.toLowerCase())}<small>find it on the boat</small></h2><p>${esc(p.use.split('. ')[0])}.</p><div id="feed"></div>`; }
+ else { hint.textContent='Quiz: choose an answer'; const correct=q.opts[0]; const opts=shuffle(q.opts.map((o,i)=>({o,ok:i===0}))); q._opts=opts; cardBody.innerHTML=head+`<h2>${esc(q.q)}</h2><div class="opts">${opts.map((o,i)=>`<button class="opt" data-opt="${i}">${esc(o.o)}</button>`).join('')}</div><div id="feed"></div>`; } }
+function answerMC(i){ if(quiz.answered) return; quiz.answered=true; const q=quiz.qs[quiz.i]; const ok=q._opts[i].ok; if(ok) quiz.score++; document.querySelectorAll('.opt').forEach((b,j)=>{ if(q._opts[j].ok) b.classList.add('ok'); else if(j===i) b.classList.add('no'); });
+ select(q.a,true); feedback(ok, ok?'Correct.':'Not quite. The answer is highlighted on the boat.'); }
+function onPick(id){ if(mode!=='quiz'){ select(id); return; } const q=quiz.qs[quiz.i]; if(q.type!=='find'||quiz.answered) return; quiz.answered=true; const ok=id===q.a; if(ok) quiz.score++; select(q.a,true);
+ feedback(ok, ok?`Correct, that's the ${byId[q.a].name.toLowerCase()}.`:`That was the ${byId[id].name.toLowerCase()}. The ${byId[q.a].name.toLowerCase()} is highlighted now.`); }
+function feedback(ok,text){ const f=document.getElementById('feed'); if(!f) return; f.innerHTML=`<p class="feed ${ok?'ok':'no'}">${esc(text)}</p><div class="row"><button class="btn primary" data-act="nextQ">${quiz.i===quiz.qs.length-1?'See score':'Next question ▶'}</button></div>`; }
+function nextQuestion(){ quiz.i++; if(quiz.i>=quiz.qs.length){ const s=quiz.score,n=quiz.qs.length; select(null,false); cardBody.innerHTML=`<div class="eyebrow">Quiz result</div><div class="score">${s} / ${n}</div><p>${s===n?'Perfect. You know this boat.':s>=n*0.7?'Solid. Review the ones you missed in the tour and go again.':'Take the tour once more, then try again. Repetition is what makes the names stick.'}</p><div class="row"><button class="btn primary" data-act="restartQuiz">Another round</button><button class="btn" data-act="tour">Take the tour</button><button class="btn" data-act="explore">Explore</button></div>`; return; } select(null,false); showQuestion(); }
+
+/* sails toggle, quality toggle */
+const sailsBtn=document.getElementById('sailsBtn'); sailsBtn.addEventListener('click',()=>{ sailsGroup.visible=!sailsGroup.visible; sailsBtn.setAttribute('aria-pressed',sailsGroup.visible); });
+const qualBtn=document.getElementById('qualBtn');
+function applyQuality(){ renderer.setPixelRatio(quality?Math.min(devicePixelRatio,2):Math.min(devicePixelRatio,1.25)); renderer.shadowMap.enabled=quality; sun.castShadow=quality; sun.shadow.mapSize.set(quality?2048:1024,quality?2048:1024); if(sun.shadow.map){sun.shadow.map.dispose(); sun.shadow.map=null;} buildWater(); qualBtn.textContent=quality?'HQ':'LQ'; qualBtn.setAttribute('aria-pressed',quality); qualBtn.title='Graphics quality: '+(quality?'high':'low (faster)'); scene.traverse(o=>{ if(o.material) o.material.needsUpdate=true; }); }
+qualBtn.addEventListener('click',()=>{ quality=!quality; applyQuality(); try{localStorage.setItem('kpe-q',quality?'1':'0');}catch(e){} });
+try{ const q=localStorage.getItem('kpe-q'); if(q!=null) quality=q==='1'; }catch(e){}
+applyQuality();
+
+/* resize, loop */
+function resize(){ const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); camera.fov=w<h?52:42; camera.updateProjectionMatrix(); }
+addEventListener('resize',resize); resize();
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let t0=performance.now();
+function loop(now){ requestAnimationFrame(loop); const dt=Math.min(0.05,(now-t0)/1000); t0=now;
+ const k=1-Math.pow(0.0025,dt); cam.target.lerp(cam.tgt.target,k); cam.dist+=(cam.tgt.dist-cam.dist)*k; cam.theta+=(cam.tgt.theta-cam.theta)*k; cam.phi+=(cam.tgt.phi-cam.phi)*k;
+ if(!reduce){ waterUniforms.t.value=now/1000; const r=now/1000; boat.rotation.z=Math.sin(r*0.7)*0.012; boat.rotation.x=Math.sin(r*0.45)*0.006; boat.position.y=Math.sin(r*0.6)*0.03; }
+ applyCam(); updateLabel(now); renderer.render(scene,camera); }
+setView({target:V(0,2.2,0),dist:16,theta:0.75,phi:1.2},true); setView({target:V(0,2.2,0),dist:13,theta:0.95,phi:1.18});
+renderList(); renderCard();
+requestAnimationFrame(loop);
+})();
+</script>
+
+</body></html>
