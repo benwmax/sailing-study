@@ -154,7 +154,11 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
 body.compact #portBtn small, body.compact #stbdBtn small { display: block; }
 body.compact .row > label:not(.toggle), body.compact .cams .eyebrow { display: none; }
 body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
-</style>
+
+    /* touch devices: no text selection or long-press callout anywhere in the sim, only in typed fields */
+    body.touch, body.touch * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+    body.touch input, body.touch textarea, body.touch [contenteditable] { -webkit-user-select: text; user-select: text; }
+  </style>
 
 <div id="app">
   <canvas id="view" aria-label="3D view of a sailboat. Drag to orbit the camera."></canvas>
@@ -802,4 +806,7 @@ body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
   requestAnimationFrame(frame);
   if (document.fonts) document.fonts.ready.then(() => { lastRoseKey = ''; syncUI(); });
 })();
+
+  // mobile: long-pressing a readout or pad must not open the selection or context menu
+  if (matchMedia('(pointer: coarse)').matches) { document.body.classList.add('touch'); document.addEventListener('contextmenu', e => { if (!e.target.closest('input, textarea, a')) e.preventDefault(); }); document.addEventListener('selectstart', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); }); }
 </script>

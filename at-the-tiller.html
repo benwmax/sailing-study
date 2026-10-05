@@ -160,7 +160,11 @@ body.compact.roomy .tape { width: min(420px, 40vw); } body.compact.roomy .tape c
 body.compact.roomy .read { max-width: 30vw; padding: 10px 14px; } body.compact.roomy .pos { font-size: 1.5rem; } body.compact.roomy .note.teach { display: block; font-size: .78rem; }
 body.compact.roomy .gauge b { font-size: 1.3rem; } body.compact.roomy .gauges { padding: 8px 18px; gap: 18px; }
 body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
-</style>
+
+    /* touch devices: no text selection or long-press callout anywhere in the sim, only in typed fields */
+    body.touch, body.touch * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+    body.touch input, body.touch textarea, body.touch [contenteditable] { -webkit-user-select: text; user-select: text; }
+  </style>
 
 <div id="app">
   <canvas id="view" aria-label="First-person view from the cockpit of a sailboat. Drag to look around."></canvas>
@@ -1525,4 +1529,7 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
   requestAnimationFrame(frame);
   if (document.fonts) document.fonts.ready.then(() => { roseKey = ''; });
 })();
+
+  // mobile: long-pressing a readout or pad must not open the selection or context menu
+  if (matchMedia('(pointer: coarse)').matches) { document.body.classList.add('touch'); document.addEventListener('contextmenu', e => { if (!e.target.closest('input, textarea, a')) e.preventDefault(); }); document.addEventListener('selectstart', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); }); }
 </script>
