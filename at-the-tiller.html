@@ -148,7 +148,9 @@ body.compact .gauges { position: absolute; bottom: calc(14px + env(safe-area-ins
 body.compact .gauge b { font-size: 1.1rem; }
 body.compact .gauge span { font-size: .56rem; }
 body.compact .menuBtn { display: inline-flex; position: absolute; z-index: 3; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(102px + env(safe-area-inset-bottom, 0px)); }
-body.compact .more, body.compact .right { position: absolute; z-index: 4; right: calc(14px + env(safe-area-inset-right, 0px)); bottom: calc(154px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 8px; justify-items: start; background: var(--panel-solid); border: 1px solid var(--line); border-radius: 12px; padding: 10px; max-width: min(440px, 72vw); max-height: calc(100% - 170px - env(safe-area-inset-bottom, 0px)); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; gap: 6px; }
+body.compact .more, body.compact .right { position: absolute; z-index: 6; right: calc(10px + env(safe-area-inset-right, 0px)); top: calc(8px + env(safe-area-inset-top, 0px)); bottom: calc(8px + env(safe-area-inset-bottom, 0px)); display: grid; align-content: start; gap: 10px; justify-items: start; background: var(--panel-solid); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; width: min(620px, 80vw); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; box-shadow: 0 10px 40px rgba(0,0,0,.45); }
+body.compact .more .closeRow, body.compact .right .closeRow { display: flex; justify-content: space-between; align-items: center; width: 100%; font: 700 .85rem var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.closeRow { display: none; }
 body.compact .more .btn, body.compact .right .btn { min-height: 40px; padding: 7px 11px; font-size: .8rem; }
 body.compact .more .row, body.compact .right .row { gap: 6px; }
 body.compact input[type=range] { width: 110px; }
@@ -211,6 +213,7 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
         <div class="say" id="say">Drag the tiller. Push it away from the side you want the bow to go. To head up, push it toward the sail.</div>
       </div>
       <div class="right" id="rightPanel">
+        <div class="closeRow"><span>Options</span><button class="btn" id="closeMenu" aria-label="Close options">✕ Close</button></div>
         <div class="row">
           <span id="bjHome" hidden></span><button class="btn jib" id="backJib" hidden>Back the jib</button>
           <label class="toggle" for="autotrim"><input type="checkbox" id="autotrim" checked> Auto trim</label>
@@ -1340,6 +1343,7 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
   });
   $('menuBtn').addEventListener('click', () => { const open = $('rightPanel').classList.toggle('open'); $('menuBtn').setAttribute('aria-expanded', String(open)); });
   canvas.addEventListener('pointerdown', () => { $('rightPanel').classList.remove('open'); $('menuBtn').setAttribute('aria-expanded', 'false'); });
+  $('closeMenu').addEventListener('click', () => { $('rightPanel').classList.remove('open'); $('menuBtn').setAttribute('aria-expanded', 'false'); });
   document.querySelector('.read').addEventListener('click', () => { if (document.body.classList.contains('compact')) document.querySelector('.read').classList.toggle('open'); });
   const fs = $('fsBtn');
   if (!$('app').requestFullscreen) fs.hidden = true;
