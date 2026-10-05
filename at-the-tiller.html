@@ -183,6 +183,28 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
   body.compact #trimBar input[type=range] { width: 96px; }
 }
 
+/* tack and jibe messages: a toast at the top centre on phones, so the readout stays short and clear of the trim bar */
+body.compact #eventBox { position: absolute; z-index: 4; top: calc(56px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); width: min(440px, 46vw); background: var(--panel-solid); border: 1px solid var(--line); border-left: 3px solid var(--signal); border-radius: 10px; padding: 6px 10px; font-size: .72rem; line-height: 1.35; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+body.compact.roomy #eventBox { top: calc(66px + env(safe-area-inset-top, 0px)); font-size: .8rem; }
+.evShort { display: none; }
+body.compact #eventBox { pointer-events: none; } /* a message never blocks a tap */
+body.compact .read.open { z-index: 5; } /* a tapped-open readout sits above the trim bar until tapped again */
+
+/* short landscape (browser bar showing, about 330 px tall or less): smaller dial and pads, tighter challenge card */
+@media (max-height: 340px) {
+  body.compact .windbox .val { display: none; }
+  body.compact .challenge { top: 100px; width: 200px; padding: 5px 8px; gap: 3px; }
+  body.compact .challenge .target { font-size: .88rem; } body.compact .challenge .btn { min-height: 28px; padding: 2px 7px; font-size: .66rem; } body.compact .challenge .score { font-size: .64rem; gap: 6px; } body.compact .challenge .progress { height: 4px; }
+  body.compact .steerpad { height: 60px; }
+  body.compact .menuBtn { bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
+  body.compact #trimBar { bottom: calc(138px + env(safe-area-inset-bottom, 0px)); }
+}
+/* narrow landscape: the tack/jibe toast moves to the bottom centre, above the gauges, where nothing else lives */
+@media (max-width: 700px) {
+  body.compact #eventBox, body.compact.roomy #eventBox { top: auto; bottom: calc(82px + env(safe-area-inset-bottom, 0px)); left: 226px; right: 110px; width: auto; transform: none; font-size: .68rem; line-height: 1.25; padding: 4px 8px; }
+  body.compact .evShort { display: inline; } body.compact .evLong { display: none; } /* a shorter wording fits the small toast */
+}
+
     /* touch devices: no text selection or long-press callout anywhere in the sim, only in typed fields */
     body.touch, body.touch * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
     body.touch input, body.touch textarea, body.touch [contenteditable] { -webkit-user-select: text; user-select: text; }
@@ -204,7 +226,7 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
       <div class="chips" id="chips"></div>
       <p class="note teach" id="teach"></p>
       <p class="note dim" id="trimNote"></p>
-      <div id="eventBox" class="event" hidden></div>
+      <span id="eventHome" hidden></span><div id="eventBox" class="event" hidden></div>
     </div>
   </div>
 
@@ -353,7 +375,11 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
       tack: '<b>Tacked.</b> The bow went through the wind and the boom came across. Move to the new windward side. "Ready about." "Ready." "Helm\'s a-lee" (or "Hard a-lee").',
       jibe: '<b>Jibed.</b> The stern went through the wind and the boom swung over. Center the mainsheet before a jibe and ease it after. "Prepare to jibe." "Ready." "Jibe ho."'
     };
-    const box = $('eventBox'); box.innerHTML = msgs[kind]; box.hidden = false;
+    const short = {
+      tack: '<b>Tacked.</b> Bow through the wind, boom across. "Ready about." "Helm\'s a-lee."',
+      jibe: '<b>Jibed.</b> Stern through the wind, boom swung over. Center the sheet first, ease after.'
+    };
+    const box = $('eventBox'); box.innerHTML = `<span class="evLong">${msgs[kind]}</span><span class="evShort">${short[kind]}</span>`; box.hidden = false;
     clearTimeout(flash.t); flash.t = setTimeout(() => { box.hidden = true; }, 6000);
   }
 
@@ -1366,6 +1392,8 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
     const portrait = touch && !landscape && innerWidth < 900, wasPortrait = document.body.classList.contains('portrait');
     document.body.classList.toggle('portrait', portrait);
     if (portrait && !wasPortrait) { const r = document.querySelector('.rotate'); r.classList.add('show'); clearTimeout(r._t); r._t = setTimeout(() => r.classList.remove('show'), 5000); }
+    const eb = $('eventBox');
+    if (compact && eb.parentNode !== $('app')) $('app').appendChild(eb); else if (!compact && eb.parentNode === $('app')) $('eventHome').after(eb);
     const tb = $('trimBar'), bj = $('backJib');
     if (compact && tb.parentNode !== $('app')) $('app').appendChild(tb); else if (!compact && tb.parentNode === $('app')) $('trimHome').after(tb);
     if (compact && bj.parentNode !== $('app')) $('app').appendChild(bj); else if (!compact && bj.parentNode === $('app')) $('bjHome').after(bj);
