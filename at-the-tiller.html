@@ -175,6 +175,14 @@ body.compact #trimBar .btn { min-height: 40px; padding: 7px 10px; font-size: .78
 body.compact #trimBar input[type=range] { width: 120px; height: 28px; }
 body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 
+/* very small landscape phones (640 px wide and under): tighter corners so pads, gauges, tape and readout do not touch */
+@media (max-width: 700px) {
+  body.compact .steerpad { width: 128px; height: 64px; font-size: .78rem; }
+  body.compact .gauges { padding: 5px 9px; gap: 9px; } body.compact .gauge b { font-size: .95rem; } body.compact .gauge span { font-size: .5rem; }
+  body.compact .tape { width: 30vw; } body.compact .read { max-width: 32vw; } body.compact .pos { font-size: 1rem; }
+  body.compact #trimBar input[type=range] { width: 96px; }
+}
+
     /* touch devices: no text selection or long-press callout anywhere in the sim, only in typed fields */
     body.touch, body.touch * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
     body.touch input, body.touch textarea, body.touch [contenteditable] { -webkit-user-select: text; user-select: text; }
