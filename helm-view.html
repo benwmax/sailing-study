@@ -808,5 +808,14 @@ body.compact #portBtn, body.compact #stbdBtn { width: 196px; }
 })();
 
   // mobile: long-pressing a readout or pad must not open the selection or context menu
-  if (matchMedia('(pointer: coarse)').matches) { document.body.classList.add('touch'); document.addEventListener('contextmenu', e => { if (!e.target.closest('input, textarea, a')) e.preventDefault(); }); document.addEventListener('selectstart', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); }); }
+  if (matchMedia('(pointer: coarse)').matches) {
+    document.body.classList.add('touch');
+    document.addEventListener('contextmenu', e => { if (!e.target.closest('input, textarea, a')) e.preventDefault(); });
+    document.addEventListener('selectstart', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); });
+    // hold-to-act controls: swallow the touch itself so iOS never starts a long-press selection or callout on them
+    document.querySelectorAll('button, .steerpad, .track, label.toggle').forEach(el => {
+      el.addEventListener('touchstart', e => { if (el.tagName === 'BUTTON' && !el.matches('#backJib, #padPort, #padStbd, #portBtn, #stbdBtn, [data-hold]')) return; e.preventDefault(); }, { passive: false });
+      el.addEventListener('contextmenu', e => e.preventDefault());
+    });
+  }
 </script>
