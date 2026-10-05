@@ -493,7 +493,7 @@ function highlight(id){
   if(m.geometry.type==='CylinderGeometry'){ const r=m.geometry.parameters.radiusTop; const f=Math.min(6,Math.max(1.6,0.045/r)); g.scale.x*=f; g.scale.z*=f; }
   else if(thin){ const bs=new THREE.Box3().setFromObject(m).getSize(new THREE.Vector3()); const mx=Math.max(bs.x,bs.y,bs.z); g.scale.multiplyScalar(mx<0.3?2.2:1.2); }
   g.renderOrder=thin?8:1; g.castShadow=false; g.receiveShadow=false; m.parent.add(g); ghosts.push(g); });
- const bb=new THREE.Box3(); p.meshes.forEach(m=>{ if(m.material.visible!==false){ m.updateWorldMatrix(true,false); bb.expandByObject(m);} });
+ const bb=new THREE.Box3(); p.meshes.forEach(m=>{ m.updateWorldMatrix(true,false); bb.expandByObject(m); }); p._radius=bb.getSize(new THREE.Vector3()).length()/2;
  const c=bb.getCenter(new THREE.Vector3()); boat.worldToLocal(c);
  anchorLocal=ANCHOR[id]?V(...ANCHOR[id]):c;
  if(p.view.y!=null) c.y=p.view.y;
@@ -509,7 +509,12 @@ function updateLabel(now){ if(!anchorLocal) return; const a=boat.localToWorld(an
  const pulse=reduce?0.5:0.4+0.25*Math.sin(now/220); hlMats.forEach(m=>m.emissiveIntensity=pulse); glowMatX.opacity=0.45+0.3*(pulse-0.15); anchorRing.scale.setScalar(1+0.35*(pulse-0.15)); anchorDot.scale.setScalar(Math.max(0.6,d*0.1)); anchorRing.scale.multiplyScalar(Math.max(0.6,d*0.1)); }
 function select(id,fly){ // highlight + card + camera
  selected=id; highlight(id); renderList();
- if(id&&fly!==false){ const p=byId[id], v=p.view; const t=p._center.clone(); if(camera.aspect<1) t.y-=v.d*0.16; /* portrait: keep the part above the card */ setView({target:t,dist:v.d,theta:v.th,phi:v.ph}); cam.user=false; }
+ if(id&&fly!==false){ const p=byId[id], v=p.view; const t=p._center.clone();
+  // distance that fits the whole part in the narrower screen axis, with room for the label; never closer than that
+  const vf=THREE.MathUtils.degToRad(camera.fov)/2, hf=Math.atan(Math.tan(vf)*camera.aspect); const half=Math.min(vf,hf);
+  const fit=(p._radius*1.35+0.4)/Math.sin(half); const d=clamp(Math.max(v.d*(camera.aspect<1?1.15:1),fit),3,40);
+  if(camera.aspect<1) t.y-=d*0.16; /* portrait: keep the part above the card */
+  setView({target:t,dist:d,theta:v.th,phi:v.ph}); cam.user=false; }
  if(mode==='explore') renderCard(); }
 
 /* ───────────────────────── UI: list, card, modes ───────────────────────── */
