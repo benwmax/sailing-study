@@ -1377,7 +1377,7 @@ body.compact #backJib { position: absolute; z-index: 3; left: 50%; transform: tr
   $('closeMenu').addEventListener('click', () => { $('rightPanel').classList.remove('open'); $('menuBtn').setAttribute('aria-expanded', 'false'); });
   document.querySelector('.read').addEventListener('click', () => { if (document.body.classList.contains('compact')) document.querySelector('.read').classList.toggle('open'); });
   const fs = $('fsBtn');
-  if (!$('app').requestFullscreen) fs.hidden = true;
+  if (!$('app').requestFullscreen) { fs.hidden = true; fs.closest('.screenRow').hidden = true; } // iPhone Safari has no page full screen, so the whole Screen row goes
   fs.addEventListener('click', () => {
     if (document.fullscreenElement) { document.exitFullscreen(); return; }
     $('app').requestFullscreen().then(() => { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); }).catch(() => {});
