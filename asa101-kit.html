@@ -147,6 +147,31 @@ select{font:15px var(--f-body);padding:8px 10px;border-radius:6px;border:1px sol
 .pf.pass{background:var(--stbd-soft);color:var(--stbd)}.pf.fail{background:var(--port-soft);color:var(--port)}
 .warnbox{background:var(--warn-soft);border-radius:8px;padding:12px 14px;margin-top:14px}
 
+.exset{margin:16px 0 14px}
+.exnotes{margin-top:18px}
+.exnotes li{margin:4px 0}
+.exh3{font-size:22px;margin:22px 0 8px}
+.clock{font-size:15px}
+.clock.low{color:var(--port);font-weight:700}
+.weak{background:var(--paper);border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:8px;padding:2px 16px 16px;margin-top:22px}
+.weak .exh3{margin-top:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip.again{background:var(--warn-soft);color:var(--warn)}
+.topics{display:flex;flex-direction:column;gap:9px}
+.trow{display:grid;grid-template-columns:minmax(0,200px) minmax(60px,1fr) 48px 44px;gap:10px;align-items:center;font-size:15px}
+.tbar{position:relative;height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.tbar i{display:block;height:100%}
+.tbar em{position:absolute;left:80%;top:0;bottom:0;width:2px;background:var(--ink);opacity:.5}
+.mtopic{background:var(--paper);border:1px solid var(--line);border-radius:10px;margin-top:10px;max-width:720px}
+.mtopic summary{cursor:pointer;padding:14px 16px;font:700 20px/1.2 var(--f-display);letter-spacing:.02em}
+.mtopic summary .meta{margin-left:8px;letter-spacing:0}
+.mitem{border-top:1px solid var(--line);padding:12px 16px;font-size:15px}
+.mitem .qfig svg{max-width:300px}
+.ans{display:flex;flex-direction:column;gap:2px;margin:6px 0}
+.ans .no{color:var(--port)}.ans .yes{color:var(--stbd);font-weight:700}
+.glink{border-top:1px solid var(--line);padding:10px 16px;font-size:15px}
+@media (max-width:560px){.trow{grid-template-columns:minmax(0,1fr) 48px 44px;row-gap:4px}.trow .tbar{grid-column:1/-1;grid-row:2}}
+
 @media (max-width:760px){
   .guide{grid-template-columns:minmax(0,1fr)}
   .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--tabh,50px));z-index:4;background:var(--bg);flex-direction:row;flex-wrap:nowrap;gap:8px;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding:10px 16px;border-bottom:1px solid var(--line);-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
@@ -166,7 +191,7 @@ select{font:15px var(--f-body);padding:8px 10px;border-radius:6px;border:1px sol
 <header class="top"><div class="wrap">
   <div class="eyebrow">Basic Keelboat Sailing · Written exam prep</div>
   <h1>ASA 101 Study Kit</h1>
-  <p class="lede">Read the guide, drill the vocabulary with flashcards, then take practice quizzes until you're scoring well above passing. These are practice questions written to the ASA 101 topics, not the official exam.</p>
+  <p class="lede">Read the guide, drill the vocabulary with flashcards, then take practice quizzes and the timed mock exam until you're scoring well above passing. These are practice questions written to the ASA 101 topics, not the official exam.</p>
 </div></header>
 
 <nav class="tabs" aria-label="Sections"><div class="wrap" role="tablist">
@@ -755,6 +780,109 @@ const Q = [
  ["dock","A crew member should fend off the dock by:",["Putting a foot between boat and dock","Using fenders, not hands or feet between hull and dock","Jumping to the dock early","Grabbing the dock with both hands"],1,"Never put a body part between the boat and a dock."],
 ];
 
+/* Lake Ray Hubbard drill questions (written for the J/22 drills) and lake-specific questions; same layout as Q */
+Q.push(
+ ["weather", "Before leaving Rush Creek on a July afternoon, which check matters most for the next few hours?", ["The tide table", "The water temperature", "The moon phase", "The radar and forecast for thunderstorms"], 3, "Summer storms build fast over North Texas in the afternoon; Ray Hubbard has no tides."],
+ ["sail", "Tied up with the bow pointing into the wind, which sail do you usually hoist first?", ["The jib", "Neither until you are clear of the marina", "Both together", "The mainsail"], 3, "Head to wind, the main luffs harmlessly along the centerline; the jib adds power you do not need yet."],
+ ["trim", "While you hoist the mainsail, the mainsheet should be:", ["Removed from the boom", "Trimmed in hard", "Cleated amidships", "Eased so the sail can luff freely"], 3, "A loose sheet lets the sail luff head to wind instead of filling and pushing the boat around."],
+ ["dock", "The wind is pinning your boat against the dock. What is the safer plan?", ["Trim both sails in tight before casting off", "Hoist the jib and push off hard", "Cast off all lines and wait for the boat to drift clear", "Walk the boat to a spot where it can point into the wind, or use the motor"], 3, "Sailing off a leeward dock is very hard; move the boat or use the engine instead."],
+ ["sail", "Why do you want a little speed soon after leaving the dock?", ["It keeps the boat from heeling", "Speed keeps the sails from luffing", "The keel only works above 3 knots", "The rudder only steers with water flowing past it"], 3, "With no flow over the rudder the boat will not turn where you push the tiller."],
+ ["dock", "When should the fenders come aboard after leaving the dock?", ["Once you are clear of the dock and other boats", "Only when you return", "As soon as the main is up", "Before you cast off"], 0, "They protect the hull while you leave; after that they just drag and look sloppy."],
+ ["dock", "Once you are clear of the marina, the dock lines should be:", ["Tied to the lifelines", "Left trailing to slow the boat", "Left on the cockpit floor", "Coiled and stowed so nothing trails over the side"], 3, "A trailing line can foul the rudder or outboard, and loose lines underfoot trip the crew."],
+ ["nav", "Ray Hubbard has no tides. What mostly changes the depth near the docks?", ["The moon", "Wind direction alone", "The lake level, which rises after rain and falls in drought", "The time of day"], 2, "Reservoir levels move with rainfall, drought and water use, so check the lake level before you go."],
+ ["safety", "Many inflatable life jackets count toward the Coast Guard requirement only when they are:", ["Bright yellow", "Stored in a bag aboard", "Inflated before you leave", "Worn"], 3, "Check the label: many inflatables count only when worn, and all need their gas cylinder armed and serviced."],
+ ["sail", "Which tells you the wind direction at the dock most reliably?", ["The direction the boat in the next slip is facing", "The direction of the waves from passing powerboats", "Flags, ripples on the water and the masthead fly together", "The forecast from yesterday"], 2, "Use several signs; wakes and moored boats can mislead you."],
+ ["safety", "Before casting off, the skipper should brief the crew on:", ["Nothing: crew learn by doing", "Who handles which line and where to sit", "The race results", "Only where the snacks are"], 1, "A short briefing turns a scramble into a calm departure."],
+ ["sail", "The windward mark is straight upwind. How do you get there?", ["Motor; you cannot sail upwind", "Sail a zigzag of close-hauled legs, tacking between them", "Sail straight at it with the sails tight", "Jibe back and forth"], 1, "A sailboat cannot sail into the no-go zone, so it beats upwind in a series of tacks."],
+ ["trim", "Close-hauled, both jib telltales are streaming and you want to point higher. You should:", ["Head up until the windward telltale starts to lift, then bear away a touch", "Bear away 20 degrees", "Trim the jib until both telltales droop", "Ease the jib"], 0, "The windward telltale lifting is the sign you have reached the edge of the no-go zone."],
+ ["sail", "To head up, you push the tiller toward:", ["The windward side", "Whichever side is closer", "The sails (the leeward side)", "The bow"], 2, "Tiller toward the sail turns the bow toward the wind."],
+ ["sail", "From close-hauled you bear away to a beam reach with the sails eased correctly. The boat usually:", ["Heels more and slows", "Stops", "Goes into irons", "Heels less and speeds up"], 3, "Off the wind the sail force points more forward, so the boat stands up and accelerates."],
+ ["sail", "For most keelboats without a spinnaker, the fastest point of sail is about:", ["Close-hauled", "A dead run", "A beam reach", "In irons"], 2, "On a beam reach the sails drive well and the apparent wind stays strong."],
+ ["sail", "To avoid stopping in irons during a tack, you should:", ["Have good speed first and turn steadily through the wind", "Tack from a broad reach", "Release the mainsheet completely", "Turn very slowly"], 0, "Momentum carries the bow through head to wind; a slow turn loses it."],
+ ["sail", "What does the helmsman's call \"Helm's a-lee\" tell the crew?", ["There is a boat to leeward", "The tiller is over and the boat is turning through the wind", "Drop the jib", "The boat is about to jibe"], 1, "It is the moment the turn starts; the crew release the old jib sheet as the jib luffs."],
+ ["trim", "Feathering means:", ["Letting the boom swing freely", "Easing the jib all the way", "Adding a reef", "Steering slightly closer to the wind in a puff so the sails luff a little and the boat heels less"], 3, "It is a quick way to depower upwind without touching the sheets."],
+ ["trim", "Telltales on the leech of the mainsail help you set the:", ["Mainsheet", "Topping lift", "Jib sheet", "Halyard"], 0, "If the leech telltales curl behind the sail, the main is over-trimmed: ease the mainsheet."],
+ ["sail", "At the wing mark you turn from one reach to the other with the wind passing behind the boat. That maneuver is a:", ["Jibe", "Tack", "Luff", "Heave-to"], 0, "When the stern turns through the wind it is a jibe."],
+ ["sail", "The call that starts the turn in a jibe is:", ["Cast off", "Helm's a-lee", "Jibe-ho", "Ready about"], 2, "\"Prepare to jibe\", \"Ready\", then \"Jibe-ho\" as the helm turns."],
+ ["trim", "At the wing mark you head up from a broad reach to a close reach. The sheets should be:", ["Eased", "Released", "Trimmed in", "Left alone"], 2, "The closer you sail to the wind, the more the sails need to be trimmed in."],
+ ["nav", "A south wind on Lake Ray Hubbard means the windward mark is laid:", ["West of the start", "South of the start", "East of the start", "North of the start"], 1, "Winds are named for where they come from, and the windward mark goes upwind."],
+ ["sail", "The no-go zone for a boat like the J/22 is roughly:", ["Anywhere downwind", "Only directly into the wind", "Within 10 degrees of the wind", "Within about 45 degrees either side of the wind"], 3, "Closer than about 45 degrees, the sails cannot fill and the boat stops."],
+ ["trim", "On a run with the wind directly behind, the mainsail should be:", ["Lowered", "Backed", "Eased nearly at right angles to the boat", "Trimmed to the centerline"], 2, "Downwind the sail works by blocking the wind, so it goes all the way out."],
+ ["sail", "Wing-on-wing means:", ["Main on one side and jib on the other, running downwind", "Both sails on the same side", "Two boats sailing side by side", "Reefing both sails"], 0, "Holding the jib out on the opposite side catches more wind on a run."],
+ ["sail", "When a boat is hove to, the jib is:", ["Backed, held on the windward side", "Trimmed normally on the leeward side", "Lowered", "Luffing freely"], 0, "The backed jib pushes the bow away from the wind."],
+ ["sail", "When hove to, the tiller is held or lashed:", ["To windward", "To leeward", "Amidships", "Free to swing"], 1, "With the tiller to leeward the rudder tries to turn the bow up, balancing the backed jib."],
+ ["trim", "When hove to, the mainsail is:", ["Backed", "Eased so it mostly luffs", "Lowered completely", "Trimmed in hard"], 1, "It only needs a little drive to balance the jib."],
+ ["sail", "The simplest way to back the jib to heave to is:", ["Tack without releasing the jib sheet", "Jibe and cleat the jib", "Lower the jib and raise it on the other side", "Ease the jib all the way out"], 0, "The jib stays on the old side and fills backward once the bow is through."],
+ ["sail", "A boat that is properly hove to:", ["Sails at full speed", "Spins in circles", "Creeps forward slowly and drifts to leeward", "Sits completely still"], 2, "Expect about a knot of slow forward and sideways drift."],
+ ["safety", "Which is a good reason to heave to?", ["To tie in a reef as a storm approaches", "To go faster downwind", "To dock", "To pass a boat ahead"], 0, "Heaving to stops the boat so you can reef, rest, eat or sort out a problem."],
+ ["nav", "Before heaving to, check that you have open water:", ["Astern only", "Ahead only", "To windward", "To leeward"], 3, "You drift downwind while hove to, so you need room to leeward."],
+ ["sail", "Why does a boat stay put when hove to?", ["The backed jib and the rudder push the bow in opposite directions and balance", "The anchor is set", "The keel locks it in place", "The mainsail is acting as a brake"], 0, "The forces cancel, leaving a slow drift."],
+ ["sail", "To get going again from hove to, you:", ["Release the backed jib, trim it on the leeward side and straighten the tiller", "Push the tiller further to leeward", "Tack again", "Lower the main"], 0, "Free the jib to the leeward side and steer off; the boat sails away."],
+ ["safety", "In the figure-eight recovery, after the shout and the flotation, you sail away on a:", ["Broad reach", "Run", "Close-hauled course", "Beam reach"], 3, "A beam reach is easy to sail and easy to reverse."],
+ ["safety", "About how far do you sail away before turning back in a figure-eight?", ["Half a mile", "Until you lose sight of them", "A few boat lengths, about four or five", "One boat length"], 2, "Far enough to set up a slow approach, close enough to keep them in sight."],
+ ["safety", "Why tack rather than jibe to turn back in a figure-eight?", ["The rules require it", "Jibing loses sight of the person", "Tacking is faster in all winds", "A tack is more controlled; a hurried jibe can swing the boom violently"], 3, "In an emergency you want the calm maneuver."],
+ ["safety", "After tacking in the figure-eight, you bear away to a broad reach so that you end up:", ["Directly on top of them", "In irons", "Upwind of the person", "A little downwind of the person"], 3, "From downwind you can turn up onto a close reach for the final approach."],
+ ["safety", "Your final approach to the person is too fast. The best fix is to:", ["Trim the sails in", "Jibe right next to them", "Steer straight at them and hope", "Ease the sheets more, and if still too fast, sail past and set up again"], 3, "Never rush a pick-up; another lap is safer than hitting the person."],
+ ["safety", "Right after shouting \"Crew overboard!\", someone should throw:", ["A throwable flotation device, like a cushion or ring", "The boat hook", "A dock line", "The anchor"], 0, "It gives them something to hold and marks where they are."],
+ ["safety", "Once alongside the person in the water, the first thing to do is:", ["Hoist the sails", "Call a friend ashore", "Lift them aboard by the arms immediately", "Get a line on them so they are attached to the boat"], 3, "Once they are secured you can work out how to get them aboard without losing them."],
+ ["safety", "For the final few meters of a crew-overboard pick-up, you turn into the wind so that:", ["The person drifts away from the boat", "The headwind and luffing sails slow the boat to a stop", "The jib fills and adds speed", "You can only pick them up on the starboard side"], 1, "Head to wind the sails stop driving; you can bring them aboard on port or starboard."],
+ ["safety", "Many GPS units and VHF radios have an MOB button. Pressing it:", ["Stops the engine", "Calls the Coast Guard automatically", "Drops a life ring", "Marks the position where the person went in"], 3, "It records the spot so you can steer back to it if you lose sight of them."],
+ ["safety", "Why is approaching the person on a run a bad idea?", ["You cannot slow down by luffing the sails downwind", "You will be in irons", "It is against the rules", "The person drifts upwind"], 0, "Downwind the sails keep pulling even when eased."],
+ ["safety", "In cold water, the first danger to a person who falls in is:", ["Heat stroke", "Sunburn", "Hypothermia within one minute", "Cold shock: gasping and loss of breath control"], 3, "Cold shock hits in the first minute; that is why a life jacket matters so much."],
+ ["safety", "A person in the water drifts:", ["Upwind faster than the boat", "Not at all", "Slowly downwind, more slowly than a drifting sailboat", "Toward the nearest shore"], 2, "The person drifts slowly; your boat, with sails and topsides, drifts faster."],
+ ["safety", "The quick-stop method begins by:", ["Lowering the sails", "Heading up into the wind immediately", "Jibing at once", "Sailing away on a beam reach"], 1, "Turning into the wind stops the boat right away, close to the person."],
+ ["safety", "During the quick-stop, the jib is:", ["Released and trimmed on the new side", "Let fly", "Left backed to help the bow come around", "Lowered"], 2, "The backed jib pushes the bow around so you can keep circling."],
+ ["safety", "A key advantage of the quick-stop over the figure-eight is that:", ["It never needs a tack", "It keeps the boat close to the person the whole time", "It is faster to sail", "It can only be done with a large crew"], 1, "You never get far away, which matters most when you are short-handed."],
+ ["safety", "In the quick-stop you keep turning after the tack until you are:", ["Downwind of the person, ready to come up on a close reach", "Upwind of the person", "Back at the dock", "Pointing straight at them on a run"], 0, "From downwind, a close-reach approach lets you luff to stop."],
+ ["safety", "You and one friend are sailing and your friend falls in. Which method suits a crew of one best?", ["Figure-eight, because it sails further", "Quick-stop, because it stays close and needs little sail handling", "Heave to and wait", "Lower all sails and drift"], 1, "The quick-stop is mostly steering, which one person can manage."],
+ ["dock", "The first thing to decide when planning a docking approach is:", ["The lake level", "The wind direction relative to the dock", "Which fender is newest", "Who will steer next time"], 1, "Everything else, from heading to where you luff, follows from the wind."],
+ ["dock", "Why is approaching a dock on a run a bad idea?", ["It is illegal", "You cannot slow down by luffing; the sails keep pulling", "The keel hits bottom", "The rudder stops working downwind"], 1, "You need to finish heading close to the wind so that easing the sheets takes the power off."],
+ ["dock", "Why do you start luffing well before the dock in a keelboat?", ["It is required by the rules", "The sails take a minute to luff", "Its weight keeps it moving a long way", "So the crew can rest"], 2, "A J/22 weighs over 800 kg and glides a long way after the sails stop driving."],
+ ["dock", "The ideal speed when you reach the dock is:", ["It doesn't matter with fenders", "Full speed so you can steer", "Barely moving, slower than a walk", "About 3 knots for steerage"], 2, "Arrive slowly enough that a crew member can step off and stop the boat with a line."],
+ ["dock", "Your approach is clearly going wrong 20 meters out. The best choice is to:", ["Keep going and fend off hard", "Abort early: turn away and go around", "Jump onto the dock", "Drop the anchor"], 1, "A second approach costs a minute; a crash costs a lot more."],
+ ["dock", "Fenders should be put out:", ["Never on small keelboats", "After you touch the dock", "On both sides only in strong wind", "Before you enter the marina, on the side you will dock"], 3, "Set them early, at the height where the hull meets the dock."],
+ ["dock", "A crew member getting off at the dock should:", ["Jump while the boat is still well off", "Step off with a line once the boat is close and slow", "Hold the boat off with a leg", "Wait until the boat hits"], 1, "Step, don't jump, and take a line so the boat can be stopped."],
+ ["knots", "The usual way to make a dock line fast to a cleat is a:", ["Bowline", "Sheet bend", "Square knot", "Cleat hitch"], 3, "A turn around the base, a figure-eight over the horns, and a locking hitch."],
+ ["sail", "Head to wind after tying up, the usual order to lower the sails is:", ["Both together", "Main first, then jib", "Leave them up", "Jib first, then main"], 3, "The jib comes down first so the main keeps the bow head to wind."],
+ ["safety", "You run aground softly in mud near a point on the lake. A good first try is to:", ["Ease the sails, turn back the way you came, and heel the boat with crew weight", "Trim in hard and sail forward", "Jump overboard to push", "Raise the outboard and wait"], 0, "Heeling lifts the keel a little, and the way you came in is known to be deep enough."],
+ ["dock", "With the wind blowing you off the dock, the danger is that:", ["The rudder jams", "The boat is pinned against the dock", "The boat drifts away before the lines are on", "The sails fill backward"], 2, "Get the windward lines on quickly, or the boat blows away from the crew on the dock."],
+ ["rules", "You are on port tack. A Catalina 22 on starboard tack is crossing ahead of you from the right. The best way to keep clear is usually to:", ["Bear away early to pass behind her", "Hold course and hail them", "Speed up to cross ahead", "Tack right under her bow"], 0, "As give-way boat, act early and obviously; passing astern is the safe choice."],
+ ["rules", "Under the Navigation Rules, a personal watercraft (jet ski) is:", ["Exempt from the rules", "Always the stand-on vessel", "A sailing vessel", "A power-driven vessel"], 3, "Anything propelled by machinery is a power-driven vessel."],
+ ["rules", "A bass boat is trolling a single fishing line. Under the rules, is it a vessel \"engaged in fishing\"?", ["Only at night", "Yes, any boat fishing counts", "Only on weekends", "No, trolling lines do not restrict its maneuverability"], 3, "Only gear that restricts maneuverability, like nets or trawls, counts."],
+ ["rules", "You are sailing with the outboard running in gear. A sailboat under sail alone crosses from your left. Who gives way?", ["Whoever is bigger", "You, because you count as power-driven", "Neither", "The other sailboat"], 1, "With the engine propelling you, you are a power-driven vessel and give way to a sailing vessel."],
+ ["rules", "The give-way vessel is clearly not acting and a collision can no longer be avoided by her alone. The stand-on vessel must:", ["Sound one long blast and continue", "Hold course and speed no matter what", "Speed up to cross ahead", "Take whatever action best avoids the collision"], 3, "Rule 17: when the give-way vessel's action alone cannot prevent a collision, the stand-on vessel must act too."],
+ ["rules", "A faster boat overtakes you on the same tack and passes to leeward of you. Who must keep clear?", ["Neither", "The overtaking boat", "You, because you are to windward", "Whoever is on starboard"], 1, "The overtaking rule comes first and overrides the windward-leeward rule."],
+ ["rules", "Even when you are the stand-on vessel, the rules expect you to:", ["Speed up", "Never change course", "Sound five blasts at every boat", "Use good seamanship and keep a proper lookout"], 3, "Responsibility and lookout rules apply to everyone, all the time."],
+ ["rules", "A powerboat is approaching on a steady bearing and closing, and the driver does not seem to see you. Your first step is to:", ["Ignore it; sail has right of way", "Assume they will turn", "Watch closely and be ready to act, signaling if you can", "Tack toward them"], 2, "A steady bearing means collision risk; never count on the other driver knowing the rules."],
+ ["rules", "Which vessel should a small sailboat keep clear of?", ["A vessel at anchor", "A powerboat crossing from your starboard side", "A sailboat overtaking you", "A jet ski crossing from your port side"], 0, "An anchored vessel cannot get out of the way, so everyone keeps clear of it."],
+ ["safety", "A big powerboat wake is coming toward you. The best way to meet it is to:", ["Jibe", "Stop the boat completely", "Turn the bow to meet it at an angle and hold on", "Turn broadside to it"], 2, "Taking a wake at an angle softens the roll and keeps the boat dry."],
+ ["rules", "Rule 5 requires every vessel to keep a proper lookout:", ["Only at night", "Only when under power", "Only in channels", "By sight and hearing at all times"], 3, "Most collisions start with nobody looking."],
+ ["weather", "Before a thunderstorm's rain reaches you, you can expect:", ["A rise in lake level", "A steady drop in wind", "A sudden strong, gusty wind shift from the gust front", "Fog"], 2, "Outflow from the storm often arrives minutes before the rain."],
+ ["weather", "A thunderstorm rule of thumb says that if the time between a lightning flash and its thunder is under 30 seconds, you should:", ["Seek shelter, and wait 30 minutes after the last thunder before going back out", "Keep sailing; it's still far off", "Raise the jib to get home faster", "Hold onto the mast"], 0, "This is the 30-30 rule."],
+ ["weather", "A fall cold front passing over North Texas usually brings:", ["A wind shift to the south and heat", "Fog only", "Calm air for days", "A wind shift to the north with gusts and cooler air"], 3, "Fronts can swing the wind north quickly and strongly; reef early."],
+ ["weather", "In North Texas, the National Weather Service warning for strong winds on area lakes is called a:", ["Hurricane watch", "Small craft advisory", "Gale warning", "Lake Wind Advisory"], 3, "Inland offices issue Lake Wind Advisories; small craft advisories are for coastal waters."],
+ ["weather", "NOAA weather broadcasts on a marine VHF radio are on the:", ["Channel 16", "WX (weather) channels", "Channel 72", "Channel 9"], 1, "Weather radio broadcasts repeat around the clock on the WX channels."],
+ ["safety", "On a 100-degree day on the lake, which is a sign of heat exhaustion?", ["Heavy sweating, dizziness and nausea", "Shivering", "Blue lips", "Sneezing"], 0, "Get the person into shade, cool them and give water; confusion or hot dry skin means heat stroke: call 911."],
+ ["safety", "The best way to prevent heat illness on a summer sail is to:", ["Drink water early and often, and wear a hat and sunscreen", "Drink only when thirsty", "Sail only at midday", "Avoid wearing a life jacket"], 0, "By the time you feel thirsty you are already behind."],
+ ["weather", "Where on a lake is the wind usually most patchy and unreliable?", ["Downwind of an open stretch", "In the middle of open water", "Close to a high windward shore with trees or buildings", "Over deep water"], 2, "Trees and buildings upwind break the breeze into gusts and holes."],
+ ["weather", "On a summer afternoon you see a tall cumulus cloud to the west with an anvil top. You should:", ["Keep sailing until it rains", "Head for the dock or reef now", "Drop anchor in open water", "Sail toward it for a better view"], 1, "Anvil tops mean a mature thunderstorm; on this lake they move in quickly from the west."],
+ ["safety", "If the lake gets rough and windy, the first sail-handling change on a J/22 is usually to:", ["Trim everything tighter", "Sail closer to shore", "Hoist the spinnaker", "Reduce power: ease sheets, flatten the sails, reef if you can"], 3, "Depower before the boat is overpowered, not after."],
+ ["safety", "A sound-producing device on a small sailboat on the lake is:", ["Only required for racing", "Only required at night", "Required (a whistle or horn)", "Optional"], 2, "Boats under 12 meters need some means of making an efficient sound signal."],
+ ["aton", "Coming back into the Rush Creek marina, you pass a white buoy with an orange circle that says NO WAKE. It means:", ["A controlled area: go slow enough to leave no wake", "Danger: rocks or stumps", "Boats keep out", "Information only, such as a fuel dock ahead"], 0, "An orange circle marks a controlled area, with the rule printed inside. Under the outboard, drop to idle."],
+ ["aton", "Off a point on Lake Ray Hubbard you see a white buoy with an orange diamond (no cross). It warns of:", ["A hazard such as shallows, stumps or rocks", "A no-wake zone", "A swim area you may not enter", "A good place to anchor"], 0, "Reservoirs flooded old trees, fences and roads. A diamond means danger, so give it room. A diamond with a cross means keep out."],
+ ["aton", "In the US system, \"returning from sea\" on rivers and lakes means heading:", ["Upstream", "Downstream", "East", "Toward the nearest shore"], 0, "So keep red marks on your right heading upstream. When a lake's marks are unclear, check the local chart or ask at the club."],
+ ["lights", "Sailing back to Rush Creek after sunset, you see a green light with a white light above it, moving left to right across your bow. It is most likely:", ["A powerboat showing you its starboard side", "A sailboat under sail coming toward you", "A boat at anchor", "A boat heading straight away from you"], 0, "Green is the starboard sidelight. A white light above it means engine power. A sailboat under sail shows no masthead light."],
+ ["lights", "At night you see a single white light ahead, and no red or green. You are most likely looking at:", ["The stern of a boat ahead of you, or a boat at anchor", "A powerboat coming straight at you", "A sailboat crossing from your right", "A red channel marker"], 0, "Sidelights can't be seen from behind, so a lone white light is usually a sternlight or an all-round anchor light."],
+ ["lights", "Your J/22 is under sail at night with the outboard off. Which light must NOT be on?", ["The white masthead (steaming) light", "The red sidelight", "The green sidelight", "The white sternlight"], 0, "The steaming light says you're under power. Showing it under sail tells other boats the wrong rules apply."],
+ ["nav", "Your J/22 is sailing at 4 knots. How far will you go in 30 minutes?", ["2 nautical miles", "4 nautical miles", "8 nautical miles", "2 statute miles"], 0, "Distance = speed × time. 4 knots for half an hour is 2 nautical miles."],
+ ["nav", "A friend says the far shore is \"three knots away.\" What's wrong with that?", ["A knot is a speed, not a distance", "Nothing, it's correct", "Knots measure depth", "It should be in fathoms"], 0, "A knot is one nautical mile per hour. The distance would be three nautical miles."],
+ ["nav", "A depth of 2 fathoms is:", ["12 feet", "2 feet", "6 feet", "20 feet"], 0, "One fathom is 6 feet. A J/22's keel reaches about 3 ft 9 in below the water, so watch the depth near points and coves."],
+ ["knots", "You want a loop in the end of a dock line to drop over a piling at the fuel dock. Tie a:", ["Bowline", "Clove hitch", "Square knot", "Figure-eight"], 0, "A bowline makes a fixed loop that won't slip or jam, and it's easy to untie later."],
+ ["knots", "Tying the J/22 to a dock ring for a lunch stop, which hitch holds well under load and still unties easily?", ["Round turn and two half hitches", "Square knot", "Figure-eight", "Sheet bend"], 0, "The round turn takes the load; the two half hitches lock it."],
+ ["safety", "In Texas, on a boat under 26 feet that is underway, children under what age must wear a life jacket?", ["13", "6", "10", "18"], 0, "Texas uses age 13 for boats under 26 ft. Everyone else still needs a wearable life jacket of the right size aboard."],
+ ["weather", "It's 3 p.m. in July. You hear thunder from a storm you can't see yet. You should:", ["Head in now; if you can hear thunder you're close enough to be struck", "Keep sailing until you see lightning", "Wait for the rain to start", "Anchor in a cove and wait it out"], 0, "Lightning can strike miles ahead of a storm. Summer storms over North Texas build fast."],
+);
+
 
 /* ---------- diagrams ---------- */
 const NS="http://www.w3.org/2000/svg";
@@ -1075,49 +1203,157 @@ const EXTRA=[
  ["dock","\"Anchor's aweigh\" means the anchor is:",["Set firmly","Just off the bottom","Being cleaned","Stowed below"],1,"The boat is now free and underway."],
  ["nav","A sailboat drifts sideways a little while sailing upwind. This is called:",["Leeway","Heading","Set","Variation"],0,"The keel reduces leeway but can't stop it entirely."],
 ];
+function qid(text,answer){let h=5381;const s=text+"|"+answer;for(let i=0;i<s.length;i++)h=(h*33+s.charCodeAt(i))>>>0;return "q"+h.toString(36)}
 function examPool(){
   const base=Q.map(q=>({topic:q[0],q:q[1],opts:q[2],ans:q[3],why:q[4]}));
   const ex=EXTRA.map(q=>({topic:q[0],q:q[1],opts:q[2],ans:q[3]==null?q[2].indexOf(q[6]):q[3],why:q[4],fig:q[5]}));
-  return base.concat(ex);
+  return base.concat(ex).map(q=>({...q,id:qid(q.q,q.opts[q.ans])}));
 }
+const POOL=examPool(),BYID=Object.fromEntries(POOL.map(q=>[q.id,q]));
+// Share of a 100-question exam per topic, roughly the weight each area gets in ASA 101
+const WEIGHT={parts:12,sail:15,trim:7,rules:14,lights:9,aton:8,nav:6,knots:5,safety:12,weather:5,dock:7};
+const SECTION={parts:"s-parts",sail:"s-sail",trim:"s-trim",rules:"s-rules",lights:"s-lights",aton:"s-aton",nav:"s-nav",knots:"s-knots",safety:"s-safety",weather:"s-weather",dock:"s-dock"};
+const PACE={none:0,min:60,fast:45};
 const ex=document.getElementById("ex");
 let E=null,timer=null;
-function fmt(sec){const m=Math.floor(sec/60),s2=sec%60;return `${m}:${String(s2).padStart(2,"0")}`}
+function fmt(sec){sec=Math.max(0,sec);const h=Math.floor(sec/3600),m=Math.floor(sec/60)%60,s2=sec%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(s2).padStart(2,"0")}`:`${m}:${String(s2).padStart(2,"0")}`}
+function mins(sec){const m=Math.round(sec/60);return m>=60?`${Math.floor(m/60)} h${m%60?` ${m%60} min`:""}`:`${m} min`}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function guideLink(topic,label){
+  const a=el("a",{href:"#"+SECTION[topic]},label||"Read this in the guide");
+  a.addEventListener("click",e=>{e.preventDefault();show("guide");const s=document.getElementById(SECTION[topic]);if(s)s.scrollIntoView({behavior:"smooth"})});
+  return a;
+}
+function weakList(){return load("asa-weak",{})}
+function history(){return load("asa-exam-hist",[])}
+function asked(q,texts){return {...q,opts:texts,ans:texts.indexOf(q.opts[q.ans])}}
+function mixOpts(q){return asked(q,shuffle(q.opts))}
+
+/* ---------- picking questions ---------- */
+function drawExam(n){
+  const byT={};shuffle(POOL).forEach(q=>(byT[q.topic]=byT[q.topic]||[]).push(q));
+  const total=Object.values(WEIGHT).reduce((a,b)=>a+b,0);
+  const want=Object.keys(WEIGHT).map(t=>({t,exact:WEIGHT[t]*n/total}));
+  want.forEach(w=>w.n=Math.floor(w.exact));
+  let short=n-want.reduce((a,w)=>a+w.n,0);
+  want.slice().sort((a,b)=>(b.exact-b.n)-(a.exact-a.n)).forEach(w=>{if(short>0){w.n++;short--}});
+  let picked=[];
+  want.forEach(w=>{picked=picked.concat((byT[w.t]||[]).splice(0,w.n))});
+  const rest=shuffle(Object.values(byT).flat());
+  while(picked.length<n&&rest.length)picked.push(rest.pop());
+  return shuffle(picked);
+}
+
+/* ---------- intro ---------- */
 function examIntro(){
   clearInterval(timer);E=null;
+  const n0=load("asa-exam-len",100),p0=load("asa-exam-pace","min");
   ex.innerHTML=`<div class="exintro">
-    <div class="eyebrow">Full-length simulation</div>
+    <div class="eyebrow">Timed practice exam</div>
     <h2>ASA 101 Mock Exam</h2>
-    <p>Students and schools describe the real written test as about <b>100 multiple-choice questions</b> with <b>80% needed to pass</b>, so this one works the same way, with no feedback until you submit. It mixes rules of the road, terminology, points of sail, and diagram questions where you identify parts of the boat and sail. Every attempt draws a new mix and order.</p>
-    <ul>
-      <li>Answer in any order. Flag questions to come back to.</li>
-      <li>The clock just counts up so you can see your pace. Ask your school whether the real test is timed.</li>
-      <li>After you submit, you'll see your score, a breakdown by topic, and explanations for everything you missed.</li>
-    </ul>
-    <p class="meta">These are questions written for practice that cover the same material. ASA doesn't publish its actual exams.</p>
+    <p>Students and schools describe the real written test as about <b>100 multiple-choice questions</b> with <b>80% needed to pass</b>, so the full exam here works the same way: no answers shown until you hand it in. Each attempt draws a fresh mix from ${POOL.length} questions, weighted across every ASA 101 topic, with lake examples from Ray Hubbard and diagram questions where you name parts of the boat.</p>
+    <div class="bar exset">
+      <label class="meta" for="ex-len">Questions</label>
+      <select id="ex-len"><option value="100">100 (full exam)</option><option value="50">50 (half)</option><option value="25">25 (quick check)</option></select>
+      <label class="meta" for="ex-pace">Time limit</label>
+      <select id="ex-pace"></select>
+    </div>
     <button class="btn primary" id="ex-go" type="button">Start the exam</button>
-    <span class="meta" id="ex-last"></span>
+    <div id="ex-resume"></div>
+    <ul class="exnotes">
+      <li><b>Timer:</b> with a limit set, the clock counts down and the exam hands itself in at zero. Unanswered questions count as wrong. Schools set their own time for the real test, so ask your instructor; a minute a question is a comfortable pace.</li>
+      <li>Answer in any order, and <b>flag</b> a question to come back to it. The numbered grid shows what's answered (blue) and flagged (amber).</li>
+      <li>Afterwards you get your score, a breakdown by topic, every missed question grouped by topic, and a <b>weak-spot drill</b>: a short practice round built from what you missed, with the answer shown after each one.</li>
+      <li>If a question's wording differs from <i>Sailing Made Easy</i> or your instructor, go with theirs.</li>
+    </ul>
+    <div id="ex-weak"></div>
+    <div id="ex-hist"></div>
+    <p class="meta">These are practice questions written to the same material. ASA doesn't publish its actual exams.</p>
   </div>`;
-  const last=load("asa-exam-last",null);
-  if(last)document.getElementById("ex-last").textContent=`  Last attempt: ${last.pct}% (${last.pct>=80?"pass":"not yet"})`;
-  document.getElementById("ex-go").addEventListener("click",startExam);
+  const len=document.getElementById("ex-len"),pace=document.getElementById("ex-pace");
+  len.value=String(n0);
+  function paceOpts(){
+    const n=+len.value,cur=pace.value||p0;
+    pace.innerHTML=`<option value="none">None (clock counts up)</option><option value="min">${mins(n*60)} (1 min a question)</option><option value="fast">${mins(n*45)} (45 s a question)</option>`;
+    pace.value=cur;
+  }
+  paceOpts();len.addEventListener("change",paceOpts);
+  document.getElementById("ex-go").addEventListener("click",()=>{save("asa-exam-len",+len.value);save("asa-exam-pace",pace.value);startExam(+len.value,pace.value)});
+  const saved=load("asa-exam-live",null);
+  if(saved&&saved.ids&&saved.ids.every(id=>BYID[id])){
+    const box=el("div",{class:"warnbox"});
+    const answered=saved.picks.filter(p=>p!=null).length;
+    box.innerHTML=`<b>Exam in progress.</b> ${answered} of ${saved.ids.length} answered${saved.limit?`, ${fmt(saved.limit-saved.elapsed)} left on the clock`:""}. The clock is stopped until you go back in.`;
+    const go=el("button",{class:"btn primary",type:"button",style:"margin:10px 8px 0 0"},"Resume");go.addEventListener("click",()=>resumeExam(saved));
+    const drop=el("button",{class:"btn",type:"button",style:"margin-top:10px"},"Discard it");drop.addEventListener("click",()=>{save("asa-exam-live",null);examIntro()});
+    box.appendChild(go);box.appendChild(drop);document.getElementById("ex-resume").appendChild(box);
+  }
+  renderWeakBox(document.getElementById("ex-weak"));
+  const hist=history();
+  if(hist.length){
+    let rows="";hist.slice(-6).reverse().forEach(h=>{
+      rows+=`<tr><td>${new Date(h.d).toLocaleDateString(undefined,{month:"short",day:"numeric"})}</td><td class="mono" style="color:var(${h.pct>=80?"--stbd":"--port"})">${h.pct}%</td><td class="mono">${h.n}</td><td class="mono">${fmt(h.secs)}${h.limit?` of ${mins(h.limit)}`:""}</td></tr>`;
+    });
+    document.getElementById("ex-hist").innerHTML=`<h3 class="exh3">Your recent attempts</h3><div class="tbl"><table><thead><tr><th>Date</th><th>Score</th><th>Questions</th><th>Time used</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
 }
-function startExam(){
-  const pool=shuffle(examPool()).slice(0,100).map(q=>{
-    const order=shuffle(q.opts.map((o,i)=>i));
-    return {...q,opts:order.map(i=>q.opts[i]),ans:order.indexOf(q.ans)};
-  });
-  E={qs:pool,picks:Array(pool.length).fill(null),flags:new Set(),i:0,t0:Date.now(),done:false};
-  timer=setInterval(()=>{const c=document.getElementById("ex-clock");if(c)c.textContent=fmt(Math.floor((Date.now()-E.t0)/1000))},1000);
-  renderExam();
+function renderWeakBox(host){
+  const w=weakList(),ids=Object.keys(w).filter(id=>BYID[id]);
+  const last=history().slice(-1)[0];
+  const lowT=last?Object.keys(last.by).filter(t=>last.by[t][0]/last.by[t][1]<.8):[];
+  if(!ids.length&&!lowT.length)return;
+  const box=el("div",{class:"weak"});
+  const tc={};ids.forEach(id=>{const t=BYID[id].topic;tc[t]=(tc[t]||0)+1});
+  const chips=Object.keys(TOPICS).filter(t=>tc[t]||lowT.includes(t)).map(t=>`<span class="chip">${TOPICS[t]}${tc[t]?` · ${tc[t]}`:""}</span>`).join(" ");
+  box.innerHTML=`<h3 class="exh3">Weak spots</h3><p>${ids.length?`<b>${ids.length} question${ids.length>1?"s":""}</b> you've missed and not yet cleared. A question clears after you get it right twice in a row.`:"Nothing missed is waiting, but these topics scored under 80% last time."}</p><div class="chips">${chips}</div>`;
+  const b=el("button",{class:"btn primary",type:"button",style:"margin-top:12px"},"Drill my weak spots");b.addEventListener("click",startDrill);
+  box.appendChild(b);host.appendChild(box);
+}
+
+/* ---------- taking the exam ---------- */
+function startExam(n,pace){
+  const qs=drawExam(n).map(mixOpts);
+  E={qs,picks:Array(qs.length).fill(null),flags:new Set(),i:0,limit:PACE[pace]*qs.length,elapsed:0,t0:Date.now(),done:false,paused:false};
+  runClock();renderExam();
+}
+function resumeExam(s){
+  const qs=s.ids.map((id,k)=>asked(BYID[id],s.opts[k]));
+  E={qs,picks:s.picks,flags:new Set(s.flags),i:s.i||0,limit:s.limit,elapsed:s.elapsed,t0:Date.now(),done:false,paused:false};
+  runClock();renderExam();
+}
+function used(){return E.elapsed+(E.paused?0:Math.floor((Date.now()-E.t0)/1000))}
+function persist(){if(E&&!E.done)save("asa-exam-live",{ids:E.qs.map(q=>q.id),opts:E.qs.map(q=>q.opts),picks:E.picks,flags:[...E.flags],i:E.i,limit:E.limit,elapsed:used()})}
+function clockText(){const u=used();return E.limit?`${fmt(E.limit-u)} left`:fmt(u)}
+function runClock(){
+  clearInterval(timer);let tick=0;
+  timer=setInterval(()=>{
+    if(!E||E.done||E.paused)return;
+    const u=used(),c=document.getElementById("ex-clock");
+    if(c){c.textContent=clockText();c.classList.toggle("low",!!E.limit&&E.limit-u<=Math.max(120,E.limit*.1))}
+    if(E.limit&&u>=E.limit){E.timeUp=true;finishExam();return}
+    if(++tick%5===0)persist();
+  },1000);
+}
+function pause(){E.elapsed=used();E.paused=true;persist();renderPaused()}
+function unpause(){E.paused=false;E.t0=Date.now();renderExam()}
+function renderPaused(){
+  ex.innerHTML="";
+  const card=el("div",{class:"qcard"});
+  card.innerHTML=`<div class="eyebrow">Paused</div><h2 style="font-size:30px;margin:6px 0 8px">Clock stopped at ${clockText()}</h2><p>The question is hidden while you're away. Your answers are saved on this device, so you can also close the page and resume later.</p>`;
+  const b=el("button",{class:"btn primary",type:"button"},"Back to the exam");b.addEventListener("click",unpause);card.appendChild(b);
+  ex.appendChild(card);
 }
 function renderExam(){
+  persist();
   const q=E.qs[E.i],answered=E.picks.filter(p=>p!=null).length;
   ex.innerHTML="";
   const head=el("div",{class:"exhead"});
   head.appendChild(el("span",{class:"meta"},`Question ${E.i+1} of ${E.qs.length} · ${answered} answered`));
-  head.appendChild(el("span",{class:"meta",id:"ex-clock"},fmt(Math.floor((Date.now()-E.t0)/1000))));
-  ex.appendChild(head);
+  const right=el("div",{style:"display:flex;gap:10px;align-items:center"});
+  right.appendChild(el("span",{class:"meta clock",id:"ex-clock"},clockText()));
+  const pb=el("button",{class:"btn sm",type:"button"},"Pause");pb.addEventListener("click",pause);right.appendChild(pb);
+  head.appendChild(right);ex.appendChild(head);
+  if(E.limit){const pr=el("div",{class:"progress",style:"max-width:720px;margin:0 0 12px"});pr.innerHTML=`<i style="width:${answered/E.qs.length*100}%"></i>`;ex.appendChild(pr)}
   const card=el("div",{class:"qcard"});
   card.appendChild(el("span",{class:"chip"},TOPICS[q.topic]));
   card.appendChild(el("div",{class:"qtext"},q.q));
@@ -1164,31 +1400,70 @@ function submitPrompt(){
   box.appendChild(yes);box.appendChild(no);ex.appendChild(box);box.scrollIntoView({block:"nearest",behavior:"smooth"});
 }
 function finishExam(){
-  clearInterval(timer);E.done=true;E.secs=Math.floor((Date.now()-E.t0)/1000);
+  clearInterval(timer);E.secs=Math.min(used(),E.limit||Infinity);E.done=true;save("asa-exam-live",null);
   const right=E.qs.filter((q,i)=>E.picks[i]===q.ans).length,pct=Math.round(right/E.qs.length*100);
-  save("asa-exam-last",{pct});E.right=right;E.pct=pct;renderResults();
+  E.right=right;E.pct=pct;
+  E.by={};E.qs.forEach((q,i)=>{E.by[q.topic]=E.by[q.topic]||[0,0];E.by[q.topic][1]++;if(E.picks[i]===q.ans)E.by[q.topic][0]++});
+  const w=weakList();
+  E.qs.forEach((q,i)=>{
+    if(E.picks[i]!==q.ans){w[q.id]={m:((w[q.id]||{}).m||0)+1,s:0}}
+    else if(w[q.id]){w[q.id].s++;if(w[q.id].s>=2)delete w[q.id]}
+  });
+  save("asa-weak",w);
+  const hist=history();hist.push({d:new Date().toISOString(),pct,n:E.qs.length,secs:E.secs,limit:E.limit,by:E.by});save("asa-exam-hist",hist.slice(-20));
+  save("asa-exam-last",{pct});
+  renderResults();window.scrollTo({top:0});
 }
+
+/* ---------- results ---------- */
 function renderResults(){
   ex.innerHTML="";
   const card=el("div",{class:"qcard"});
-  card.appendChild(el("div",{class:"meta"},`Finished in ${fmt(E.secs)}`));
+  card.appendChild(el("div",{class:"meta"},E.timeUp?`Time ran out at ${mins(E.limit)}`:`Finished in ${fmt(E.secs)}${E.limit?` of ${mins(E.limit)}`:""}`));
   const row=el("div",{style:"display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:6px 0"});
   row.appendChild(el("div",{class:"score"},`${E.pct}%`));
   row.appendChild(el("span",{class:"pf "+(E.pct>=80?"pass":"fail")},E.pct>=80?"PASS":"BELOW 80%"));
   card.appendChild(row);
-  card.appendChild(el("p",{},`${E.right} of ${E.qs.length} correct. ${E.pct>=90?"You're ready.":E.pct>=80?"Passing. Tighten up your weakest topics below.":"Study the weak topics below, then try another attempt."}`));
-  const by={};E.qs.forEach((q,i)=>{by[q.topic]=by[q.topic]||[0,0];by[q.topic][1]++;if(E.picks[i]===q.ans)by[q.topic][0]++});
-  let rows="";Object.keys(TOPICS).filter(k=>by[k]).sort((a,b)=>by[a][0]/by[a][1]-by[b][0]/by[b][1]).forEach(k=>{
-    const [r,n]=by[k],p=Math.round(r/n*100);
-    rows+=`<tr><td>${TOPICS[k]}</td><td class="mono">${r}/${n}</td><td class="mono" style="color:var(${p>=80?"--stbd":"--port"})">${p}%</td></tr>`;
+  const blank=E.picks.filter(p=>p==null).length;
+  card.appendChild(el("p",{},`${E.right} of ${E.qs.length} correct${blank?`, ${blank} left blank`:""}. ${E.pct>=90?"You're ready. Keep it sharp with a weak-spot drill.":E.pct>=80?"Passing. Tighten up the weakest topics below.":"Work through the weak topics below, drill them, then take another exam."}`));
+  const order=Object.keys(TOPICS).filter(k=>E.by[k]).sort((a,b)=>E.by[a][0]/E.by[a][1]-E.by[b][0]/E.by[b][1]);
+  card.appendChild(el("h3",{class:"exh3"},"By topic"));
+  const tb=el("div",{class:"topics"});
+  order.forEach(k=>{
+    const [r,n]=E.by[k],p=Math.round(r/n*100);
+    const line=el("div",{class:"trow"});
+    line.innerHTML=`<span class="tname">${TOPICS[k]}</span><span class="tbar"><i style="width:${p}%;background:var(${p>=80?"--stbd":"--port"})"></i><em></em></span><span class="mono">${r}/${n}</span><span class="mono" style="color:var(${p>=80?"--stbd":"--port"})">${p}%</span>`;
+    tb.appendChild(line);
   });
-  card.insertAdjacentHTML("beforeend",`<h3 style="font-size:22px;margin-top:18px">By topic</h3><div class="tbl"><table><thead><tr><th>Topic</th><th>Correct</th><th>Score</th></tr></thead><tbody>${rows}</tbody></table></div>`);
-  const btns=el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"});
-  const rv=el("button",{class:"btn primary",type:"button"},"Review answers");rv.addEventListener("click",()=>{const w=E.qs.findIndex((q,i)=>E.picks[i]!==q.ans);renderReview(w<0?0:w)});
-  const again=el("button",{class:"btn",type:"button"},"New attempt");again.addEventListener("click",examIntro);
+  card.appendChild(tb);
+  card.appendChild(el("p",{class:"meta",style:"margin:4px 0 0"},"The tick on each bar marks 80%, the passing line."));
+  const btns=el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"});
+  const missedN=E.qs.length-E.right;
+  if(missedN){const dr=el("button",{class:"btn primary",type:"button"},"Drill my weak spots");dr.addEventListener("click",startDrill);btns.appendChild(dr)}
+  const rv=el("button",{class:"btn",type:"button"},"Step through every answer");rv.addEventListener("click",()=>{const w=E.qs.findIndex((q,i)=>E.picks[i]!==q.ans);renderReview(w<0?0:w)});
+  const again=el("button",{class:"btn",type:"button"},"New exam");again.addEventListener("click",examIntro);
   btns.appendChild(rv);btns.appendChild(again);card.appendChild(btns);
   ex.appendChild(card);
-  ex.appendChild(el("p",{class:"meta",style:"margin-top:16px"},"Tap any number to review that question. Red ones were wrong."));
+  if(missedN){
+    ex.appendChild(el("h3",{class:"exh3",style:"margin-top:26px"},`What you missed, by topic (${missedN})`));
+    order.forEach((k,ti)=>{
+      const miss=E.qs.map((q,i)=>({q,i})).filter(o=>o.q.topic===k&&E.picks[o.i]!==o.q.ans);
+      if(!miss.length)return;
+      const d=el("details",{class:"mtopic"});if(ti<2)d.open=true;
+      d.appendChild(el("summary",{},`${TOPICS[k]} <span class="meta">${miss.length} missed</span>`));
+      miss.forEach(({q,i})=>{
+        const pick=E.picks[i];
+        const it=el("div",{class:"mitem"});
+        it.innerHTML=`<div class="meta">Question ${i+1}</div><b>${q.q}</b>`;
+        if(q.fig)it.appendChild(el("div",{class:"qfig"},q.fig()));
+        it.insertAdjacentHTML("beforeend",`<div class="ans"><span class="no">${pick==null?"Left blank":"Your answer: "+esc(q.opts[pick])}</span><span class="yes">Correct: ${esc(q.opts[q.ans])}</span></div><div>${q.why}</div>`);
+        d.appendChild(it);
+      });
+      const gl=el("div",{class:"glink"});gl.appendChild(guideLink(k,`Read “${TOPICS[k]}” in the study guide`));d.appendChild(gl);
+      ex.appendChild(d);
+    });
+  }
+  ex.appendChild(el("p",{class:"meta",style:"margin-top:16px"},"Tap any number to see that question. Red ones were wrong."));
   ex.appendChild(navGrid(true));
 }
 function renderReview(i){
@@ -1215,6 +1490,82 @@ function renderReview(i){
   foot.appendChild(prev);foot.appendChild(nx);card.appendChild(foot);
   ex.appendChild(card);ex.appendChild(navGrid(true));
 }
+
+/* ---------- weak-spot drill ---------- */
+let D=null;
+function startDrill(){
+  clearInterval(timer);
+  const w=weakList();
+  const ids=Object.keys(w).filter(id=>BYID[id]).sort((a,b)=>w[b].m-w[a].m).slice(0,20);
+  let set=ids.map(id=>BYID[id]);
+  // Top up with fresh questions from the weakest topics of the last exam
+  const last=history().slice(-1)[0];
+  if(set.length<15&&last){
+    const topics=Object.keys(last.by).sort((a,b)=>last.by[a][0]/last.by[a][1]-last.by[b][0]/last.by[b][1]).filter((t,k)=>k<3||last.by[t][0]/last.by[t][1]<.8);
+    const have=new Set(ids);
+    const extra=shuffle(POOL.filter(q=>topics.includes(q.topic)&&!have.has(q.id)));
+    set=set.concat(extra.slice(0,15-set.length));
+  }
+  if(!set.length){examIntro();return}
+  D={queue:shuffle(set).map(mixOpts),pos:0,right:0,tries:0,cleared:0,retry:{}};
+  window.scrollTo({top:0});renderDrill();
+}
+function renderDrill(){
+  ex.innerHTML="";
+  if(D.pos>=D.queue.length)return drillDone();
+  const q=D.queue[D.pos];
+  const head=el("div",{class:"exhead"});
+  head.appendChild(el("span",{class:"meta"},`Weak-spot drill · ${D.pos+1} of ${D.queue.length} · ${D.right} right`));
+  const quit=el("button",{class:"btn sm",type:"button"},"Stop drill");quit.addEventListener("click",drillDone);head.appendChild(quit);
+  ex.appendChild(head);
+  const card=el("div",{class:"qcard"});
+  card.appendChild(el("span",{class:"chip"},TOPICS[q.topic]));
+  if(D.retry[q.id])card.appendChild(el("span",{class:"chip again",style:"margin-left:6px"},"Second look"));
+  card.appendChild(el("div",{class:"qtext"},q.q));
+  if(q.fig)card.appendChild(el("div",{class:"qfig"},q.fig()));
+  const opts=el("div",{class:"opts"});
+  q.opts.forEach((o,i)=>{
+    const b=el("button",{class:"opt",type:"button"});
+    b.appendChild(el("span",{class:"k"},"ABCD"[i]));b.appendChild(el("span",{},o));
+    b.addEventListener("click",()=>drillAnswer(i,opts,card));
+    opts.appendChild(b);
+  });
+  card.appendChild(opts);ex.appendChild(card);
+}
+function drillAnswer(i,opts,card){
+  const q=D.queue[D.pos],btns=[...opts.children],ok=i===q.ans,w=weakList();
+  btns.forEach(b=>b.disabled=true);btns[q.ans].classList.add("right");
+  D.tries++;
+  if(ok){
+    D.right++;
+    if(w[q.id]){w[q.id].s++;if(w[q.id].s>=2){delete w[q.id];D.cleared++}}
+  }else{
+    btns[i].classList.add("wrong");
+    w[q.id]={m:((w[q.id]||{}).m||0)+1,s:0};
+    // Bring it back a few questions later, at most twice per drill
+    D.retry[q.id]=(D.retry[q.id]||0)+1;
+    if(D.retry[q.id]<=2){const again={...mixOpts(BYID[q.id])};D.queue.splice(Math.min(D.pos+4,D.queue.length),0,again)}
+  }
+  save("asa-weak",w);
+  card.appendChild(el("div",{class:"explain"},`<b>${ok?"Correct.":"Not quite."}</b> ${q.why}${ok?"":" It will come back in a few questions."}`));
+  const foot=el("div",{class:"qfoot"});
+  foot.appendChild(guideLink(q.topic));
+  const nx=el("button",{class:"btn primary",type:"button"},D.pos+1<D.queue.length?"Next question":"See how you did");
+  nx.addEventListener("click",()=>{D.pos++;renderDrill();ex.scrollIntoView({block:"start",behavior:"smooth"})});
+  foot.appendChild(nx);card.appendChild(foot);nx.focus({preventScroll:true});
+}
+function drillDone(){
+  ex.innerHTML="";
+  const left=Object.keys(weakList()).filter(id=>BYID[id]).length;
+  const card=el("div",{class:"qcard"});
+  card.innerHTML=`<div class="eyebrow">Weak-spot drill</div><div class="score" style="margin:8px 0">${D.tries?Math.round(D.right/D.tries*100):0}%</div><p>${D.right} of ${D.tries} answered right. ${D.cleared?`<b>${D.cleared} cleared</b> from your weak spots. `:""}${left?`${left} still to clear; each one clears after two right answers in a row.`:"Your weak-spot list is empty."}</p>`;
+  const btns=el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:8px"});
+  if(left){const a=el("button",{class:"btn primary",type:"button"},"Drill again");a.addEventListener("click",startDrill);btns.appendChild(a)}
+  const b=el("button",{class:"btn"+(left?"":" primary"),type:"button"},"Back to the exam page");b.addEventListener("click",examIntro);btns.appendChild(b);
+  card.appendChild(btns);ex.appendChild(card);
+  if(E&&!E.done)persist();
+}
+window.addEventListener("pagehide",()=>{if(E&&!E.done)persist()});
 examIntro();
 
 </script>
