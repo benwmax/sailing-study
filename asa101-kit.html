@@ -2,27 +2,27 @@
 <title>ASA 101 Study Kit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400&family=B612+Mono&display=swap">
 <style>
 /* Layout: chart-room notebook. Sticky tab bar, guide with side index, port/starboard red-green as semantic accents. */
 :root{
-  --bg:#f3f6f9; --paper:#ffffff; --ink:#10212f; --muted:#566878; --line:#d4dde6;
-  --accent:#1d5a86; --accent-soft:#e3eef6;
-  --port:#c3322b; --port-soft:#fbe9e7; --stbd:#1c7f48; --stbd-soft:#e4f4ea;
+  --bg:#f0e8d2; --paper:#fbf7ea; --ink:#15222c; --muted:#4a5a64; --line:#cfc4a6;
+  --accent:#a62b6e; --accent-soft:#f1dbe5;
+  --port:#c8322b; --port-soft:#fbe9e7; --stbd:#1a7a45; --stbd-soft:#e4f4ea;
   --warn:#9a6a00; --warn-soft:#fbf1d8;
   --hull:#e6edf4; --sail:#ffffff; --water:#d6e8f5;
   --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
-  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --f-body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"B612 Mono","JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0b1520; --paper:#122130; --ink:#e3ebf2; --muted:#92a4b4; --line:#253a4c;
-  --accent:#74b4e2; --accent-soft:#17324a;
+  --bg:#0f1a22; --paper:#15222c; --ink:#f0e8d2; --muted:#aeb6b0; --line:#3b5161;
+  --accent:#e06aab; --accent-soft:#3b2233;
   --port:#ff7067; --port-soft:#3a1d1d; --stbd:#56cf8b; --stbd-soft:#163323;
   --warn:#e9b949; --warn-soft:#352a12; --hull:#2a3f53; --sail:#1c3247; --water:#12304a; color-scheme:dark;}}
 :root[data-theme="dark"]{
-  --bg:#0b1520; --paper:#122130; --ink:#e3ebf2; --muted:#92a4b4; --line:#253a4c;
-  --accent:#74b4e2; --accent-soft:#17324a;
+  --bg:#0f1a22; --paper:#15222c; --ink:#f0e8d2; --muted:#aeb6b0; --line:#3b5161;
+  --accent:#e06aab; --accent-soft:#3b2233;
   --port:#ff7067; --port-soft:#3a1d1d; --stbd:#56cf8b; --stbd-soft:#163323;
   --warn:#e9b949; --warn-soft:#352a12; --hull:#2a3f53; --sail:#1c3247; --water:#12304a; color-scheme:dark;}
 *{box-sizing:border-box}
@@ -248,7 +248,7 @@ select{font:15px var(--f-body);padding:8px 10px;border-radius:6px;border:1px sol
       </svg>
       <div class="figbar">
         <button class="btn sm" type="button" data-quiz="fig-boat">Hide labels to quiz yourself</button>
-        <figcaption>Side view of a sloop (one mast, a mainsail and a jib). In quiz mode, tap a blue dot to reveal its name.</figcaption>
+        <figcaption>Side view of a sloop (one mast, a mainsail and a jib). In quiz mode, tap a dot to reveal its name.</figcaption>
       </div>
     </figure>
     <figure id="fig-top">
